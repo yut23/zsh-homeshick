@@ -1,5 +1,6 @@
 # ~/.zsh/zshrc
 
+ZSH_CUSTOM="$HOME/.zsh/omz_custom"
 source "$HOME/.zsh/oh-my-zsh"
 
 # Homeshick
