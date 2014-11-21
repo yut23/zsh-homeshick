@@ -1,5 +1,5 @@
-#!/bin/bash
-# ~/.bash/aliases
+#!/bin/zsh
+# ~/.zsh/omz/aliases.zsh
 
 # Interactive operation...
 # alias rm='rm -i'
