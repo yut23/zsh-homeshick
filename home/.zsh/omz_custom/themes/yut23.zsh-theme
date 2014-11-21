@@ -38,9 +38,16 @@ function my_git_prompt_info() {
 	echo "$ZSH_THEME_GIT_PROMPT_PREFIX${ref#refs/heads/}$GIT_STATUS$ZSH_THEME_GIT_PROMPT_SUFFIX"
 }
 
+function my_update_pretty_PWD {
+	pretty_PWD=$(hash -rd; print -lr -- ${(%)PWD})
+}
+chpwd_functions+=(my_update_pretty_PWD)
+my_update_pretty_PWD
+local current_dir='%{$terminfo[bold]$fg[cyan]%} ${pretty_PWD}%{$reset_color%}'
+
 #setopt PROMPT_SUBST
 PROMPT='
-%{$fg[green]%}%n@%m%{$reset_color%} %{$fg[yellow]%}%2~%{$reset_color%} $(my_git_prompt_info)
+%{$fg[green]%}%n@%m%{$reset_color%} %{$fg[yellow]%}${current_dir}%{$reset_color%} $(my_git_prompt_info)
 $ '
 RPROMPT='${vim_mode} ${return_code}'
 

@@ -42,9 +42,10 @@ fi
 # Aliases
 #
 # Use a different file for aliases
-if [[ -f "${HOME}/.zsh/aliases" ]] ; then
-  : #source "${HOME}/.zsh/aliases"
-fi
+# Handled by oh-my-zsh, in omz-custom/aliases.zsh
+#if [[ -f "${HOME}/.zsh/aliases" ]] ; then
+#  : #source "${HOME}/.zsh/aliases"
+#fi
 
 #bindkey '^Z' fancy-ctrl-z
 bindkey 'OH' beginning-of-line
