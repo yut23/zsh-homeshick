@@ -1,6 +1,5 @@
 # ~/.zsh/zshrc
 
-ZSH_CUSTOM="$HOME/.zsh/omz"
 source "$HOME/.zsh/oh-my-zsh"
 
 # Homeshick
@@ -42,7 +41,7 @@ fi
 # Aliases
 #
 # Use a different file for aliases
-# Handled by oh-my-zsh, in omz-custom/aliases.zsh
+# Handled by oh-my-zsh, in omz/aliases.zsh
 #if [[ -f "${HOME}/.zsh/aliases" ]] ; then
 #  : #source "${HOME}/.zsh/aliases"
 #fi

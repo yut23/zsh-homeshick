@@ -44,8 +44,4 @@ alias psg='ps ax | grep -v grep | grep --color=always'
 alias psa='ps ax | grep -v ag | ag'
 alias axel='axel -a'
 
-#alias hs='homeshick'
-#complete -o default -F _homeshick_complete hs
-
-#alias g='git'
-#complete -o default -o nospace -F _git g
+alias hs='homeshick'

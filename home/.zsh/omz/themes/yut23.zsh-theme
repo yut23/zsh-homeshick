@@ -30,28 +30,28 @@ function TRAPINT() {
 	return $(( 128 + $1 ))
 }
 
-
 function my_git_prompt_info() {
 	ref=$(git symbolic-ref HEAD 2> /dev/null) || return
 	GIT_STATUS=$(git_prompt_status)
-	[[ -n $GIT_STATUS ]] && GIT_STATUS=" $GIT_STATUS"
-	echo "$ZSH_THEME_GIT_PROMPT_PREFIX${ref#refs/heads/}$GIT_STATUS$ZSH_THEME_GIT_PROMPT_SUFFIX"
+	if [[ -n $GIT_STATUS ]]; then
+		GIT_STATUS=" $GIT_STATUS"
+		echo "%{$terminfo[bold]$fg[yellow]%}(${ref#refs/heads/}$GIT_STATUS$ZSH_THEME_GIT_PROMPT_SUFFIX"
+	else
+		echo "%{$terminfo[bold]$fg[green]%}(${ref#refs/heads/}$GIT_STATUS$ZSH_THEME_GIT_PROMPT_SUFFIX"
+	fi
 }
 
-function my_update_pretty_PWD {
-	pretty_PWD=$(hash -rd; print -lr -- ${(%)PWD})
-}
-chpwd_functions+=(my_update_pretty_PWD)
-my_update_pretty_PWD
-local current_dir='%{$terminfo[bold]$fg[cyan]%} ${pretty_PWD}%{$reset_color%}'
+local user_host='%{$fg[green]%}%n@%m%{$reset_color%}'
+local current_dir='%{$fg[yellow]%}$(hash -rdf; p="%~"; print -lr -- ${(%)p})%{$reset_color%}'
+local git_prompt='$(my_git_prompt_info)'
 
 #setopt PROMPT_SUBST
-PROMPT='
-%{$fg[green]%}%n@%m%{$reset_color%} %{$fg[yellow]%}${current_dir}%{$reset_color%} $(my_git_prompt_info)
-$ '
+PROMPT="
+${user_host} ${current_dir} ${git_prompt}
+$ "
 RPROMPT='${vim_mode} ${return_code}'
 
-ZSH_THEME_GIT_PROMPT_PREFIX="%{$fg[yellow]%}("
+#ZSH_THEME_GIT_PROMPT_PREFIX="${GIT_COLOR}("
 ZSH_THEME_GIT_PROMPT_SUFFIX=")%{$reset_color%}"
 ZSH_THEME_GIT_PROMPT_UNTRACKED="%%"
 ZSH_THEME_GIT_PROMPT_ADDED="+"
