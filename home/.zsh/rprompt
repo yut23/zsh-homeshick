@@ -1,1 +1,0 @@
-${vim_mode} %(?..%{$fg_bold[red]%}%?%{$reset_color%})

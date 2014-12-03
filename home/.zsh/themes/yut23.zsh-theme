@@ -9,15 +9,15 @@ vim_cmd_mode="%{$fg[green]%}[CMD]%{$reset_color%}"
 vim_mode=$vim_ins_mode
 
 function zle-keymap-select {
-	vim_mode="${${KEYMAP/vicmd/${vim_cmd_mode}}/(main|viins)/${vim_ins_mode}}"
-	zle reset-prompt
-	#if [[ $KEYMAP == 'vicmd' ]] ; then tput cbb 2>/dev/null; else tput cbl 2>/dev/null; fi
+  vim_mode="${${KEYMAP/vicmd/${vim_cmd_mode}}/(main|viins)/${vim_ins_mode}}"
+  zle reset-prompt
+  #if [[ $KEYMAP == 'vicmd' ]] ; then tput cbb 2>/dev/null; else tput cbl 2>/dev/null; fi
 }
 zle -N zle-keymap-select
 
 function zle-line-finish {
-	vim_mode=$vim_ins_mode
-	#tput cbl 2>/dev/null
+  vim_mode=$vim_ins_mode
+  #tput cbl 2>/dev/null
 }
 zle -N zle-line-finish
 
@@ -25,23 +25,23 @@ zle -N zle-line-finish
 # Fixed by catching SIGINT (C-c), set vim_mode to INS and then repropagate the SIGINT, so if anything else depends on it, we will not break it
 # Thanks Ron! (see comments)
 function TRAPINT() {
-	vim_mode=$vim_ins_mode
-	#tput cbl 2>/dev/null
-	return $(( 128 + $1 ))
+  vim_mode=$vim_ins_mode
+  #tput cbl 2>/dev/null
+  return $(( 128 + $1 ))
 }
 
 function my_git_prompt_info() {
-	ref=$(git symbolic-ref HEAD 2> /dev/null) || return
-	GIT_STATUS=$(git_prompt_status)
-	if [[ -n $GIT_STATUS ]]; then
-		if [[ $GIT_STATUS =~ [%+*~\!?] ]]; then
-			echo "%{$terminfo[bold]$fg[red]%}(${ref#refs/heads/} $GIT_STATUS$ZSH_THEME_GIT_PROMPT_SUFFIX"
-		else
-			echo "%{$terminfo[bold]$fg[yellow]%}(${ref#refs/heads/} $GIT_STATUS$ZSH_THEME_GIT_PROMPT_SUFFIX"
-		fi
-	else
-		echo "%{$terminfo[bold]$fg[green]%}(${ref#refs/heads/}$ZSH_THEME_GIT_PROMPT_SUFFIX"
-	fi
+  ref=$(git symbolic-ref HEAD 2> /dev/null) || return
+  GIT_STATUS=$(git_prompt_status)
+  if [[ -n $GIT_STATUS ]]; then
+    if [[ $GIT_STATUS =~ [%+*~\!?] ]]; then
+      echo "%{$terminfo[bold]$fg[red]%}(${ref#refs/heads/} $GIT_STATUS$ZSH_THEME_GIT_PROMPT_SUFFIX"
+    else
+      echo "%{$terminfo[bold]$fg[yellow]%}(${ref#refs/heads/} $GIT_STATUS$ZSH_THEME_GIT_PROMPT_SUFFIX"
+    fi
+  else
+    echo "%{$terminfo[bold]$fg[green]%}(${ref#refs/heads/}$ZSH_THEME_GIT_PROMPT_SUFFIX"
+  fi
 }
 
 local user_host='%{$fg[green]%}%n@%m%{$reset_color%}'
@@ -59,7 +59,7 @@ ZSH_THEME_GIT_PROMPT_SUFFIX=")%{$reset_color%}"
 ZSH_THEME_GIT_PROMPT_UNTRACKED="%%"
 ZSH_THEME_GIT_PROMPT_ADDED="+"
 ZSH_THEME_GIT_PROMPT_MODIFIED="*"
-ZSH_THEME_GIT_PROMPT_RENAMED="\~"
+ZSH_THEME_GIT_PROMPT_RENAMED="~"
 ZSH_THEME_GIT_PROMPT_DELETED="!"
 ZSH_THEME_GIT_PROMPT_UNMERGED="?"
 ZSH_THEME_GIT_PROMPT_AHEAD="↑"

@@ -1,6 +1,23 @@
 # ~/.zsh/zshrc
 
-source "$HOME/.zsh/oh-my-zsh"
+source "$HOME/.antigen/antigen.zsh"
+
+# OMZ customizations
+source "$HOME/.zsh/oh-my.zsh"
+
+# Load oh-my-zsh inside antigen
+antigen use oh-my-zsh
+
+# Bundles from oh-my-zsh repo
+antigen bundle git
+antigen bundle zsh-users/zsh-history-substring-search
+
+antigen theme "$HOME/.zsh/themes" yut23
+
+antigen apply
+
+# Source all of my topic modifications
+source "$HOME/.zsh/plugins/*.zsh"
 
 # Homeshick
 source "$HOME/.homesick/repos/homeshick/homeshick.sh"
