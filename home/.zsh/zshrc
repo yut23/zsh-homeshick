@@ -17,7 +17,9 @@ antigen theme "$HOME/.zsh/themes" yut23
 antigen apply
 
 # Source all of my topic modifications
-source "$HOME/.zsh/plugins/*.zsh"
+for file in ~/.zsh/plugins/*.zsh; do
+  source "$file"
+done
 
 # Homeshick
 source "$HOME/.homesick/repos/homeshick/homeshick.sh"
