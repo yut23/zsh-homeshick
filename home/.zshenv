@@ -17,6 +17,9 @@ fi
 
 # Set editor
 export EDITOR=vim
+if [[ -z "${TEMU}" ]]; then
+  export TEMU=$(basename $(ps -p $(cat /proc/$(echo $$)/stat | cut -d \  -f 4) | tail -1 | sed 's/^.* //'))
+fi
 
 if [[ -f "${HOME}/.zsh/$(hostname -s).zshrc" ]] ; then
   source "${HOME}/.zsh/$(hostname -s).zshrc"
