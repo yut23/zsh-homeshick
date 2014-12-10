@@ -1,9 +1,8 @@
 #!/bin/zsh
-# ~/.zsh/omz/aliases.zsh
+# ~/.zsh/aliases.zsh
 
 # Interactive operation...
 # alias rm='rm -i'
-alias rm='/usr/bin/trash-put'
 # alias cp='cp -i'
 alias mv='mv -i'
 #
@@ -28,7 +27,6 @@ alias lla='ls -lA'                            #
 #alias l='ls -CF'                              #
 
 #alias echo='echo -e'
-#alias open='cygstart'
 #alias cd..='cd ..'
 #alias ..='cd ..'
 
@@ -45,3 +43,10 @@ alias psa='ps ax | grep -v ag | ag'
 alias axel='axel -a'
 
 alias hs='homeshick'
+
+# Help
+autoload -U run-help
+autoload run-help-git
+
+alias run-help > /dev/null && unalias run-help
+alias help=run-help

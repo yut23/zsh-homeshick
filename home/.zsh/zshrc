@@ -1,81 +1,38 @@
 # ~/.zsh/zshrc
 
-source "$HOME/.antigen/antigen.zsh"
+ZSH_CONFIG="$HOME/.zsh"
 
-# OMZ customizations
-source "$HOME/.zsh/oh-my.zsh"
+# Stop and run tmux if we are in ssh
+source "$ZSH_CONFIG/tmux.zsh"
 
-# Load oh-my-zsh inside antigen
-antigen use oh-my-zsh
+# Compile a list of additional files to be sourced
+# From http://github.com/seebi/zshrc
+typeset -ga sources
+sources+="env.zsh"
+# OMZ customizations are used in antigen
+sources+="oh-my.zsh"
+# Antigen
+sources+="antigen.zsh"
+# Custom git plugin changes
+sources+="git.zsh"
 
-# Bundles from oh-my-zsh repo
-antigen bundle git
-antigen bundle zsh-users/zsh-history-substring-search
+sources+="aliases.zsh"
+sources+="functions.zsh"
+sources+="misc.zsh"
 
-antigen theme "$HOME/.zsh/themes" yut23
-
-antigen apply
-
-# Source all of my topic modifications
-for file in ~/.zsh/plugins/*.zsh; do
-  source "$file"
-done
+sources+="keys.zsh"
 
 # Homeshick
 source "$HOME/.homesick/repos/homeshick/homeshick.sh"
 fpath=($HOME/.homesick/repos/homeshick/completions $fpath)
 
-# Fast swap between vim and shell
-#fancy-ctrl-z () {
-# if [[ $#BUFFER -eq 0 ]]; then
-#   BUFFER="fg"
-#   zle accept-line
-# else
-#   zle push-input
-#   zle clear-screen
-# fi
-#}
-#zle -N fancy-ctrl-z
-
-# Help
-autoload -U run-help
-autoload run-help-git
-#unalias run-help
-
-# Set colors for ls and completion
-eval "$(dircolors -b /etc/DIR_COLORS)"
-
-# vi mode
-bindkey -v
-
-## cygwin only: commands that auto-complete with and without .exe or .dll suffixes are annoying.
-## thanks Thorsten Kampe & Bart Schaefer
-## http://www.zsh.org/mla/users/2009/threads.html#00391
-if [[ ${OSTYPE} == 'cygwin' ]] ; then
-  setopt EXTENDED_GLOB LOCAL_OPTIONS
-  zstyle ':completion:*:-command-:*' ignored-patterns '(#i)*.exe' '(#i)*.dll'
-fi
-
-
-# Aliases
-#
-# Use a different file for aliases
-# Handled by oh-my-zsh, in omz/aliases.zsh
-#if [[ -f "${HOME}/.zsh/aliases" ]] ; then
-#  : #source "${HOME}/.zsh/aliases"
-#fi
-
-#bindkey '^Z' fancy-ctrl-z
-bindkey 'OH' beginning-of-line
-bindkey 'OF' end-of-line
-bindkey '[3~' delete-char
-bindkey '' backward-delete-char
-
-foreground-current-job() { fg; }
-zle -N foreground-current-job
-bindkey -M emacs '^z' foreground-current-job
-bindkey -M viins '^z' foreground-current-job
-bindkey -M vicmd '^z' foreground-current-job
-
-alias run-help > /dev/null && unalias run-help
-alias help=run-help
+for file in $sources; do
+  if [[ -f $ZSH_CONFIG/$file ]]; then
+    source "$ZSH_CONFIG/$file"
+  fi
+  if [[ -d $ZSH_CONFIG/$HOSTNAME ]]; then
+    if [[ -f $ZSH_CONFIG/$HOSTNAME/$file ]]; then
+      source "$ZSH_CONFIG/$HOSTNAME/$file"
+    fi
+  fi
+done
