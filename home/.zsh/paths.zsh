@@ -11,8 +11,8 @@ typeset -gxU infopath INFOPATH
 # Tie the new paths.
 typeset -gxTU INFOPATH infopath
 
-# Include user bin
-path+=$HOME/bin
+# Prepend user bin
+path[1,0]=$HOME/bin
 # Remove any entries that don't actually exist
 path=($^path(N-/))
 

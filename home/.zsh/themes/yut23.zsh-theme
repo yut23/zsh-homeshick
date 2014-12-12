@@ -11,13 +11,13 @@ vim_mode=$vim_ins_mode
 function zle-keymap-select {
   vim_mode="${${KEYMAP/vicmd/${vim_cmd_mode}}/(main|viins)/${vim_ins_mode}}"
   zle reset-prompt
-  #if [[ $KEYMAP == 'vicmd' ]] ; then tput cbb 2>/dev/null; else tput cbl 2>/dev/null; fi
+  [[ $KEYMAP == 'vicmd' ]] && echo -n '[1 q' || echo -n '[0 q'
 }
 zle -N zle-keymap-select
 
 function zle-line-finish {
   vim_mode=$vim_ins_mode
-  #tput cbl 2>/dev/null
+  echo -n '[0 q'
 }
 zle -N zle-line-finish
 

@@ -2,9 +2,6 @@
 
 ZSH_CONFIG="$HOME/.zsh"
 
-# Stop and run tmux if we are in ssh
-source "$ZSH_CONFIG/tmux.zsh"
-
 # Compile a list of additional files to be sourced
 # From http://github.com/seebi/zshrc
 typeset -ga sources

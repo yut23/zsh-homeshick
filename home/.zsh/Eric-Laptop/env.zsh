@@ -11,5 +11,7 @@ if [ ! -e "/tmp/.X11-unix/X0" ]; then
 fi
 export DISPLAY=:0.0
 
-/usr/bin/keychain -q -Q
-source "$HOME/.keychain/$(hostname)-sh"
+if [[ -z "$SSH_AUTH_SOCK" ]]; then
+  /usr/bin/keychain -q -Q
+  source "$HOME/.keychain/$(hostname)-sh"
+fi

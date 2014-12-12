@@ -1,4 +1,10 @@
-# ~/.zshenv
+#!/bin/zsh
+# ~/.zshrc
+
+# If in ssh, get into tmux ASAP
+if [[ -f "$HOME/.zsh/tmux.zsh" ]]; then
+  source "$HOME/.zsh/tmux.zsh"
+fi
 
 source "$HOME/.zsh/paths.zsh"
 
@@ -19,4 +25,3 @@ fi
 # Now handled in base zshrc
 
 source "${HOME}/.zsh/zshrc"
-

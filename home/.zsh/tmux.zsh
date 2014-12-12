@@ -13,6 +13,10 @@ if [[ -f "$HOME/.notmux" ]]; then
   return
 fi
 
+if [[ "${SSH_CLIENT}" =~ 127\.0\.0\.1 ]]; then
+  return
+fi
+
 if [[ -z "$TMUX" && -n "$SSH_CONNECTION" ]] && which tmux >& /dev/null; then
   if ! tmux ls -F '#{session_name}' | grep "^ssh-$USER$" > /dev/null; then
     tmux -f ~/.tmux/ssh.conf new-session -s ssh-$USER \; detach
