@@ -12,4 +12,5 @@ antigen bundle zsh-users/zsh-history-substring-search
 antigen theme "$HOME/.zsh/themes" yut23
 
 antigen apply
+unset GREP_OPTIONS
 

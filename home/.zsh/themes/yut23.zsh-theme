@@ -44,14 +44,22 @@ function my_git_prompt_info() {
   fi
 }
 
+function get_prompt_symbol() {
+  local groups
+  groups=($(id -G))
+  # magic subscript globbing ahead
+  (( ${+groups[(r)0]} )) && echo '#' || echo '$'
+}
+
 local user_host='%{$fg[green]%}%n@%m%{$reset_color%}'
 local current_dir='%{$fg[yellow]%}$(hash -rdf; p="%~"; print -lr -- ${(%)p})%{$reset_color%}'
 local git_prompt='$(my_git_prompt_info)'
+local prompt_symbol='$(get_prompt_symbol)'
 
 #setopt PROMPT_SUBST
 PROMPT="
 ${user_host} ${current_dir} ${git_prompt}
-$ "
+${prompt_symbol} "
 RPROMPT='${vim_mode} ${return_code}'
 
 #ZSH_THEME_GIT_PROMPT_PREFIX="${GIT_COLOR}("

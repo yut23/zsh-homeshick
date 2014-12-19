@@ -13,6 +13,9 @@ bindkey 'OF' end-of-line
 bindkey '[3~' delete-char
 bindkey '' backward-delete-char
 
+bindkey -M menuselect '[Z' reverse-menu-complete
+bindkey 'h' run-help
+
 # Switch from <Esc> to jj
 # This also fixes all of the random switches into vi-cmd-mode
 bindkey -M viins '' noop

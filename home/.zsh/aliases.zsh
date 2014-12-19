@@ -13,7 +13,7 @@ alias du='du -h'
 # Misc :)
 #alias less='less -r'                          # raw control characters
 #alias whence='type -a'                        # where, of a sort
-alias grep='grep --color'                     # show differences in colour
+alias grep='grep --color --exclude-dir=.cvs --exclude-dir=.git --exclude-dir=.hg --exclude-dir=.svn' # show differences in colour, exclude vcs directories
 alias egrep='grep --color=auto -E'            # show differences in colour
 alias fgrep='grep --color=auto -F'            # show differences in colour
 #
