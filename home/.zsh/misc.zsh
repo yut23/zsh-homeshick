@@ -21,3 +21,6 @@ zle -N foreground-current-job
 bindkey -M emacs '^z' foreground-current-job
 bindkey -M viins '^z' foreground-current-job
 bindkey -M vicmd '^z' foreground-current-job
+
+# Use a sane cache path
+zstyle ":completion::complete:*" cache-path $HOME/.zsh/cache
