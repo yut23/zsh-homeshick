@@ -1,11 +1,4 @@
-#!/bin/zsh
-# ~/.zsh/misc.zsh
-
-# Set pager
-export PAGER=vimpager
-
-# Set colors for ls and completion
-eval "$(dircolors -b /etc/DIR_COLORS)"
+#!/bin/zsh # ~/.zsh/misc.zsh
 
 ## Cygwin only: commands that auto-complete with and without .exe or .dll suffixes are annoying.
 ## thanks Thorsten Kampe & Bart Schaefer
