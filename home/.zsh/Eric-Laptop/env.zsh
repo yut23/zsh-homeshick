@@ -3,7 +3,7 @@
 
 export TZ=EST5EDT
 
-export UH='/cygdrive/c/Users/Eric'
+export UH='/c/Users/Eric'
 
 # Attach to Cygwin/X server if available
 if [ ! -e "/tmp/.X11-unix/X0" ]; then
