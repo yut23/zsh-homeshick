@@ -50,3 +50,6 @@ autoload run-help-git
 
 alias run-help > /dev/null && unalias run-help
 alias help=run-help
+
+# use GraphicksMagic
+unalias gm

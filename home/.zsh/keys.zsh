@@ -20,3 +20,15 @@ bindkey 'h' run-help
 # This also fixes all of the random switches into vi-cmd-mode
 bindkey -M viins '' noop
 bindkey -M viins 'jj' vi-cmd-mode
+
+# Shift-Return to insert newline
+bindkey '^J' self-insert
+
+zmodload zsh/terminfo
+# bind UP and DOWN arrow keys
+bindkey "$terminfo[kcuu1]" history-substring-search-up
+bindkey "$terminfo[kcud1]" history-substring-search-down
+
+# bind k and j for VI mode
+bindkey -M vicmd 'k' history-substring-search-up
+bindkey -M vicmd 'j' history-substring-search-down

@@ -17,3 +17,12 @@ bindkey -M vicmd '^z' foreground-current-job
 
 # Use a sane cache path
 zstyle ":completion::complete:*" cache-path $HOME/.zsh/cache
+
+# # for comments on interactive line
+setopt INTERACTIVE_COMMENTS
+
+# History
+HISTFILE=~/.zsh_history
+HISTSIZE=100000
+SAVEHIST=100000
+setopt INC_APPEND_HISTORY
