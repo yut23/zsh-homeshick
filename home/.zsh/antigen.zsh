@@ -1,6 +1,6 @@
 # ~/.zsh/antigen.zsh
 
-source "$HOME/.zsh/antigen/antigen.zsh"
+source "$HOME/.antigen/antigen.zsh"
 
 # Load oh-my-zsh inside antigen
 antigen use oh-my-zsh
