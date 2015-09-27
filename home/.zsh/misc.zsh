@@ -3,9 +3,11 @@
 ## Cygwin only: commands that auto-complete with and without .exe or .dll suffixes are annoying.
 ## thanks Thorsten Kampe & Bart Schaefer
 ## http://www.zsh.org/mla/users/2009/threads.html#00391
+# also fix /c, /d, ... completion
 if [[ ${OSTYPE} == 'cygwin' ]] ; then
   setopt EXTENDED_GLOB LOCAL_OPTIONS
   zstyle ':completion:*:-command-:*' ignored-patterns '(#i)*.exe' '(#i)*.dll'
+  zstyle ':completion:*' fake-files '/:c' '/:d' '/:h' '/:v' '/:x'
 fi
 
 # Use ^z to return to a suspended job
