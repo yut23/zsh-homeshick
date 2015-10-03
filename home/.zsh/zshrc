@@ -19,6 +19,8 @@ sources+="misc.zsh"
 
 sources+="keys.zsh"
 
+sources+="private.zsh"
+
 # Homeshick
 source "$HOME/.homesick/repos/homeshick/homeshick.sh"
 fpath=($HOME/.homesick/repos/homeshick/completions $fpath)
