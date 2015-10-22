@@ -16,7 +16,11 @@ export EDITOR=vim
 
 # Detect terminal emulator
 if [[ -z "${TEMU}" ]]; then
-  export TEMU=$(basename $(ps -p $(cat /proc/$(echo $$)/stat | cut -d \  -f 4) | tail -1 | sed 's/^.* //'))
+  TEMU=$(basename $(ps -p $(cat /proc/$(echo $$)/stat | cut -d \  -f 4) | tail -1 | sed 's/^.* //'))
+  if [[ $TEMU =~ gnome-terminal ]]; then
+    TEMU=gnome-terminal
+  fi
+  export TEMU
 fi
 
 #if [[ -f "${HOME}/.zsh/$(hostname -s).zshrc" ]] ; then

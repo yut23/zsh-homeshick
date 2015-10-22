@@ -10,15 +10,16 @@ alias mv='mv -i'
 alias df='df -h'
 alias du='du -h'
 #
-# Misc :)
+# Misc
 #alias less='less -r'                          # raw control characters
 #alias whence='type -a'                        # where, of a sort
-alias grep='grep --color --exclude-dir=.cvs --exclude-dir=.git --exclude-dir=.hg --exclude-dir=.svn' # show differences in colour, exclude vcs directories
+# show differences in colour, exclude vcs directories
+alias grep='grep --color --exclude-dir=.cvs --exclude-dir=.git --exclude-dir=.hg --exclude-dir=.svn'
 alias egrep='grep --color=auto -E'            # show differences in colour
 alias fgrep='grep --color=auto -F'            # show differences in colour
 #
 # Some shortcuts for different directory listings
-alias ls='ls -hFX --group-directories-first --color=auto'
+alias ls='ls -hF --group-directories-first --color=auto'
 #alias dir='ls --color=auto --format=vertical'
 #alias vdir='ls --color=auto --format=long'
 #alias ll='ls -l'                              # long list
