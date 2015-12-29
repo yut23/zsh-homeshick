@@ -13,6 +13,10 @@ bindkey 'OF' end-of-line
 bindkey '[3~' delete-char
 bindkey '' backward-delete-char
 
+# linux console
+bindkey '[1~' beginning-of-line
+bindkey '[4~' end-of-line
+
 bindkey -M menuselect '[Z' reverse-menu-complete
 bindkey 'h' run-help
 
