@@ -6,13 +6,13 @@ if [[ -f "$HOME/.zsh/tmux.zsh" ]]; then
   source "$HOME/.zsh/tmux.zsh"
 fi
 
+# set hostname
+export HOSTNAME=$(hostname)
+
 source "$HOME/.zsh/paths.zsh"
 
 # Disable coredumps
 ulimit -c 0
-
-# Set editor
-export EDITOR=vim
 
 # Detect terminal emulator
 if [[ -z "${TEMU}" ]]; then
@@ -22,10 +22,5 @@ if [[ -z "${TEMU}" ]]; then
   fi
   export TEMU
 fi
-
-#if [[ -f "${HOME}/.zsh/$(hostname -s).zshrc" ]] ; then
-#  source "${HOME}/.zsh/$(hostname -s).zshrc"
-#fi
-# Now handled in base zshrc
 
 source "${HOME}/.zsh/zshrc"
