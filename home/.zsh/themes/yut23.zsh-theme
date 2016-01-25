@@ -51,14 +51,21 @@ function get_prompt_symbol() {
   (( ${+groups[(r)0]} )) && echo '#' || echo '$'
 }
 
-local user_host='%{$fg[green]%}%n@%m%{$reset_color%}'
+# different color for ssh session
+#if [[ "z${SSH_CLIENT}" != "z" && ! "${SSH_CLIENT}" =~ 127\.0\.0\.1 ]]; then
+local user='%{$fg[green]%}%n%{$reset_color%}'
+if [[ "z${SSH_CLIENT}" != "z" ]]; then
+  local host='%{$fg[cyan]%}@%m%{$reset_color%}'
+else
+  local host='%{$fg[green]%}@%m%{$reset_color%}'
+fi
 local current_dir='%{$fg[yellow]%}$(hash -rdf; p="%~"; print -lr -- ${(%)p})%{$reset_color%}'
 local git_prompt='$(my_git_prompt_info)'
 local prompt_symbol='$(get_prompt_symbol)'
 
 #setopt PROMPT_SUBST
 PROMPT="
-${user_host} ${current_dir} ${git_prompt}
+${user}${host} ${current_dir} ${git_prompt}
 ${prompt_symbol} "
 RPROMPT='${vim_mode} ${return_code}'
 
