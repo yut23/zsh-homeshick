@@ -26,7 +26,7 @@ zle -N zle-line-finish
 # Thanks Ron! (see comments)
 function TRAPINT() {
   vim_mode=$vim_ins_mode
-  #tput cbl 2>/dev/null
+  zle && zle reset-prompt
   return $(( 128 + $1 ))
 }
 

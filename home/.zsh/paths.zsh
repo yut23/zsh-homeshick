@@ -11,6 +11,11 @@ typeset -gxU infopath INFOPATH
 # Tie the new paths.
 typeset -gxTU INFOPATH infopath
 
+# Ruby gems
+if which ruby >/dev/null && which gem >/dev/null; then
+  path[1,0]="$(ruby -rubygems -e 'puts Gem.user_dir')/bin"
+fi
+
 # Prepend user bin
 path[1,0]=$HOME/bin
 # Remove any entries that don't actually exist
