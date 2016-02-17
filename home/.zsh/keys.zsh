@@ -12,6 +12,8 @@ bindkey 'OH' beginning-of-line
 bindkey 'OF' end-of-line
 bindkey '[3~' delete-char
 bindkey '' backward-delete-char
+bindkey "${terminfo[khome]}" beginning-of-line
+bindkey "${terminfo[kend]}" end-of-line
 
 # linux console
 bindkey '[1~' beginning-of-line

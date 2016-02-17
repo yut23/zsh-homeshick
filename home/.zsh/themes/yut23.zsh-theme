@@ -11,13 +11,13 @@ vim_mode=$vim_ins_mode
 function zle-keymap-select {
   vim_mode="${${KEYMAP/vicmd/${vim_cmd_mode}}/(main|viins)/${vim_ins_mode}}"
   zle reset-prompt
-  [[ $TERM =~ "xterm.*" && $KEYMAP == 'vicmd' ]] && echo -n '[1 q' || echo -n '[5 q'
+  [[ ($TERM =~ "xterm.*" || $TERM =~ "screen.*") && $KEYMAP == 'vicmd' ]] && echo -n '[1 q' || echo -n '[5 q'
 }
 zle -N zle-keymap-select
 
 function zle-line-finish {
   vim_mode=$vim_ins_mode
-  [[ $TERM =~ "xterm.*" ]] && echo -n '[5 q'
+  [[ $TERM =~ "xterm.*" || $TERM =~ "screen.*" ]] && echo -n '[5 q'
 }
 zle -N zle-line-finish
 
