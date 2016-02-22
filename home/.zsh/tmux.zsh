@@ -13,7 +13,7 @@ if [[ -f "$HOME/.notmux" ]]; then
   return
 fi
 
-if [[ "${SSH_CLIENT}" =~ 127\.0\.0\.1 ]]; then
+if [[ "${SSH_CLIENT}" =~ 127\.0\.0\.1 || "${SSH_CLIENT}" =~ ::1 ]]; then
   return
 fi
 
