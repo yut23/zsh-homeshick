@@ -40,7 +40,7 @@ alias vim='vim -o'
 
 alias free='free -m'
 alias psg='ps ax | grep -v grep | grep --color=always'
-alias psa='ps ax | grep -v ag | ag'
+alias psa='ps ax | grep -vE "\bag\b" | ag'
 alias axel='axel -a'
 
 alias hs='homeshick'
