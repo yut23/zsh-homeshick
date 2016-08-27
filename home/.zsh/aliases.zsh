@@ -45,9 +45,14 @@ alias axel='axel -a'
 
 alias hs='homeshick'
 
+# make the directory stack a little bit easier to use
+alias dirs='dirs -pv'
+
 # Help
 autoload -U run-help
 autoload run-help-git
+# I already know how to use sudo!
+autoload run-help-sudo
 
 alias run-help > /dev/null && unalias run-help
 alias help=run-help

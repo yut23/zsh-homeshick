@@ -1,4 +1,5 @@
-#!/bin/zsh # ~/.zsh/misc.zsh
+#!/bin/zsh
+# ~/.zsh/misc.zsh
 
 ## Cygwin only: commands that auto-complete with and without .exe or .dll suffixes are annoying.
 ## thanks Thorsten Kampe & Bart Schaefer
@@ -20,14 +21,16 @@ bindkey -M vicmd '^z' foreground-current-job
 # Use a sane cache path
 zstyle ":completion::complete:*" cache-path $HOME/.zsh/cache
 
-# # for comments on interactive line
+# for comments on interactive line
 setopt INTERACTIVE_COMMENTS
 
 # History
-HISTFILE=~/.zsh_history
-HISTSIZE=100000
-SAVEHIST=100000
+HISTFILE=~/.zsh/history/hist.log
+HISTSIZE=1000000
+SAVEHIST=1000000
 setopt INC_APPEND_HISTORY
+setopt HIST_IGNORE_DUPS
+setopt HIST_EXPIRE_DUPS_FIRST
 
 autoload zmv
 
@@ -35,3 +38,8 @@ autoload zmv
 if [[ -f /usr/share/doc/pkgfile/command-not-found.zsh ]]; then
   source /usr/share/doc/pkgfile/command-not-found.zsh
 fi
+
+# better ls colors
+eval `dircolors`
+# and use them in completion
+zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
