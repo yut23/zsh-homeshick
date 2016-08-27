@@ -29,6 +29,8 @@ HISTSIZE=100000
 SAVEHIST=100000
 setopt INC_APPEND_HISTORY
 
+autoload zmv
+
 # Pacman "command not found"
 if [[ -f /usr/share/doc/pkgfile/command-not-found.zsh ]]; then
   source /usr/share/doc/pkgfile/command-not-found.zsh
