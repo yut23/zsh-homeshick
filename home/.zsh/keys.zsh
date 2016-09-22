@@ -14,6 +14,8 @@ bindkey '[3~' delete-char
 bindkey '' backward-delete-char
 bindkey "${terminfo[khome]}" beginning-of-line
 bindkey "${terminfo[kend]}" end-of-line
+bindkey '[H' beginning-of-line
+bindkey '[F' end-of-line
 
 # linux console
 bindkey '[1~' beginning-of-line
@@ -34,6 +36,8 @@ zmodload zsh/terminfo
 # bind UP and DOWN arrow keys
 bindkey "$terminfo[kcuu1]" history-substring-search-up
 bindkey "$terminfo[kcud1]" history-substring-search-down
+bindkey '[A' history-substring-search-up
+bindkey '[B' history-substring-search-down
 
 # bind k and j for VI mode
 bindkey -M vicmd 'k' history-substring-search-up
