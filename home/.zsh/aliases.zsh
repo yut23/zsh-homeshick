@@ -59,3 +59,6 @@ alias help=run-help
 
 # use GraphicksMagic
 unalias gm
+
+# expand aliases under sudo
+alias sudo='sudo '
