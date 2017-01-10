@@ -62,3 +62,12 @@ unalias gm
 
 # expand aliases under sudo
 alias sudo='sudo '
+
+# use old behavior, with multiple connections
+alias aria2c='aria2c --max-connection-per-server=4 --min-split-size=1M'
+
+# hide annoying configuration banner
+alias ffmpeg='ffmpeg -hide_banner'
+alias ffplay='ffplay -hide_banner'
+alias ffprobe='ffprobe -hide_banner'
+alias ffserver='ffserver -hide_banner'

@@ -14,6 +14,13 @@ antigen bundle dbkaplun/smart-cd
 # don't automatically run multiline pastes
 antigen bundle oz/safe-paste
 
+# node version manager
+antigen bundle lukechilds/zsh-nvm
+# and completion
+antigen bundle lukechilds/zsh-better-npm-completion
+
+antigen bundle fnoris/keybase-zsh-completion
+
 
 antigen theme "$HOME/.zsh/themes" yut23
 

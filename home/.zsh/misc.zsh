@@ -24,14 +24,7 @@ zstyle ":completion::complete:*" cache-path $HOME/.zsh/cache
 # for comments on interactive line
 setopt INTERACTIVE_COMMENTS
 
-# History
-HISTFILE=~/.zsh/history/hist.log
-HISTSIZE=1000000
-SAVEHIST=1000000
-setopt INC_APPEND_HISTORY
-setopt HIST_IGNORE_DUPS
-setopt HIST_EXPIRE_DUPS_FIRST
-
+# handy for moving/copying groups of files
 autoload zmv
 
 # Pacman "command not found"
@@ -43,3 +36,11 @@ fi
 eval `dircolors`
 # and use them in completion
 zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
+
+# add completion for pip
+if which pip >/dev/null; then
+  if [[ ! -f ~/.zsh/cache/pip_completion.zsh ]]; then
+    pip --disable-pip-version-check completion --zsh > ~/.zsh/cache/pip_completion.zsh
+  fi
+  source ~/.zsh/cache/pip_completion.zsh
+fi

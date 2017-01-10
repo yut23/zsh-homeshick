@@ -15,6 +15,7 @@ sources+="git.zsh"
 sources+="env.zsh"
 sources+="aliases.zsh"
 sources+="functions.zsh"
+sources+="history.zsh"
 sources+="misc.zsh"
 
 sources+="keys.zsh"

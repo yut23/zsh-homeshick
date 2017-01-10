@@ -12,3 +12,6 @@ fi
 export EDITOR=vim
 export VISUAL='gvim -f'
 
+# error on invalid globs
+setopt NOMATCH
+
