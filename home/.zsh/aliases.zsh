@@ -31,12 +31,10 @@ alias lla='ls -lA'                            #
 #alias cd..='cd ..'
 #alias ..='cd ..'
 
-alias gzip='pigz'
 #alias diff='colordiff'
 alias locater='locate --regextype=posix-extended --regex'
 
 alias hag='history | grep -v hag | ag'
-alias vim='vim -o'
 
 alias free='free -m'
 alias psg='ps ax | grep -v grep | grep --color=always'
@@ -71,3 +69,9 @@ alias ffmpeg='ffmpeg -hide_banner'
 alias ffplay='ffplay -hide_banner'
 alias ffprobe='ffprobe -hide_banner'
 alias ffserver='ffserver -hide_banner'
+
+# shorthand for systemd commands
+alias sctl='systemctl'
+alias jctl='journalctl'
+alias sctlu='systemctl --user'
+alias jctlu='journalctl --user'
