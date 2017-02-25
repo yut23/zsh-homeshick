@@ -16,8 +16,8 @@ if which ruby >/dev/null && which gem >/dev/null; then
   path[1,0]="$(ruby -rubygems -e 'puts Gem.user_dir')/bin"
 fi
 
-# Prepend user bin
-path[1,0]=$HOME/bin
+# Prepend user bin and .local/bin
+path[1,0]=($HOME/bin $HOME/.local/bin)
 # Remove any entries that don't actually exist
 path=($^path(N-/))
 

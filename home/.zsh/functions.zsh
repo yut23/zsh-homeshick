@@ -1,5 +1,5 @@
 #!/bin/zsh
-# ~/.zsh/misc.zsh
+# ~/.zsh/functions.zsh
 
 # lifted from oh-my-zsh
 function take() {
