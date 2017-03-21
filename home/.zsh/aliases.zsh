@@ -32,7 +32,7 @@ alias lla='ls -lA'                            #
 #alias ..='cd ..'
 
 #alias diff='colordiff'
-alias locater='locate --regextype=posix-extended --regex'
+alias locater='locate --regex'
 
 alias hag='history | grep -v hag | ag'
 
