@@ -23,8 +23,6 @@ alias ls='ls -hF --group-directories-first --color=auto'
 #alias dir='ls --color=auto --format=vertical'
 #alias vdir='ls --color=auto --format=long'
 #alias ll='ls -l'                              # long list
-alias la='ls -A'                              # all but . and ..
-alias lla='ls -lA'                            #
 #alias l='ls -CF'                              #
 
 #alias echo='echo -e'
