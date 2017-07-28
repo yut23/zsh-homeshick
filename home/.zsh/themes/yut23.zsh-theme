@@ -81,6 +81,4 @@ ZSH_THEME_GIT_PROMPT_AHEAD="↑"
 ZSH_THEME_GIT_PROMPT_BEHIND="↓"
 ZSH_THEME_GIT_PROMPT_DIVERGED="↕"
 
-zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
-
 # vim: filetype=zsh

@@ -9,9 +9,10 @@ if [[ ! $TERM =~ screen && $TEMU == terminator ]]; then
 fi
 
 # Set editor
-export EDITOR=vim
-export VISUAL='gvim -f'
+export EDITOR=nvim
+export VISUAL='nvim-qt --nofork'
 
 # error on invalid globs
 setopt NOMATCH
 
+setopt EXTENDEDGLOB
