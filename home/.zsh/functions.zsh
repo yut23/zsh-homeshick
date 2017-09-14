@@ -1,4 +1,3 @@
-#!/bin/zsh
 # ~/.zsh/functions.zsh
 
 # lifted from oh-my-zsh

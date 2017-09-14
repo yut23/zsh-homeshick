@@ -1,4 +1,3 @@
-#!/bin/zsh
 # ~/.zsh/aliases.zsh
 
 # Interactive operation...

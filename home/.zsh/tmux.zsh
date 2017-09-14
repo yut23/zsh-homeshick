@@ -1,4 +1,3 @@
-#!/bin/zsh
 # Bashrc SSH-tmux wrapper | Spencer Tipping
 # Licensed under the terms of the MIT source code license
 

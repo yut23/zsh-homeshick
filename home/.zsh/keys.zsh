@@ -1,4 +1,3 @@
-#!/bin/zsh
 # ~/.zsh/keys.zsh
 
 # vi mode

@@ -1,4 +1,3 @@
-#!/bin/zsh
 # ~/.zsh/history.zsh
 
 HISTFILE=~/.zsh/history/hist.log

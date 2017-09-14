@@ -1,4 +1,3 @@
-#!/bin/zsh
 # ~/.zsh/mandelbrot/misc.zsh
 
 # completion for beet

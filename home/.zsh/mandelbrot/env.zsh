@@ -1,4 +1,3 @@
-#!/bin/zsh
 # ~/.zsh/mandelbrot/env.zsh
 
 # For Besiege development

@@ -1,4 +1,3 @@
-#!/bin/zsh
 # ~/.zsh/Eric-Laptop/env.zsh
 
 export TZ=EST5EDT

@@ -1,4 +1,3 @@
-#!/bin/zsh
 # ~/.zsh/Eric-Laptop/aliases.zsh
 
 alias rm='/usr/bin/trash-put'

@@ -1,4 +1,3 @@
-#!/bin/zsh
 # ~/.zsh/env.zsh
 
 # Set pager

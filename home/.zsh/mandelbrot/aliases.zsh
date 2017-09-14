@@ -1,4 +1,3 @@
-#!/bin/zsh
 # ~/.zsh/mandelbrot/aliases.zsh
 
 alias vim='echo Use nvim! #'

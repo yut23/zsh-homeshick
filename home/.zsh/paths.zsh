@@ -1,4 +1,3 @@
-#!/bin/zsh
 # ~/.zsh/paths.zsh
 # Props to http://github.com/yabawock/dotfiles
 

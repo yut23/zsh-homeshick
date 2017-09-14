@@ -1,4 +1,3 @@
-#!/bin/zsh
 # ~/.zsh/misc.zsh
 
 ## Cygwin only: commands that auto-complete with and without .exe or .dll suffixes are annoying.

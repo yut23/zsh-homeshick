@@ -1,4 +1,3 @@
-#!/bin/zsh
 # ~/.zsh/mandelbrot/functions.zsh
 
 function asf() {

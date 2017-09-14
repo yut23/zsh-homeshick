@@ -1,4 +1,3 @@
-#!/bin/zsh
 # ~/.zsh/archie/keys.zsh
 
 bindkey '[1~' beginning-of-line

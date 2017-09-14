@@ -1,4 +1,3 @@
-#!/bin/zsh
 # ~/.zsh/misc.zsh
 
 # Set colors for ls and completion
