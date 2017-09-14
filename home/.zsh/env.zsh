@@ -1,8 +1,13 @@
 # ~/.zsh/env.zsh
 
 # Set pager
-export PAGER=vimpager
+if (( $+commands[vimpager] )); then
+  export PAGER=vimpager
+else
+  export PAGER=less
+fi
 
+# Terminal emulator stuff
 if [[ ! $TERM =~ screen && $TEMU == terminator ]]; then
   export TERM=xterm-256color
 fi
@@ -10,8 +15,3 @@ fi
 # Set editor
 export EDITOR=nvim
 export VISUAL='nvim-qt --nofork'
-
-# error on invalid globs
-setopt NOMATCH
-
-setopt EXTENDEDGLOB

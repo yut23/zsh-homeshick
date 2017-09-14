@@ -5,14 +5,16 @@ ZSH_CONFIG="$HOME/.zsh"
 # Compile a list of additional files to be sourced
 # From http://github.com/seebi/zshrc
 typeset -ga sources
+
+sources+="env.zsh"
+
 # OMZ customizations are used in antigen
-sources+="oh-my.zsh"
+#sources+="oh-my.zsh"
 # Antigen
 sources+="antigen.zsh"
 # Custom git plugin changes
 sources+="git.zsh"
 
-sources+="env.zsh"
 sources+="aliases.zsh"
 sources+="functions.zsh"
 sources+="history.zsh"

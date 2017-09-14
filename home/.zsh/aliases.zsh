@@ -19,10 +19,9 @@ alias fgrep='grep --color=auto -F'            # show differences in colour
 #
 # Some shortcuts for different directory listings
 alias ls='ls -hF --group-directories-first --color=auto'
-#alias dir='ls --color=auto --format=vertical'
-#alias vdir='ls --color=auto --format=long'
-#alias ll='ls -l'                              # long list
-#alias l='ls -CF'                              #
+alias l='ls -la'
+alias la='ls -lA'
+alias ll='ls -l'
 
 #alias echo='echo -e'
 #alias cd..='cd ..'
@@ -42,6 +41,7 @@ alias hs='homeshick'
 
 # make the directory stack a little bit easier to use
 alias dirs='dirs -pv'
+alias d='dirs -v | head -10'
 
 # Help
 autoload -U run-help
@@ -51,9 +51,6 @@ autoload run-help-sudo
 
 alias run-help > /dev/null && unalias run-help
 alias help=run-help
-
-# use GraphicksMagic
-unalias gm
 
 # expand aliases under sudo
 alias sudo='sudo '
@@ -72,3 +69,9 @@ alias sctl='systemctl'
 alias jctl='journalctl'
 alias sctlu='systemctl --user'
 alias jctlu='journalctl --user'
+
+# git shorthand
+alias g='git'
+
+# use stars in find predicates
+alias find='noglob find'

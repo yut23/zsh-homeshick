@@ -7,12 +7,12 @@
 
 # Modified for zsh by yut23
 
-if [[ -f "$HOME/.notmux" ]]; then
-  rm "$HOME/.notmux"
+if [[ -z "${SSH_CLIENT+1}" || "${SSH_CLIENT}" =~ 127\.0\.0\.1 || "${SSH_CLIENT}" =~ ::1 ]]; then
   return
 fi
 
-if [[ "${SSH_CLIENT}" =~ 127\.0\.0\.1 || "${SSH_CLIENT}" =~ ::1 ]]; then
+if [[ -f "$HOME/.notmux" ]]; then
+  rm "$HOME/.notmux"
   return
 fi
 

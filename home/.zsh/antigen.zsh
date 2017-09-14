@@ -1,12 +1,10 @@
 # ~/.zsh/antigen.zsh
 
+# use unified zcompdump file
+export ANTIGEN_COMPDUMP="$HOME/.zsh/cache/zcompdump"
+
+
 source "$HOME/.antigen/antigen.zsh"
-
-# Load oh-my-zsh inside antigen
-antigen use oh-my-zsh
-
-# Bundles from oh-my-zsh repo
-antigen bundle git
 
 antigen bundle zsh-users/zsh-history-substring-search
 # runs ls and git status after cd
@@ -22,7 +20,12 @@ antigen bundle lukechilds/zsh-better-npm-completion
 antigen bundle fnoris/keybase-zsh-completion
 
 
-antigen theme "$HOME/.zsh/themes" yut23
+# set theme stuff up now that we don't use OMZ
+fpath=($HOME/.zsh/themes $fpath)
+autoload -U promptinit && promptinit
+autoload -U colors && colors
+prompt yut23
+prompt yut23
 
 antigen apply
 unset GREP_OPTIONS
