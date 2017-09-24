@@ -32,7 +32,7 @@ bindkey -M vicmd '^z' foreground-current-job
 autoload zmv
 
 # better ls colors
-eval `dircolors`
+eval `dircolors -b`
 # and use them in completion
 zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
 
