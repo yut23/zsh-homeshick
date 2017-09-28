@@ -23,7 +23,7 @@ prompt_yut23_setup () {
 
   # different color for ssh session
   local user='%{$fg[green]%}%n%{$reset_color%}'
-  if [[ -z "${SSH_CLIENT+1}" ]]; then
+  if [[ -n "${SSH_CLIENT+1}" ]]; then
     # ssh
     local host='%{$fg[cyan]%}@%m%{$reset_color%}'
   else
