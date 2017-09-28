@@ -28,13 +28,18 @@ alias ll='ls -l'
 #alias ..='cd ..'
 
 #alias diff='colordiff'
-alias locater='locate --regex'
+alias locater='noglob locate --regex'
 
-alias hag='history | grep -v hag | ag'
+alias history='fc -il'
+if (( $+commands[ag] )); then
+  alias hag='fc -il 1 | grep -v hag | ag'
+  alias psa='ps ax | grep -vE "\bag\b" | ag'
+else
+  alias hag='fc -il 1 | grep -v hag | grep'
+  alias psa='ps ax | grep -vE "\bgrep\b" | grep --color=always'
+fi
 
 alias free='free -m'
-alias psg='ps ax | grep -v grep | grep --color=always'
-alias psa='ps ax | grep -vE "\bag\b" | ag'
 alias axel='axel -a'
 
 alias hs='homeshick'
