@@ -30,6 +30,8 @@ bindkey -M vicmd '^z' foreground-current-job
 
 # handy for moving/copying groups of files
 autoload zmv
+# make zmv easier to use
+alias zmv='noglob zmv -W'
 
 # better ls colors
 eval `dircolors -b`

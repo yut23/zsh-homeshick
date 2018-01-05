@@ -14,4 +14,6 @@ fi
 
 # Set editor
 export EDITOR=nvim
-export VISUAL='nvim-qt --nofork'
+if [[ -n $DISPLAY ]] && (( $+commands[nvim-qt] )); then
+  export VISUAL='nvim-qt --nofork'
+fi
