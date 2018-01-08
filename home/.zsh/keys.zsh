@@ -16,6 +16,9 @@ bindkey "${terminfo[kend]}" end-of-line
 bindkey '[H' beginning-of-line
 bindkey '[F' end-of-line
 
+# unbind insert
+bindkey -r "[2~"
+
 # linux console
 bindkey '[1~' beginning-of-line
 bindkey '[4~' end-of-line
