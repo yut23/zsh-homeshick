@@ -12,7 +12,7 @@ typeset -gxTU INFOPATH infopath
 
 # Ruby gems
 if which ruby >/dev/null && which gem >/dev/null; then
-  path[1,0]="$(ruby -rubygems -e 'puts Gem.user_dir')/bin"
+  path[1,0]="$(ruby -rrubygems -e 'puts Gem.user_dir')/bin"
 fi
 
 # Prepend user bin and .local/bin
