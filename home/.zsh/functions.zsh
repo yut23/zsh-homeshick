@@ -21,3 +21,7 @@ function cls() {
     done
   fi
 }
+
+function total_mem() {
+  pgrep "$@" | xargs -i cat /proc/{}/statm | cut -d' ' -f2 | awk '{pages += $1}; END {printf("%d\n", pages*4096)}' | numfmt --to=iec --suffix=B --format=%.2f
+}

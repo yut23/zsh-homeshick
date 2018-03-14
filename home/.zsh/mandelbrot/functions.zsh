@@ -1,7 +1,7 @@
 # ~/.zsh/mandelbrot/functions.zsh
 
 function asf() {
-  ssh home -- /usr/bin/asf --client --path=/var/lib/asf \"$*\"
+  ssh -n gauss -- /usr/bin/http -b POST :1242/Api/Command/\"$*\" | jq -r '.Result'
 }
 
 function installtexdoc() {
