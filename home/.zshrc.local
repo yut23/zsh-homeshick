@@ -6,7 +6,12 @@ if [[ -f "$HOME/.zsh/tmux.zsh" ]]; then
 fi
 
 # set hostname
-export HOSTNAME=$(hostname)
+HOSTNAME=$(hostname)
+# allow override through dotfile
+if [[ -f "$HOME/.hostname" ]]; then
+  HOSTNAME=$(<"$HOME/.hostname")
+fi
+export HOSTNAME
 
 source "$HOME/.zsh/paths.zsh"
 

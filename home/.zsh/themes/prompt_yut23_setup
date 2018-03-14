@@ -21,10 +21,10 @@ function prompt_yut23_setup {
   local user='%{$fg[green]%}%n%{$reset_color%}'
   if [[ -n "${SSH_CLIENT+1}" ]]; then
     # ssh
-    local host='%{$fg[cyan]%}@%m%{$reset_color%}'
+    local host='%{$fg[cyan]%}@'$HOSTNAME'%{$reset_color%}'
   else
     # local
-    local host='%{$fg[green]%}@%m%{$reset_color%}'
+    local host='%{$fg[green]%}@'$HOSTNAME'%{$reset_color%}'
   fi
   local current_dir='%{$fg[yellow]%}%~%{$reset_color%}'
   local git_prompt='$(my_git_prompt_info)'
