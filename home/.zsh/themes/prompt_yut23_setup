@@ -13,12 +13,8 @@ ZSH_THEME_GIT_PROMPT_AHEAD="↑"
 ZSH_THEME_GIT_PROMPT_BEHIND="↓"
 ZSH_THEME_GIT_PROMPT_DIVERGED="↕"
 
-# vim mode indicator
-vim_ins_mode="%{$fg[cyan]%}[INS]%{$reset_color%}"
-vim_cmd_mode="%{$fg[green]%}[CMD]%{$reset_color%}"
-vim_mode=$vim_ins_mode
-
-prompt_yut23_setup () {
+function prompt_yut23_setup {
+  local exit_code="%(?..%{$fg_bold[red]%}%?%{$reset_color%})"
   prompt_opts=(cr sp percent subst)
 
   # different color for ssh session
@@ -30,7 +26,6 @@ prompt_yut23_setup () {
     # local
     local host='%{$fg[green]%}@%m%{$reset_color%}'
   fi
-  #local current_dir='%{$fg[yellow]%}$(hash -rdf; p="%~"; print -lr -- ${(%)p})%{$reset_color%}'
   local current_dir='%{$fg[yellow]%}%~%{$reset_color%}'
   local git_prompt='$(my_git_prompt_info)'
   local groups
@@ -41,35 +36,23 @@ prompt_yut23_setup () {
   PS1="
 ${user}${host} ${current_dir} ${git_prompt}
 ${prompt_symbol} "
+  RPS1="%{$fg[green]%}\$(virtualenv_info)%{$reset_color%}${exit_code}"
 
-  add-zsh-hook precmd prompt_yut23_precmd
   zle -N zle-keymap-select
   zle -N zle-line-finish
 }
 
-prompt_yut23_precmd () {
-  local exit_code="%(?..%{$fg_bold[red]%}%?%{$reset_color%})"
-  RPS1="${vim_mode} ${exit_code}"
+function virtualenv_info {
+  [[ -n "$VIRTUAL_ENV" ]] && echo '('${VIRTUAL_ENV:t}') '
 }
 
 function zle-keymap-select {
-  vim_mode="${${KEYMAP/vicmd/${vim_cmd_mode}}/(main|viins)/${vim_ins_mode}}"
   zle reset-prompt
   [[ ($TERM =~ "xterm.*" || $TERM =~ "screen.*") && $KEYMAP == 'vicmd' ]] && echo -n '[1 q' || echo -n '[5 q'
 }
 
 function zle-line-finish {
-  vim_mode=$vim_ins_mode
   [[ $TERM =~ "xterm.*" || $TERM =~ "screen.*" ]] && echo -n '[5 q'
-}
-
-# Fix a bug when you C-c in CMD mode and you'd be prompted with CMD mode indicator, while in fact you would be in INS mode
-# Fixed by catching SIGINT (C-c), set vim_mode to INS and then repropagate the SIGINT, so if anything else depends on it, we will not break it
-# Thanks Ron! (see comments)
-function TRAPINT() {
-  vim_mode=$vim_ins_mode
-  zle && zle reset-prompt
-  return $(( 128 + $1 ))
 }
 
 function my_git_prompt_info() {
