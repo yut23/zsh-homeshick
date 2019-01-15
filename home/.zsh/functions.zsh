@@ -30,6 +30,11 @@ function activate() {
   VIRTUAL_ENV_DISABLE_PROMPT='1' source ./$1/bin/activate
 }
 
+function pull-changes() {
+  git fetch
+  git rebase origin master
+}
+
 # zsh-grml adds a mostly-broken translate function, which shadows the "trans"
 # command from translate-shell.
 unfunction trans

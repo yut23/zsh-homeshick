@@ -82,3 +82,6 @@ alias g='git'
 
 # use stars in find predicates
 alias find='noglob find'
+
+# calculate the sum of numbers on stdin
+alias total='python -c "import sys; print(sum(map(int, sys.stdin)))"'
