@@ -19,7 +19,7 @@ antigen bundle fnoris/keybase-zsh-completion
 
 # load local plugins:
 # * smart-cd: runs ls and git status after cd
-antigen bundle "$HOME/.zsh/plugins/"
+antigen bundle "$HOME/.zsh/plugins"
 
 
 # set theme stuff up now that we don't use OMZ
