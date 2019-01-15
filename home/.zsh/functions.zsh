@@ -29,3 +29,7 @@ function total_mem() {
 function activate() {
   VIRTUAL_ENV_DISABLE_PROMPT='1' source ./$1/bin/activate
 }
+
+# zsh-grml adds a mostly-broken translate function, which shadows the "trans"
+# command from translate-shell.
+unfunction trans

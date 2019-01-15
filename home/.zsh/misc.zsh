@@ -22,12 +22,17 @@ if [[ ${OSTYPE} == 'cygwin' ]] ; then
   zstyle ':completion:*' fake-files '/:c' '/:d' '/:h' '/:v' '/:x'
 fi
 
-# Use ^z to return to a suspended job
-foreground-current-job() { fg; }
-zle -N foreground-current-job
-bindkey -M emacs '^z' foreground-current-job
-bindkey -M viins '^z' foreground-current-job
-bindkey -M vicmd '^z' foreground-current-job
+# from OMZ fancy-ctrl-z plugin (https://github.com/robbyrussell/oh-my-zsh/tree/master/plugins/fancy-ctrl-z)
+fancy-ctrl-z () {
+  if [[ $#BUFFER -eq 0 ]]; then
+    BUFFER="fg"
+    zle accept-line
+  else
+    zle push-input
+  fi
+}
+zle -N fancy-ctrl-z
+bindkey '^Z' fancy-ctrl-z
 
 
 # handy for moving/copying groups of files
