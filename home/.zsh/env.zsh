@@ -8,7 +8,7 @@ else
 fi
 
 # Terminal emulator stuff
-if [[ ! $TERM =~ screen && $TEMU == terminator ]]; then
+if [[ ! ($TERM =~ screen || $TERM =~ tmux) && $TEMU == terminator ]]; then
   export TERM=xterm-256color
 fi
 
@@ -24,3 +24,10 @@ export VIRTUAL_ENV_DISABLE_PROMPT='1'
 # this is reverted in my sudo alias, so I should only get a bell when another
 # program is calling sudo (like makepkg, or aursync)
 export SUDO_PROMPT=$'\a''[sudo] password for %u: '
+
+# set viewer for aurutils (aur-sync)
+if (( $+commands[vifm] )); then
+  export AUR_PAGER=vifm
+else
+  export AUR_PAGER=nvim
+fi
