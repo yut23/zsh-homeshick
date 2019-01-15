@@ -57,8 +57,9 @@ autoload run-help-sudo
 alias run-help > /dev/null && unalias run-help
 alias help=run-help
 
-# expand aliases under sudo
-alias sudo='sudo '
+# expand aliases under sudo, and disable bell when calling directly
+alias sudo='sudo -p"[sudo] password for %u: " '
+alias sudoedit='sudoedit -p"[sudo] password for %u: "'
 
 # use old behavior, with multiple connections
 alias aria2c='aria2c --max-connection-per-server=4 --min-split-size=1M'

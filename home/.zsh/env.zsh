@@ -19,3 +19,8 @@ if [[ -n $DISPLAY ]] && (( $+commands[nvim-qt] )); then
 fi
 
 export VIRTUAL_ENV_DISABLE_PROMPT='1'
+
+# Add bell to sudo prompt
+# this is reverted in my sudo alias, so I should only get a bell when another
+# program is calling sudo (like makepkg, or aursync)
+export SUDO_PROMPT=$'\a''[sudo] password for %u: '
