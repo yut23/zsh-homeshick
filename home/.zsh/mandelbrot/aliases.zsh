@@ -8,7 +8,7 @@ alias gvim='echo Use nvim-qt! #'
 alias gview='echo Use nvim-qt! #'
 alias gvimdiff='echo Use nvim-qt! #'
 
-alias gnvim=nvim-qt
+alias gnvim='nvim-qt --no-ext-tabline'
 alias nview='nvim -R'
 alias nvimdiff='nvim -d'
 alias gnview='nvim-qt -- -R'

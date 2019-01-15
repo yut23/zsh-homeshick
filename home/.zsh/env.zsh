@@ -15,7 +15,7 @@ fi
 # Set editor
 export EDITOR=nvim
 if [[ -n $DISPLAY ]] && (( $+commands[nvim-qt] )); then
-  export VISUAL='nvim-qt --nofork'
+  export VISUAL='nvim-qt --no-ext-tabline --nofork'
 fi
 
 export VIRTUAL_ENV_DISABLE_PROMPT='1'
