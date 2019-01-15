@@ -34,7 +34,7 @@ autoload zmv
 alias zmv='noglob zmv -W'
 
 # better ls colors
-eval `dircolors -b`
+eval `dircolors -b "$HOME/.zsh/.dircolors"`
 # and use them in completion
 zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
 
