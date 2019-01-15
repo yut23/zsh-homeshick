@@ -7,8 +7,6 @@ export ANTIGEN_COMPDUMP="$HOME/.zsh/cache/zcompdump"
 source "$HOME/.antigen/antigen.zsh"
 
 antigen bundle zsh-users/zsh-history-substring-search
-# runs ls and git status after cd
-antigen bundle dbkaplun/smart-cd
 # don't automatically run multiline pastes
 antigen bundle oz/safe-paste
 
@@ -18,6 +16,10 @@ antigen bundle lukechilds/zsh-nvm
 antigen bundle lukechilds/zsh-better-npm-completion
 
 antigen bundle fnoris/keybase-zsh-completion
+
+# load local plugins:
+# * smart-cd: runs ls and git status after cd
+antigen bundle "$HOME/.zsh/plugins/"
 
 
 # set theme stuff up now that we don't use OMZ
