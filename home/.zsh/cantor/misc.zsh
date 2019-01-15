@@ -1,4 +1,4 @@
 # ~/.zsh/cantor/misc.zsh
 
 # automatically start/connect to ssh-agent
-source source-ssh-agent
+source "$HOME/.zsh/cantor/source-ssh-agent.sh"
