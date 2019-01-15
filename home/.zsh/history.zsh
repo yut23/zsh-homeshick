@@ -6,6 +6,7 @@ SAVEHIST=1000000
 setopt inc_append_history
 setopt hist_ignore_dups
 setopt hist_expire_dups_first
+setopt no_hist_ignore_all_dups
 setopt extended_history
 setopt share_history
 

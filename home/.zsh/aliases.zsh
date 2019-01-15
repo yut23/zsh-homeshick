@@ -28,6 +28,7 @@ alias ll='ls -l'
 #alias ..='cd ..'
 
 #alias diff='colordiff'
+compdef colordiff=diff
 alias locater='noglob locate --regex'
 
 alias history='fc -il'

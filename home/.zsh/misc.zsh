@@ -8,6 +8,8 @@ setopt nomatch
 setopt extendedglob
 # comments on interactive line
 setopt interactive_comments
+# make cd -<number> match what dirs -v (aka d) outputs
+setopt pushd_minus
 
 
 ## Cygwin only: commands that auto-complete with and without .exe or .dll suffixes are annoying.
