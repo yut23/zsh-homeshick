@@ -20,6 +20,10 @@ path[1,0]=($HOME/bin $HOME/.local/bin)
 # Remove any entries that don't actually exist
 path=($^path(N-/))
 
+# Add custom completions
+fpath+=$HOME/.zsh/completions
+fpath=($^fpath(N-/))
+
 # Include user manpages
 manpath+=$HOME/man
 manpath=($^manpath(N-/))

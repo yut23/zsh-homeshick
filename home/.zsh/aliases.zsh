@@ -85,3 +85,8 @@ alias find='noglob find'
 
 # calculate the sum of numbers on stdin
 alias total='python -c "import sys; print(sum(map(int, sys.stdin)))"'
+
+# don't display icons in xprop
+if (( $+commands[xprop] )); then
+  alias xprop='xprop -len 1000'
+fi

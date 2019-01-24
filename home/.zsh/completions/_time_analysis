@@ -1,0 +1,3 @@
+#compdef time_analysis
+# vim: ft=zsh
+_arguments '-q[don'\''t complain about invalid logs]' ':game name:_files -W ~/Games/wrapper/time -g '\''*(:r:t)'\'''
