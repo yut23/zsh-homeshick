@@ -32,11 +32,14 @@ compdef colordiff=diff
 alias locater='noglob locate --regex'
 
 alias history='fc -il'
+# hag searches history and displays extra metadata, hagc just prints commands
 if (( $+commands[ag] )); then
-  alias hag='fc -il 1 | grep -v hag | ag'
+  alias hag="fc -il 1 | grep -vE '  hagc? ' | ag"
+  alias hagc="fc -ln 1 | grep -vE '^hagc? ' | ag"
   alias psa='ps ax | grep -vE "\bag\b" | ag'
 else
-  alias hag='fc -il 1 | grep -v hag | grep'
+  alias hag="fc -il 1 | grep -vE '  hagc? ' | grep"
+  alias hagc="fc -ln 1 | grep -vE '^hagc? ' | grep"
   alias psa='ps ax | grep -vE "\bgrep\b" | grep --color=always'
 fi
 
