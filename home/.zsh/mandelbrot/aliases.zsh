@@ -24,3 +24,5 @@ alias mux=tmuxinator
 alias aursearch=$HOME/bin/aursearch.sh
 
 alias ksc=kaitai-struct-compiler
+
+alias edit-parallel-summary='source ~/school/parallel/summaries/edit_parallel_summary.zsh'
