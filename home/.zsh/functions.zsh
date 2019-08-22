@@ -9,14 +9,18 @@ function take() {
 # acts like cat on files, and like ls on directories
 function cls() {
   emulate -L zsh
+  if [[ $# -gt 1 && $1 == '-l' ]]; then
+    ls_args=$1
+    shift
+  fi
   if [[ $# -eq 0 ]]; then
-    ls
+    ls $ls_args
   elif [[ $# -eq 1 ]]; then
-    [[ -f $1 ]] && cat "$1" || ls "$1"
+    [[ -f $1 ]] && cat "$1" || ls $ls_args "$1"
   else
     for entry in "$@"; do
       echo "==> $entry <=="
-      cls "$entry"
+      cls $ls_args "$entry"
       echo
     done
   fi
