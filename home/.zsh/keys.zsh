@@ -44,3 +44,8 @@ bindkey '[B' history-substring-search-down
 # bind k and j for VI mode
 bindkey -M vicmd 'k' history-substring-search-up
 bindkey -M vicmd 'j' history-substring-search-down
+
+# bind ctrl-backspace to delete previous word
+bindkey '' backward-kill-word
+# bind ctrl-delete to delete next word
+bindkey '[3;5~' kill-word

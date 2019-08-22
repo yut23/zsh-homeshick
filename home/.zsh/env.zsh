@@ -31,3 +31,6 @@ if (( $+commands[vifm] )); then
 else
   export AUR_PAGER=nvim
 fi
+
+# always use fancy shell in pipenv
+PIPENV_SHELL_FANCY=1

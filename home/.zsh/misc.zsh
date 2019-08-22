@@ -11,6 +11,9 @@ setopt interactive_comments
 # make cd -<number> match what dirs -v (aka d) outputs
 setopt pushd_minus
 
+# Use slash as word separator
+WORDCHARS="${WORDCHARS:s@/@}"
+
 
 ## Cygwin only: commands that auto-complete with and without .exe or .dll suffixes are annoying.
 ## thanks Thorsten Kampe & Bart Schaefer
@@ -49,18 +52,6 @@ zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
 if [[ -f /usr/share/doc/pkgfile/command-not-found.zsh ]]; then
   source /usr/share/doc/pkgfile/command-not-found.zsh
 fi
-
-
-# GRML settings
-export COMMAND_NOT_FOUND=0     # disable command not found hook
-export GRML_COMP_CACHING='no'  # handled by antigen
-export GRML_NO_APT_ALIASES=1   # disable apt-* aliases
-export GRML_NO_SMALL_ALIASES=1 # disable extraneous aliases
-export REPORTTIME=5  # show time info for commands that run longer than 5 seconds
-export COMPDUMPFILE="$HOME/.zsh/cache/zcompdump"  # use unified compdump file
-
-# disable persistent dirstack
-zstyle ':grml:chpwd:dirstack' enable false
 
 
 # === Completion ===

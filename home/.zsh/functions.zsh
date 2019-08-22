@@ -41,4 +41,6 @@ function pull-changes() {
 
 # zsh-grml adds a mostly-broken translate function, which shadows the "trans"
 # command from translate-shell.
-unfunction trans
+if [[ $(whence -w trans) == 'trans: function' ]]; then
+  unfunction trans
+fi

@@ -18,6 +18,9 @@ source "$HOME/.zsh/paths.zsh"
 # Disable coredumps
 ulimit -c 0
 
+# Disable flow control keybindings (ctrl-s and ctrl-q)
+stty -ixon
+
 # Detect terminal emulator
 # TODO: refactor this, it's pretty much useless for remote shells
 if [[ -z "${TEMU}" ]]; then
