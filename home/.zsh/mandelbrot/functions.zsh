@@ -16,3 +16,7 @@ function spim() {
     command spim
   fi
 }
+
+function pip-duplicates() {
+  (export LC_COLLATE=C; echo 'package,global,user'; join -t, -j 1 <(env HOME=/ pip --no-cache-dir --disable-pip-version-check freeze --all | sed 's/==/,/' | sort) <(pip --no-cache-dir --disable-pip-version-check freeze --all --user | sed 's/==/,/' | sort) | env LC_COLLATE=C sort) | csvlook
+}

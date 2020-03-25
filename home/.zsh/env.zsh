@@ -34,3 +34,9 @@ fi
 
 # always use fancy shell in pipenv
 PIPENV_SHELL_FANCY=1
+
+# get rid of intrusive pygame import message
+export PYGAME_HIDE_SUPPORT_PROMPT=1
+
+# remove __pycache__ folders (introduced in Python 3.8)
+export PYTHONPYCACHEPREFIX="$HOME/.cache/pycache"

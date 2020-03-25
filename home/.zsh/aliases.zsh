@@ -93,3 +93,6 @@ alias total='python -c "import sys; print(sum(map(int, sys.stdin)))"'
 if (( $+commands[xprop] )); then
   alias xprop='xprop -len 1000'
 fi
+
+# like l, but for cls
+alias cl='cls -lA'

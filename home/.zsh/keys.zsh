@@ -30,6 +30,8 @@ bindkey 'h' run-help
 # This also fixes all of the random switches into vi-cmd-mode
 bindkey -M viins '' noop
 bindkey -M viins 'jj' vi-cmd-mode
+# Decrease the time to wait for the rest of a prefix from 0.4s to 0.2s
+KEYTIMEOUT=20
 
 # Shift-Return to insert newline
 bindkey '^J' self-insert
@@ -49,3 +51,6 @@ bindkey -M vicmd 'j' history-substring-search-down
 bindkey '' backward-kill-word
 # bind ctrl-delete to delete next word
 bindkey '[3;5~' kill-word
+
+# bind ctrl-backspace in neovim terminal
+bindkey '^[[127;5u' backward-kill-word

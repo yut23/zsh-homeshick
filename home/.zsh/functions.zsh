@@ -9,18 +9,39 @@ function take() {
 # acts like cat on files, and like ls on directories
 function cls() {
   emulate -L zsh
-  if [[ $# -gt 1 && $1 == '-l' ]]; then
-    ls_args=$1
+  local ls_args=()
+  local cat_args=()
+  local files=()
+  while [[ $# -gt 0 ]]; do
+    local arg="$1"
+    case "$1" in
+      -n|--show-all|--number-nonblank|--show-ends|--number|--squeeze-blank|--show-tabs|--show-nonprinting)
+        cat_args+=("$1")
+        ;;
+      --)
+        shift  # remove --
+        break  # exit while loop
+        ;;
+      -?*)
+        ls_args+=("$1")
+        ;;
+      *)
+        files+=("$1")
+        ;;
+    esac
     shift
-  fi
+  done
+  # restore file parameters
+  set -- "${files[@]}" "$@"
+
   if [[ $# -eq 0 ]]; then
-    ls $ls_args
+    ls "${ls_args[@]}"
   elif [[ $# -eq 1 ]]; then
-    [[ -f $1 ]] && cat "$1" || ls $ls_args "$1"
+    [[ -f $1 ]] && cat "${cat_args[@]}" "$1" || ls "${ls_args[@]}" "$1"
   else
     for entry in "$@"; do
       echo "==> $entry <=="
-      cls $ls_args "$entry"
+      cls "${ls_args[@]}" "${cat_args[@]}" "$entry"
       echo
     done
   fi
@@ -39,8 +60,29 @@ function pull-changes() {
   git rebase origin master
 }
 
+function dumpenv() {
+  tr '\000' $'\n' < /proc/$(pidof "$*")/environ
+}
+
 # zsh-grml adds a mostly-broken translate function, which shadows the "trans"
 # command from translate-shell.
 if [[ $(whence -w trans) == 'trans: function' ]]; then
   unfunction trans
 fi
+
+function clear-swap() {
+  sudo /usr/local/bin/deswappify
+  if command free -b | awk '/Mem:/ { free=$4 } /Swap:/ { swap=$3 } END { exit !(free-swap>0) }'; then
+    sudo swapoff -a && sudo swapon -a
+  else
+    echo Not enough free memory to clear swap
+  fi
+}
+
+function remove-evince-metadata() {
+  for file in "$@"; do
+    while read attribute value; do
+      [[ "${attribute:0:18}" == "metadata::evince::" ]] && gio set -t unset "$file" "${attribute:0:-1}"
+    done < <(gio info -a metadata "$file")
+  done
+}

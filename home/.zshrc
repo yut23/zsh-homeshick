@@ -3183,7 +3183,7 @@ zrcautoload lookupinit && lookupinit
 # variables
 
 # set terminal property (used e.g. by msgid-chooser)
-export COLORTERM="yes"
+#export COLORTERM="yes"
 
 # aliases
 
