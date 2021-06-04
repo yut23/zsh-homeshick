@@ -11,8 +11,13 @@ typeset -gxU infopath INFOPATH
 typeset -gxTU INFOPATH infopath
 
 # Ruby gems
-if which ruby >/dev/null && which gem >/dev/null; then
+if (( $+commands[ruby] && $+commands[gem] )); then
   path[1,0]="$(ruby -rrubygems -e 'puts Gem.user_dir')/bin"
+fi
+
+# LuaRocks rocks
+if (( $+commands[luarocks] )); then
+  path[1,0]="$(luarocks --local config deploy_bin_dir)"
 fi
 
 # Prepend user bin and .local/bin
@@ -21,7 +26,7 @@ path[1,0]=($HOME/bin $HOME/.local/bin)
 path=($^path(N-/))
 
 # Add custom completions
-fpath+=$HOME/.zsh/completions
+fpath[1,0]=($HOME/.zsh/completions)
 fpath=($^fpath(N-/))
 
 # Include user manpages
