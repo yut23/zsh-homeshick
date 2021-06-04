@@ -12,3 +12,9 @@ export ANDROID_HOME=/opt/android-sdk
 
 export CASTRO_HOME="$HOME/school/research/Castro"
 export AMREX_HOME="$HOME/school/research/amrex"
+
+# fix urxvt segfault on exit (https://www.reddit.com/r/archlinux/comments/htq7hk)
+export PERL_DESTRUCT_LEVEL=2
+
+# look up entire directory tree for a Pipenv file
+export PIPENV_MAX_DEPTH=50
