@@ -86,3 +86,10 @@ function remove-evince-metadata() {
     done < <(gio info -a metadata "$file")
   done
 }
+
+if (( $+commands[xprop] && $+commands[obxprop] )); then
+  # obxprop is worse than xprop, so alias it to something useful
+  function obxprop() {
+    command xprop -notype $@ | sed -n 's/^_OB_APP_//p'
+  }
+fi

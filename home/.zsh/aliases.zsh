@@ -82,6 +82,8 @@ alias jctlu='journalctl --user'
 
 # git shorthand
 alias g='git'
+# open fugitive status window directly
+alias fugitive='nvim +Ge\ :'
 
 # use stars in find predicates
 alias find='noglob find'
@@ -96,3 +98,8 @@ fi
 
 # like l, but for cls
 alias cl='cls -lA'
+
+alias scrot='scrot --silent'
+
+alias urldecode='python -c "import sys; from urllib.parse import unquote; print(unquote(sys.stdin.read()))"'
+alias urlencode='python -c "import sys; from urllib.parse import quote; print(quote(sys.stdin.read()))"'

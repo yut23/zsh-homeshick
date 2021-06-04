@@ -42,6 +42,7 @@ bindkey '^Z' fancy-ctrl-z
 autoload zmv
 # make zmv easier to use
 alias zmv='noglob zmv -W'
+alias zcp='noglob zmv -CW'
 
 # better ls colors
 eval `dircolors -b "$HOME/.zsh/.dircolors"`
