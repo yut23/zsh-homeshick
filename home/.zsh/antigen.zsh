@@ -17,6 +17,12 @@ antigen bundle lukechilds/zsh-better-npm-completion
 
 antigen bundle fnoris/keybase-zsh-completion
 
+antigen bundle skywind3000/z.lua
+
+# automatically run .autoenv.zsh scripts on cd
+AUTOENV_FILE_LEAVE=.autoenv.zsh
+antigen bundle Tarrasch/zsh-autoenv
+
 # load local plugins:
 # * smart-cd: runs ls and git status after cd
 antigen bundle "$HOME/.zsh/plugins"
