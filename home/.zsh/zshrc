@@ -10,8 +10,6 @@ sources+="env.zsh"
 
 # Zinit plugins
 sources+="plugins.zsh"
-# Custom git plugin changes
-sources+="git.zsh"
 
 sources+="aliases.zsh"
 sources+="functions.zsh"

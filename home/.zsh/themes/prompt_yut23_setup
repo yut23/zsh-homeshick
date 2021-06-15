@@ -1,18 +1,6 @@
 # ZSH Theme - Preview: http://cl.ly/f701d00760f8059e06dc
 # Thanks to gallifrey, upon whose theme this is based
 
-#ZSH_THEME_GIT_PROMPT_PREFIX="${GIT_COLOR}("
-ZSH_THEME_GIT_PROMPT_SUFFIX=")%{$reset_color%}"
-ZSH_THEME_GIT_PROMPT_UNTRACKED="%%"
-ZSH_THEME_GIT_PROMPT_ADDED="+"
-ZSH_THEME_GIT_PROMPT_MODIFIED="*"
-ZSH_THEME_GIT_PROMPT_RENAMED="~"
-ZSH_THEME_GIT_PROMPT_DELETED="!"
-ZSH_THEME_GIT_PROMPT_UNMERGED="?"
-ZSH_THEME_GIT_PROMPT_AHEAD="↑"
-ZSH_THEME_GIT_PROMPT_BEHIND="↓"
-ZSH_THEME_GIT_PROMPT_DIVERGED="↕"
-
 function prompt_yut23_setup {
   local exit_code="%(?..%{$fg_bold[red]%}%?%{$reset_color%})"
   prompt_opts=(cr sp percent subst)
@@ -60,17 +48,58 @@ function zle-line-finish {
 }
 
 function my_git_prompt_info() {
-  local ref
+  local ref index git_status
+  local symbol_untracked="%%"
+  local symbol_added="+"
+  local symbol_modified="*"
+  local symbol_renamed="~"
+  local symbol_deleted="!"
+  local symbol_unmerged="?"
+  local symbol_ahead="↑"
+  local symbol_behind="↓"
+  local symbol_diverged="↕"
+
   ref=$(git symbolic-ref HEAD 2> /dev/null) || return
-  GIT_STATUS=$(git_prompt_status)
-  if [[ -n $GIT_STATUS ]]; then
-    if [[ $GIT_STATUS =~ [%+*~\!?] ]]; then
-      echo "%{$terminfo[bold]$fg[red]%}(${ref#refs/heads/} $GIT_STATUS$ZSH_THEME_GIT_PROMPT_SUFFIX"
+  # Modified to use pure zsh functions instead of grep
+  index=$(command git status --porcelain -b 2> /dev/null)
+  git_status=""
+  if [[ $index =~ $'\n''\?\? ' ]]; then
+    git_status="$symbol_untracked$git_status"
+  fi
+  if [[ $index =~ $'\n[AM]  ' ]]; then
+    git_status="$symbol_added$git_status"
+  fi
+  if [[ $index =~ $'\n[ A]M ' ]]; then
+    git_status="$symbol_modified$git_status"
+  fi
+  if [[ $index =~ $'\nR  ' ]]; then
+    git_status="$symbol_renamed$git_status"
+  fi
+  if [[ $index =~ $'\n[ A]D ' ]]; then
+    git_status="$symbol_deleted$git_status"
+  elif [[ $index =~ $'\nD  ' ]]; then
+    git_status="$symbol_deleted$git_status"
+  fi
+  if [[ $index =~ $'\nUU ' ]]; then
+    git_status="$symbol_unmerged$git_status"
+  fi
+  if [[ $index =~ $'\n## .*ahead' ]]; then
+    git_status="$symbol_ahead$git_status"
+  fi
+  if [[ $index =~ $'\n## .*behind' ]]; then
+    git_status="$symbol_behind$git_status"
+  fi
+  if [[ $index =~ $'\n## .*diverged' ]]; then
+    git_status="$symbol_diverged$git_status"
+  fi
+  if [[ -n $git_status ]]; then
+    if [[ $git_status =~ [%+*~\!?] ]]; then
+      echo "%{$terminfo[bold]$fg[red]%}(${ref#refs/heads/} $git_status)%{$reset_color%}"
     else
-      echo "%{$terminfo[bold]$fg[yellow]%}(${ref#refs/heads/} $GIT_STATUS$ZSH_THEME_GIT_PROMPT_SUFFIX"
+      echo "%{$terminfo[bold]$fg[yellow]%}(${ref#refs/heads/} $git_status)%{$reset_color%}"
     fi
   else
-    echo "%{$terminfo[bold]$fg[green]%}(${ref#refs/heads/}$ZSH_THEME_GIT_PROMPT_SUFFIX"
+    echo "%{$terminfo[bold]$fg[green]%}(${ref#refs/heads/})%{$reset_color%}"
   fi
 }
 
