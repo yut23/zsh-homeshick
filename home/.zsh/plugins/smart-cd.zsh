@@ -1,8 +1,6 @@
 #!/usr/bin/env zsh
 
-[ ! -n "${SMART_CD_LS+1}" ] && SMART_CD_LS=true
-[ ! -n "${SMART_CD_GIT_STATUS+1}" ] && SMART_CD_GIT_STATUS=true
-[ ! -n "${SMART_CD_ONLY_IF_FITS+1}" ] && SMART_CD_GIT_STATUS=true
+: ${SMART_CD_LS:=true} ${SMART_CD_GIT_STATUS:=true} ${SMART_CD_ONLY_IF_FITS:=true}
 
 _smart_cd_lastgitdir=''
 _smart_cd_chpwd_handler () {
