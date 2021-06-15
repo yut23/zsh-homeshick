@@ -19,7 +19,10 @@ function prompt_yut23_setup {
   local groups
   groups=($(id -G))
   # magic subscript globbing ahead
-  (( ${+groups[(r)0]} )) && prompt_symbol='#' || prompt_symbol='$'
+  (( ${+groups[(r)0]} )) && prompt_symbol='#' || prompt_symbol='\$'
+  if (( SHLVL > 1 )); then
+    prompt_symbol="$SHLVL$prompt_symbol"
+  fi
 
   PS1="
 ${user}${host} ${current_dir} ${git_prompt}
