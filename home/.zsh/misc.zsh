@@ -81,3 +81,6 @@ zstyle ':completion:*:*:*:users' ignored-patterns \
         stunnel 'systemd-*' tss vnc vscan
 # ... unless we really want to.
 zstyle '*' single-ignored show
+
+# Always show menu if there are multiple matches, even if a complete match is entered
+zstyle ':completion:*' accept-exact false
