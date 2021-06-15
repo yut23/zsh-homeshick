@@ -13,7 +13,13 @@ if [[ ! ($TERM =~ screen || $TERM =~ tmux) && $TEMU == terminator ]]; then
 fi
 
 # Set editor
-export EDITOR=nvim
+if (( $+commands[nvim] )); then
+  export EDITOR=nvim
+elif (( $+commands[vim] )); then
+  export EDITOR=vim
+else
+  export EDITOR=vi
+fi
 if [[ -n $DISPLAY ]] && (( $+commands[nvim-qt] )); then
   export VISUAL='nvim-qt --no-ext-tabline --nofork'
 fi
@@ -26,10 +32,12 @@ export VIRTUAL_ENV_DISABLE_PROMPT='1'
 export SUDO_PROMPT=$'\a''[sudo] password for %u: '
 
 # set viewer for aurutils (aur-sync)
-if (( $+commands[vifm] )); then
-  export AUR_PAGER=vifm
-else
-  export AUR_PAGER=nvim
+if (( $+commands[aur] )); then
+  if (( $+commands[vifm] )); then
+    export AUR_PAGER=vifm
+  else
+    export AUR_PAGER="$EDITOR"
+  fi
 fi
 
 # always use fancy shell in pipenv

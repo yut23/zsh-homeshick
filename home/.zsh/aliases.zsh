@@ -83,7 +83,7 @@ alias jctlu='journalctl --user'
 # git shorthand
 alias g='git'
 # open fugitive status window directly
-alias fugitive='nvim +Ge\ :'
+alias fugitive="$EDITOR"' +Ge\ :'
 
 # use stars in find predicates
 alias find='noglob find'
