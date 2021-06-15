@@ -10,3 +10,8 @@ export COMPDUMPFILE="$HOME/.zsh/cache/zcompdump"  # use unified compdump file
 
 # disable persistent dirstack
 zstyle ':grml:chpwd:dirstack' enable false
+
+# load Zinit before compinit
+declare -A ZINIT
+ZINIT[ZCOMPDUMP_PATH]="$COMPDUMPFILE"
+source "$HOME/.zinit/bin/zinit.zsh"

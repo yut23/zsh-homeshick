@@ -8,10 +8,8 @@ typeset -ga sources
 
 sources+="env.zsh"
 
-# OMZ customizations are used in antigen
-#sources+="oh-my.zsh"
-# Antigen
-sources+="antigen.zsh"
+# Zinit plugins
+sources+="plugins.zsh"
 # Custom git plugin changes
 sources+="git.zsh"
 
