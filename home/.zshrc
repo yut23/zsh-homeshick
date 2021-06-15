@@ -108,11 +108,75 @@ if [[ $ZSH_PROFILE_RC -gt 0 ]] ; then
     zmodload zsh/zprof
 fi
 
+typeset -A GRML_STATUS_FEATURES
+
+function grml_status_feature () {
+    emulate -L zsh
+    local f=$1
+    local -i success=$2
+    if (( success == 0 )); then
+        GRML_STATUS_FEATURES[$f]=success
+    else
+        GRML_STATUS_FEATURES[$f]=failure
+    fi
+    return 0
+}
+
+function grml_status_features () {
+    emulate -L zsh
+    local mode=${1:-+-}
+    local this
+    if [[ $mode == -h ]] || [[ $mode == --help ]]; then
+        cat <<EOF
+grml_status_features [-h|--help|-|+|+-|FEATURE]
+
+Prints a summary of features the grml setup is trying to load. The
+result of loading a feature is recorded. This function lets you query
+the result.
+
+The function takes one argument: "-h" or "--help" to display this help
+text, "+" to display a list of all successfully loaded features, "-" for
+a list of all features that failed to load. "+-" to show a list of all
+features with their statuses.
+
+Any other word is considered to by a feature and prints its status.
+
+The default mode is "+-".
+EOF
+        return 0
+    fi
+    if [[ $mode != - ]] && [[ $mode != + ]] && [[ $mode != +- ]]; then
+        this="${GRML_STATUS_FEATURES[$mode]}"
+        if [[ -z $this ]]; then
+            printf 'unknown\n'
+            return 1
+        else
+            printf '%s\n' $this
+        fi
+        return 0
+    fi
+    for key in ${(ok)GRML_STATUS_FEATURES}; do
+        this="${GRML_STATUS_FEATURES[$key]}"
+        if [[ $this == success ]] && [[ $mode == *+* ]]; then
+            printf '%-16s %s\n' $key $this
+        fi
+        if [[ $this == failure ]] && [[ $mode == *-* ]]; then
+            printf '%-16s %s\n' $key $this
+        fi
+    done
+    return 0
+}
+
 # load .zshrc.pre to give the user the chance to overwrite the defaults
 [[ -r ${ZDOTDIR:-${HOME}}/.zshrc.pre ]] && source ${ZDOTDIR:-${HOME}}/.zshrc.pre
 
 # check for version/system
 # check for versions (compatibility reasons)
+function is51 () {
+    [[ $ZSH_VERSION == 5.<1->* ]] && return 0
+    return 1
+}
+
 function is4 () {
     [[ $ZSH_VERSION == <4->* ]] && return 0
     return 1
@@ -431,11 +495,22 @@ ZSH_NO_DEFAULT_LOCALE=${ZSH_NO_DEFAULT_LOCALE:-0}
 
 typeset -ga ls_options
 typeset -ga grep_options
+
+# Colors on GNU ls(1)
 if ls --color=auto / >/dev/null 2>&1; then
     ls_options+=( --color=auto )
+# Colors on FreeBSD and OSX ls(1)
 elif ls -G / >/dev/null 2>&1; then
     ls_options+=( -G )
 fi
+
+# Natural sorting order on GNU ls(1)
+# OSX and IllumOS have a -v option that is not natural sorting
+if ls --version |& grep -q 'GNU' >/dev/null 2>&1 && ls -v / >/dev/null 2>&1; then
+    ls_options+=( -v )
+fi
+
+# Color on GNU and FreeBSD grep(1)
 if grep --color=auto -q "a" <<< "a" >/dev/null 2>&1; then
     grep_options+=( --color=auto )
 fi
@@ -646,7 +721,8 @@ typeset -U path PATH cdpath CDPATH fpath FPATH manpath MANPATH
 # Load a few modules
 is4 && \
 for mod in parameter complist deltochar mathfunc ; do
-    zmodload -i zsh/${mod} 2>/dev/null || print "Notice: no ${mod} available :("
+    zmodload -i zsh/${mod} 2>/dev/null
+    grml_status_feature mod:$mod $?
 done && builtin unset -v mod
 
 # autoload zsh modules when they are referenced
@@ -659,9 +735,13 @@ fi
 # completion system
 COMPDUMPFILE=${COMPDUMPFILE:-${ZDOTDIR:-${HOME}}/.zcompdump}
 if zrcautoload compinit ; then
-    compinit -d ${COMPDUMPFILE} || print 'Notice: no compinit available :('
+    typeset -a tmp
+    zstyle -a ':grml:completion:compinit' arguments tmp
+    compinit -d ${COMPDUMPFILE} "${tmp[@]}"
+    grml_status_feature compinit $?
+    unset tmp
 else
-    print 'Notice: no compinit available :('
+    grml_status_feature compinit 1
     function compdef { }
 fi
 
@@ -823,8 +903,18 @@ function grmlcomp () {
         _ssh_hosts=()
         _etc_hosts=()
     fi
+
+    local localname
+    if check_com hostname ; then
+      localname=$(hostname)
+    elif check_com hostnamectl ; then
+      localname=$(hostnamectl --static)
+    else
+      localname="$(uname -n)"
+    fi
+
     hosts=(
-        $(hostname)
+        "${localname}"
         "$_ssh_config_hosts[@]"
         "$_ssh_hosts[@]"
         "$_etc_hosts[@]"
@@ -881,7 +971,7 @@ zle -N end-of-somewhere beginning-or-end-of-somewhere
 
 # add a command line to the shells history without executing it
 function commit-to-history () {
-    print -s ${(z)BUFFER}
+    print -rs ${(z)BUFFER}
     zle send-break
 }
 zle -N commit-to-history
@@ -1110,10 +1200,15 @@ zle -N grml-zsh-fg
 # run command line as user root via sudo:
 function sudo-command-line () {
     [[ -z $BUFFER ]] && zle up-history
-    if [[ $BUFFER != sudo\ * ]]; then
-        BUFFER="sudo $BUFFER"
-        CURSOR=$(( CURSOR+5 ))
+    local cmd="sudo "
+    if [[ ${BUFFER} == ${cmd}* ]]; then
+        CURSOR=$(( CURSOR-${#cmd} ))
+        BUFFER="${BUFFER#$cmd}"
+    else
+        BUFFER="${cmd}${BUFFER}"
+        CURSOR=$(( CURSOR+${#cmd} ))
     fi
+    zle reset-prompt
 }
 zle -N sudo-command-line
 
@@ -1186,7 +1281,7 @@ function help_zle_parse_keybindings () {
         [[ $load_cache -eq 0 ]] && . $HELP_ZLE_CACHE_FILE && return
     fi
 
-    #fill with default keybindings, possibly to be overwriten in a file later
+    #fill with default keybindings, possibly to be overwritten in a file later
     #Note that due to zsh inconsistency on escaping assoc array keys, we encase the key in '' which we will remove later
     local -A help_zle_keybindings
     help_zle_keybindings['<Ctrl>@']="set MARK"
@@ -1208,7 +1303,7 @@ function help_zle_parse_keybindings () {
     help_zle_keybindings['<Alt><arg>']="repeat next cmd/char <arg> times (<Alt>-<Alt>1<Alt>0a -> -10 times 'a')"
     help_zle_keybindings['<Alt>u']="make next word Uppercase"
     help_zle_keybindings['<Alt>l']="make next word lowercase"
-    help_zle_keybindings['<Ctrl>xd']="preview expansion under cursor"
+    help_zle_keybindings['<Ctrl>xG']="preview expansion under cursor"
     help_zle_keybindings['<Alt>q']="push current CL into background, freeing it. Restore on next CL"
     help_zle_keybindings['<Alt>.']="insert (and interate through) last word from prev CLs"
     help_zle_keybindings['<Alt>,']="complete word from newer history (consecutive hits)"
@@ -1239,7 +1334,7 @@ function help_zle_parse_keybindings () {
             #             ignores lines that are commentend out
             #             grabs first in '' or "" enclosed string with length between 1 and 6 characters
             elif [[ "$cline" == [^#]#(bind2maps[[:space:]](*)-s|bindkey|compdef -k)[[:space:]](*)(#b)(\"((?)(#c1,6))\"|\'((?)(#c1,6))\')(#B)(*)  ]]; then
-                #description prevously found ? description not more than 2 lines away ? keybinding not empty ?
+                #description previously found ? description not more than 2 lines away ? keybinding not empty ?
                 if [[ -n $lastkeybind_desc && $num_lines_elapsed -lt 2 && -n $match[1] ]]; then
                     #substitute keybinding string with something readable
                     k=${${${${${${${match[1]/\\e\^h/<Alt><BS>}/\\e\^\?/<Alt><BS>}/\\e\[5~/<PageUp>}/\\e\[6~/<PageDown>}//(\\e|\^\[)/<Alt>}//\^/<Ctrl>}/3~/<Alt><Del>}
@@ -1560,7 +1655,13 @@ zrcautoload zed
 # else
 #    print 'Notice: no url-quote-magic available :('
 # fi
-alias url-quote='autoload -U url-quote-magic ; zle -N self-insert url-quote-magic'
+if is51 ; then
+  # url-quote doesn't work without bracketed-paste-magic since Zsh 5.1
+  alias url-quote='autoload -U bracketed-paste-magic url-quote-magic;
+                   zle -N bracketed-paste bracketed-paste-magic; zle -N self-insert url-quote-magic'
+else
+  alias url-quote='autoload -U url-quote-magic ; zle -N self-insert url-quote-magic'
+fi
 
 #m# k ESC-h Call \kbd{run-help} for the 1st word on the command line
 alias run-help >&/dev/null && unalias run-help
@@ -1582,7 +1683,7 @@ function command_not_found_handler () {
 # history
 
 #v#
-HISTFILE=${ZDOTDIR:-${HOME}}/.zsh_history
+HISTFILE=${HISTFILE:-${ZDOTDIR:-${HOME}}/.zsh_history}
 isgrmlcd && HISTSIZE=500  || HISTSIZE=5000
 isgrmlcd && SAVEHIST=1000 || SAVEHIST=10000 # useful for setopt append_history
 
@@ -1842,7 +1943,7 @@ done
 function batterydarwin () {
 GRML_BATTERY_LEVEL=''
 local -a table
-table=( ${$(pmset -g ps)[(w)7,8]%%(\%|);} )
+table=( ${$(pmset -g ps)[(w)8,9]%%(\%|);} )
 if [[ -n $table[2] ]] ; then
     case $table[2] in
         charging)
@@ -2063,7 +2164,7 @@ function grml_prompt_setup () {
     autoload -Uz vcs_info
     # The following autoload is disabled for now, since this setup includes a
     # static version of the ‘add-zsh-hook’ function above. It needs to be
-    # reenabled as soon as that static definition is removed again.
+    # re-enabled as soon as that static definition is removed again.
     #autoload -Uz add-zsh-hook
     add-zsh-hook precmd prompt_$1_precmd
 }
@@ -2255,6 +2356,7 @@ grml_theme_add_token: Token `%s'\'' exists! Giving up!\n\n' $name
         return 2
     fi
     if (( init )); then
+        REPLY=''
         $token $name
         token=$REPLY
     fi
@@ -2300,6 +2402,7 @@ function grml_prompt_addto () {
         zstyle -s ":prompt:${grmltheme}:${lr}:items:$it" token new \
             || new=${grml_prompt_token_default[$it]}
         if (( ${+grml_prompt_token_function[$it]} )); then
+            REPLY=''
             ${grml_prompt_token_function[$it]} $it
         else
             case $it in
@@ -2407,6 +2510,7 @@ function grml_prompt_fallback () {
 }
 
 if zrcautoload promptinit && promptinit 2>/dev/null ; then
+    grml_status_feature promptinit 0
     # Since we define the required functions in here and not in files in
     # $fpath, we need to stick the theme's name into `$prompt_themes'
     # ourselves, since promptinit does not pick them up otherwise.
@@ -2414,7 +2518,7 @@ if zrcautoload promptinit && promptinit 2>/dev/null ; then
     # Also, keep the array sorted...
     prompt_themes=( "${(@on)prompt_themes}" )
 else
-    print 'Notice: no promptinit available :('
+    grml_status_feature promptinit 1
     grml_prompt_fallback
     function precmd () { (( ${+functions[vcs_info]} )) && vcs_info; }
 fi
@@ -2452,6 +2556,9 @@ else
     function precmd () { (( ${+functions[vcs_info]} )) && vcs_info; }
 fi
 
+# make sure to use right prompt only when not running a command
+is41 && setopt transient_rprompt
+
 # Terminal-title wizardry
 
 function ESC_print () {
@@ -2476,7 +2583,7 @@ function grml_reset_screen_title () {
     # see http://www.faqs.org/docs/Linux-mini/Xterm-Title.html
     [[ ${NOTITLE:-} -gt 0 ]] && return 0
     case $TERM in
-        (xterm*|rxvt*)
+        (xterm*|rxvt*|alacritty)
             set_title ${(%):-"%n@%m: %~"}
             ;;
     esac
@@ -2493,8 +2600,11 @@ function grml_vcs_to_screen_title () {
 }
 
 function grml_maintain_name () {
-    # set hostname if not running on host with name 'grml'
-    if [[ -n "$HOSTNAME" ]] && [[ "$HOSTNAME" != $(hostname) ]] ; then
+    local localname
+    localname="$(uname -n)"
+
+    # set hostname if not running on local machine
+    if [[ -n "$HOSTNAME" ]] && [[ "$HOSTNAME" != "${localname}" ]] ; then
        NAME="@$HOSTNAME"
     fi
 }
@@ -2510,15 +2620,15 @@ function grml_cmd_to_screen_title () {
 
 function grml_control_xterm_title () {
     case $TERM in
-        (xterm*|rxvt*)
-            set_title "${(%):-"%n@%m:"}" "$1"
+        (xterm*|rxvt*|alacritty)
+            set_title "${(%):-"%n@%m:"}" "$2"
             ;;
     esac
 }
 
 # The following autoload is disabled for now, since this setup includes a
 # static version of the ‘add-zsh-hook’ function above. It needs to be
-# reenabled as soon as that static definition is removed again.
+# re-enabled as soon as that static definition is removed again.
 #zrcautoload add-zsh-hook || add-zsh-hook () { :; }
 if [[ $NOPRECMD -eq 0 ]]; then
     add-zsh-hook precmd grml_reset_screen_title
@@ -2691,22 +2801,24 @@ Enjoy your grml system with the zsh!$reset_color"
 # debian stuff
 if [[ -r /etc/debian_version ]] ; then
     if [[ -z "$GRML_NO_APT_ALIASES" ]]; then
-        #a3# Execute \kbd{apt-cache search}
-        alias acs='apt-cache search'
-        #a3# Execute \kbd{apt-cache show}
-        alias acsh='apt-cache show'
         #a3# Execute \kbd{apt-cache policy}
         alias acp='apt-cache policy'
         if check_com -c apt ; then
+          #a3# Execute \kbd{apt search}
+          alias acs='apt search'
+          #a3# Execute \kbd{apt show}
+          alias acsh='apt show'
           #a3# Execute \kbd{apt dist-upgrade}
           salias adg="apt dist-upgrade"
           #a3# Execute \kbd{apt upgrade}
           salias ag="apt upgrade"
           #a3# Execute \kbd{apt install}
           salias agi="apt install"
-          #a3# Execute \kbd{apt-get update}
+          #a3# Execute \kbd{apt update}
           salias au="apt update"
         else
+          alias acs='apt-cache search'
+          alias acsh='apt-cache show'
           salias adg="apt-get dist-upgrade"
           salias ag="apt-get upgrade"
           salias agi="apt-get install"
@@ -2786,6 +2898,17 @@ graphic chipset."
             return 1
         }
     fi
+
+    if check_com -c tmate && check_com -c qrencode ; then
+        function grml-remote-support() {
+            tmate -L grml-remote-support new -s grml-remote-support -d
+            tmate -L grml-remote-support wait tmate-ready
+            tmate -L grml-remote-support display -p '#{tmate_ssh}' | qrencode -t ANSI
+            echo "tmate session: $(tmate -L grml-remote-support display -p '#{tmate_ssh}')"
+            echo
+            echo "Scan this QR code and send it to your support team."
+        }
+    fi
 }
 
 # now run the functions
@@ -2844,7 +2967,7 @@ compdef _functions freload
 #      Module zstat is loaded by default in grml zshrc, no extra action needed for that.
 #
 #      Known bugs:
-#      If you happen to come accross a symlink that points to a destination on an other partition
+#      If you happen to come across a symlink that points to a destination on another partition
 #      with the same inode number, that will be marked as symlink loop though it is not.
 #      Two hints for this situation:
 #      I)  Play lottery the same day, as you seem to be rather lucky right now.
@@ -2910,9 +3033,6 @@ function sll () {
     return ${RTN}
 }
 
-# TODO: Is it supported to use pager settings like this?
-#   PAGER='less -Mr' - If so, the use of $PAGER here needs fixing
-# with respect to wordsplitting. (ie. ${=PAGER})
 if check_com -c $PAGER ; then
     #f3# View Debian's changelog of given package(s)
     function dchange () {
@@ -2920,13 +3040,28 @@ if check_com -c $PAGER ; then
         [[ -z "$1" ]] && printf 'Usage: %s <package_name(s)>\n' "$0" && return 1
 
         local package
+
+        # `less` as $PAGER without e.g. `|lesspipe %s` inside $LESSOPEN can't properly
+        # read *.gz files, try to detect this to use vi instead iff available
+        local viewer
+
+        if [[ ${$(typeset -p PAGER)[2]} = -a ]] ; then
+          viewer=($PAGER)    # support PAGER=(less -Mr) but leave array untouched
+        else
+          viewer=(${=PAGER}) # support PAGER='less -Mr'
+        fi
+
+        if [[ ${viewer[1]:t} = less ]] && [[ -z "${LESSOPEN}" ]] && check_com vi ; then
+          viewer='vi'
+        fi
+
         for package in "$@" ; do
             if [[ -r /usr/share/doc/${package}/changelog.Debian.gz ]] ; then
-                $PAGER /usr/share/doc/${package}/changelog.Debian.gz
+                $viewer /usr/share/doc/${package}/changelog.Debian.gz
             elif [[ -r /usr/share/doc/${package}/changelog.gz ]] ; then
-                $PAGER /usr/share/doc/${package}/changelog.gz
+                $viewer /usr/share/doc/${package}/changelog.gz
             elif [[ -r /usr/share/doc/${package}/changelog ]] ; then
-                $PAGER /usr/share/doc/${package}/changelog
+                $viewer /usr/share/doc/${package}/changelog
             else
                 if check_com -c aptitude ; then
                     echo "No changelog for package $package found, using aptitude to retrieve it."
@@ -3183,7 +3318,7 @@ zrcautoload lookupinit && lookupinit
 # variables
 
 # set terminal property (used e.g. by msgid-chooser)
-#export COLORTERM="yes"
+export COLORTERM="yes"
 
 # aliases
 
@@ -3255,7 +3390,7 @@ fi
 #f5# Backup \kbd{file_or_folder {\rm to} file_or_folder\_timestamp}
 function bk () {
     emulate -L zsh
-    local current_date=$(date -u "+%Y-%m-%dT%H:%M:%SZ")
+    local current_date=$(date -u "+%Y%m%dT%H%M%SZ")
     local clean keep move verbose result all to_bk
     setopt extended_glob
     keep=1
@@ -3312,14 +3447,14 @@ return 0;;
     elif (( clean > 0 )); then
         if (( $# > 0 )); then
             for to_bk in "$@"; do
-                rm $verbose -rf "${to_bk%/}"_[0-9](#c4,)-(0[0-9]|1[0-2])-([0-2][0-9]|3[0-1])T([0-1][0-9]|2[0-3])(:[0-5][0-9])(#c2)Z
+                rm $verbose -rf "${to_bk%/}"_[0-9](#c8)T([0-1][0-9]|2[0-3])([0-5][0-9])(#c2)Z
                 (( result += $? ))
             done
         else
             if (( all > 0 )); then
-                rm $verbose -rf *_[0-9](#c4,)-(0[0-9]|1[0-2])-([0-2][0-9]|3[0-1])T([0-1][0-9]|2[0-3])(:[0-5][0-9])(#c2)Z(D)
+                rm $verbose -rf *_[0-9](#c8)T([0-1][0-9]|2[0-3])([0-5][0-9])(#c2)Z(D)
             else
-                rm $verbose -rf *_[0-9](#c4,)-(0[0-9]|1[0-2])-([0-2][0-9]|3[0-1])T([0-1][0-9]|2[0-3])(:[0-5][0-9])(#c2)Z
+                rm $verbose -rf *_[0-9](#c8)T([0-1][0-9]|2[0-3])([0-5][0-9])(#c2)Z
             fi
             (( result += $? ))
         fi
@@ -3327,7 +3462,7 @@ return 0;;
     return $result
 }
 
-#f5# cd to directoy and list files
+#f5# cd to directory and list files
 function cl () {
     emulate -L zsh
     cd $1 && ls -a
@@ -3344,7 +3479,7 @@ function cd () {
     fi
 }
 
-#f5# Create Directoy and \kbd{cd} to it
+#f5# Create Directory and \kbd{cd} to it
 function mkcd () {
     if (( ARGC != 1 )); then
         printf 'usage: mkcd <new-directory>\n'
@@ -3445,6 +3580,16 @@ function simple-extract () {
                 USES_STDIN=true
                 USES_STDOUT=false
                 ;;
+            *tar.zst)
+                DECOMP_CMD="tar --zstd -xvf -"
+                USES_STDIN=true
+                USES_STDOUT=false
+                ;;
+            *tar.lrz)
+                DECOMP_CMD="lrzuntar"
+                USES_STDIN=false
+                USES_STDOUT=false
+                ;;
             *tar)
                 DECOMP_CMD="tar -xvf -"
                 USES_STDIN=true
@@ -3487,6 +3632,16 @@ function simple-extract () {
                 ;;
             *(xz|lzma))
                 DECOMP_CMD="xz -d -c -"
+                USES_STDIN=true
+                USES_STDOUT=true
+                ;;
+            *zst)
+                DECOMP_CMD="zstd -d -c -"
+                USES_STDIN=true
+                USES_STDOUT=true
+                ;;
+            *lrz)
+                DECOMP_CMD="lrunzip -"
                 USES_STDIN=true
                 USES_STDOUT=true
                 ;;
@@ -3717,7 +3872,10 @@ if check_com -c hg ; then
 
 fi # end of check whether we have the 'hg'-executable
 
-# grml-small cleanups
+# disable bracketed paste mode for dumb terminals
+[[ "$TERM" == dumb ]] && unset zle_bracketed_paste
+
+# grml-small cleanups and workarounds
 
 # The following is used to remove zsh-config-items that do not work
 # in grml-small by default.
@@ -3726,6 +3884,8 @@ fi # end of check whether we have the 'hg'-executable
 # sources if it is there).
 
 if (( GRMLSMALL_SPECIFIC > 0 )) && isgrmlsmall ; then
+
+    # Clean up
 
     unset "abk[V]"
     unalias    'V'      &> /dev/null
@@ -3737,9 +3897,41 @@ if (( GRMLSMALL_SPECIFIC > 0 )) && isgrmlsmall ; then
     unfunction manzsh   &> /dev/null
     unfunction man2     &> /dev/null
 
+    # Workarounds
+
+    # See https://github.com/grml/grml/issues/56
+    if ! [[ -x ${commands[dig]} ]]; then
+        function dig_after_all () {
+            unfunction dig
+            unfunction _dig
+            autoload -Uz _dig
+            unfunction dig_after_all
+        }
+        function dig () {
+            if [[ -x ${commands[dig]} ]]; then
+                dig_after_all
+                command dig "$@"
+                return "$!"
+            fi
+            printf 'This installation does not include `dig'\'' for size reasons.\n'
+            printf 'Try `drill'\'' as a light weight alternative.\n'
+            return 0
+        }
+        function _dig () {
+            if [[ -x ${commands[dig]} ]]; then
+                dig_after_all
+                zle -M 'Found `dig'\'' installed. '
+            else
+                zle -M 'Try `drill'\'' instead of `dig'\''.'
+            fi
+        }
+        compdef _dig dig
+    fi
 fi
 
 zrclocal
+
+unfunction grml_status_feature
 
 ## genrefcard.pl settings
 
