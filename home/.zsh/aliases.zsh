@@ -66,19 +66,34 @@ alias sudo='sudo -p"[sudo] password for %u: " '
 alias sudoedit='sudoedit -p"[sudo] password for %u: "'
 
 # use old behavior, with multiple connections
-alias aria2c='aria2c --max-connection-per-server=4 --min-split-size=1M'
+if (( $+commands[aria2c] )); then
+  alias aria2c='aria2c --max-connection-per-server=4 --min-split-size=1M'
+fi
 
 # hide annoying configuration banner
-alias ffmpeg='ffmpeg -hide_banner'
-alias ffplay='ffplay -hide_banner'
-alias ffprobe='ffprobe -hide_banner'
-alias ffserver='ffserver -hide_banner'
+if (( $+commands[ffmpeg] )); then
+  alias ffmpeg='ffmpeg -hide_banner'
+  alias ffplay='ffplay -hide_banner'
+  alias ffprobe='ffprobe -hide_banner'
+  alias ffserver='ffserver -hide_banner'
+fi
 
 # shorthand for systemd commands
 alias sctl='systemctl'
 alias jctl='journalctl'
 alias sctlu='systemctl --user'
 alias jctlu='journalctl --user'
+
+# various neovim aliases
+if (( $+commands[nvim] )); then
+  alias nview='nvim -R'
+  alias nvimdiff='nvim -d'
+fi
+if (( $+commands[nvim-qt] )); then
+  alias gnvim='NVIM_GUI=1 nvim-qt --no-ext-tabline'
+  alias gnview='gnvim -- -R'
+  alias gnvimdiff='gnvim -- -d'
+fi
 
 # git shorthand
 alias g='git'
@@ -99,7 +114,13 @@ fi
 # like l, but for cls
 alias cl='cls -lA'
 
-alias scrot='scrot --silent'
+if (( $+commands[scrot] )); then
+  alias scrot='scrot --silent'
+fi
+
+if (( $+commands[tmuxinator] )); then
+  alias mux=tmuxinator
+fi
 
 alias urldecode='python -c "import sys; from urllib.parse import unquote; print(unquote(sys.stdin.read()))"'
 alias urlencode='python -c "import sys; from urllib.parse import quote; print(quote(sys.stdin.read()))"'
