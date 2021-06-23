@@ -4,8 +4,7 @@
 #zinit ice wait lucid
 zinit light oz/safe-paste
 
-zinit ice wait"1" lucid
-zinit load zsh-users/zsh-history-substring-search
+zinit light zsh-users/zsh-history-substring-search
 zinit ice wait"1" lucid
 zinit load zdharma/history-search-multi-word
 
