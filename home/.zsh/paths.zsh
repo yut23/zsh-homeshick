@@ -20,6 +20,11 @@ if (( $+commands[luarocks] )); then
   path[1,0]="$(luarocks --local config deploy_bin_dir)"
 fi
 
+# dotnet tools
+if (( $+commands[dotnet] )); then
+  path[1,0]="$HOME/.dotnet/tools"
+fi
+
 # Prepend user bin and .local/bin
 path[1,0]=($HOME/bin $HOME/.local/bin)
 # Remove any entries that don't actually exist
