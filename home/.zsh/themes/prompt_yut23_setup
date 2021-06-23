@@ -86,13 +86,13 @@ function my_git_prompt_info() {
   if [[ $index =~ $'\nUU ' ]]; then
     git_status="$symbol_unmerged$git_status"
   fi
-  if [[ $index =~ $'\n## .*ahead' ]]; then
+  if [[ $index =~ $'^## .*ahead' ]]; then
     git_status="$symbol_ahead$git_status"
   fi
-  if [[ $index =~ $'\n## .*behind' ]]; then
+  if [[ $index =~ $'^## .*behind' ]]; then
     git_status="$symbol_behind$git_status"
   fi
-  if [[ $index =~ $'\n## .*diverged' ]]; then
+  if [[ $index =~ $'^## .*diverged' ]]; then
     git_status="$symbol_diverged$git_status"
   fi
   if [[ -n $git_status ]]; then
