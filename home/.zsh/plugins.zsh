@@ -2,10 +2,10 @@
 
 # don't automatically run multiline pastes
 #zinit ice wait lucid
-zinit light oz/safe-paste
+zinit load oz/safe-paste
 
-zinit light zsh-users/zsh-history-substring-search
-zinit ice wait"1" lucid
+zinit load zsh-users/zsh-history-substring-search
+zinit ice wait"0" lucid
 zinit load zdharma/history-search-multi-word
 
 # node version manager
@@ -18,6 +18,7 @@ zinit load lukechilds/zsh-better-npm-completion
 zinit ice wait"1" lucid has'keybase'
 zinit load fnoris/keybase-zsh-completion
 
+zinit ice has'lua'
 zinit light skywind3000/z.lua
 
 # automatically run .autoenv.zsh scripts on cd
