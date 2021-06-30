@@ -29,6 +29,10 @@ zinit light Tarrasch/zsh-autoenv
 # * smart-cd: runs ls and git status after cd
 zinit light "$HOME/.zsh/plugins"
 
+# load ssh-ident
+zinit ice as'program' pick'bin/s*'
+zinit light yut23/ssh-ident
+
 # set theme stuff up now that we don't use OMZ
 fpath=($HOME/.zsh/themes $fpath)
 autoload -U promptinit && promptinit
