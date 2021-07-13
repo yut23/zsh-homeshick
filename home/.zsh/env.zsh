@@ -22,6 +22,7 @@ else
 fi
 if [[ -n $DISPLAY ]] && (( $+commands[nvim-qt] )); then
   export VISUAL='nvim-qt --no-ext-tabline --nofork --'
+  export SUDO_EDITOR='nvim-qt --no-ext-tabline --nofork'
 else
   export VISUAL="$EDITOR"
 fi
