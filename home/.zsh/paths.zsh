@@ -36,8 +36,9 @@ fpath=($^fpath(N-/))
 
 # Include user manpages
 manpath+=$HOME/man
+manpath+=$HOME/.local/share/man
 manpath=($^manpath(N-/))
 
 # Include user info
-infopath+=$HOME/info
+infopath+=$HOME/.local/share/info
 infopath=($^infopath(N-/))
