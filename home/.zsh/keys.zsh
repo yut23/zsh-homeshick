@@ -54,3 +54,5 @@ bindkey '[3;5~' kill-word
 
 # bind ctrl-backspace in neovim terminal
 bindkey '^[[127;5u' backward-kill-word
+# workaround for hsmw, waiting on https://github.com/zdharma/history-search-multi-word/issues/16
+bindkey -M emacs -s '^[[127;5u' '^W'
