@@ -9,7 +9,7 @@ zinit ice wait'0' lucid
 zinit load zdharma/history-search-multi-word
 
 # node version manager
-zinit ice wait'1' lucid
+zinit ice wait'1' lucid has'npm'
 zinit load lukechilds/zsh-nvm
 # and completion
 zinit ice wait'1' lucid has'npm'
