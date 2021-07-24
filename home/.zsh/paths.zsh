@@ -4,7 +4,6 @@
 # Export existing paths.
 typeset -gxU path PATH
 typeset -gxU fpath FPATH
-typeset -gxU manpath MANPATH
 # Create and export new paths.
 typeset -gxU infopath INFOPATH
 # Tie the new paths.
@@ -33,11 +32,6 @@ path=($^path(N-/))
 # Add custom completions
 fpath[1,0]=($HOME/.zsh/completions)
 fpath=($^fpath(N-/))
-
-# Include user manpages
-manpath+=$HOME/man
-manpath+=$HOME/.local/share/man
-manpath=($^manpath(N-/))
 
 # Include user info
 infopath+=$HOME/.local/share/info
