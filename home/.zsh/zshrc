@@ -24,7 +24,6 @@ sources+="private.zsh"
 
 # Homeshick
 source "$HOME/.homesick/repos/homeshick/homeshick.sh"
-fpath=($HOME/.homesick/repos/homeshick/completions $fpath)
 
 if [[ -n "${NERSC_HOST:+x}" ]]; then
   host=$NERSC_HOST

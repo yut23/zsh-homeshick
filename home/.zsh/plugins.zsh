@@ -29,6 +29,10 @@ zinit light Tarrasch/zsh-autoenv
 # * smart-cd: runs ls and git status after cd
 zinit light "$HOME/.zsh/plugins"
 
+# homeshick completion
+zinit ice as'completion'
+zinit snippet "$HOME/.homesick/repos/homeshick/completions/_homeshick"
+
 # load ssh-ident
 zinit ice as'program' pick'bin/s*'
 zinit light yut23/ssh-ident
