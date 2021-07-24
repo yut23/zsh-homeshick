@@ -11,6 +11,8 @@ alias gvimdiff='echo Use nvim-qt! #'
 alias ccm32='sudo ccm32'
 alias ccm64='sudo ccm64'
 
+alias clear="printf '\ec'"
+
 alias aursearch=$HOME/bin/aursearch.sh
 
 alias ksc=kaitai-struct-compiler
