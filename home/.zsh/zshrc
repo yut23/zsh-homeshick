@@ -20,7 +20,7 @@ sources+="keys.zsh"
 
 sources+="private.zsh"
 
-# note: paths.zsh is sourced from ~/.zshrc.local
+# note: paths.zsh and */modules.zsh are sourced from ~/.zshrc.local
 
 # Homeshick
 source "$HOME/.homesick/repos/homeshick/homeshick.sh"

@@ -1,10 +1,5 @@
 # ~/.zshrc
 
-# If in ssh, get into tmux ASAP
-if [[ -f "$HOME/.zsh/tmux.zsh" ]]; then
-  source "$HOME/.zsh/tmux.zsh"
-fi
-
 # set HOSTNAME if not already set
 : ${HOSTNAME:=$(hostname)}
 # allow override through dotfile
@@ -25,6 +20,14 @@ if [[ -z "${system_name:+x}" ]]; then
 fi
 
 source "$HOME/.zsh/paths.zsh"
+if [[ -n "${system_name:+x}" && -f "$HOME/.zsh/$system_name/modules.zsh" ]]; then
+  source "$HOME/.zsh/$system_name/modules.zsh"
+fi
+
+# If in ssh, get into tmux ASAP
+if [[ -f "$HOME/.zsh/tmux.zsh" ]]; then
+  source "$HOME/.zsh/tmux.zsh"
+fi
 
 # Disable coredumps
 ulimit -c 0
