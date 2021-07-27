@@ -25,19 +25,13 @@ sources+="private.zsh"
 # Homeshick
 source "$HOME/.homesick/repos/homeshick/homeshick.sh"
 
-if [[ -n "${NERSC_HOST:+x}" ]]; then
-  host=$NERSC_HOST
-else
-  host=$HOSTNAME
-fi
-
 for file in $sources; do
   if [[ -f $ZSH_CONFIG/$file ]]; then
     source "$ZSH_CONFIG/$file"
   fi
-  if [[ -d $ZSH_CONFIG/$host ]]; then
-    if [[ -f $ZSH_CONFIG/$host/$file ]]; then
-      source "$ZSH_CONFIG/$host/$file"
+  if [[ -d $ZSH_CONFIG/$system_name ]]; then
+    if [[ -f $ZSH_CONFIG/$system_name/$file ]]; then
+      source "$ZSH_CONFIG/$system_name/$file"
     fi
   fi
 done

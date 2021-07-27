@@ -13,6 +13,17 @@ if [[ -f "$HOME/.hostname" ]]; then
 fi
 export HOSTNAME
 
+# Figure out what system we're on
+if [[ -z "${system_name:+x}" ]]; then
+  if [[ -n "${NERSC_HOST:+x}" ]]; then
+    system_name=$NERSC_HOST
+  elif [[ -n "${LMOD_SYSTEM_NAME:+x}" ]]; then
+    system_name=$LMOD_SYSTEM_NAME
+  else
+    system_name=$HOSTNAME
+  fi
+fi
+
 source "$HOME/.zsh/paths.zsh"
 
 # Disable coredumps
