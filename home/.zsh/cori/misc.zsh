@@ -14,8 +14,3 @@ else
 fi
 unset __conda_setup
 # <<< conda initialize <<<
-
-# Static named directories
-hash -d castro=$CASTRO_HOME
-hash -d scratch=$SCRATCH
-hash -d fw=$CASTRO_HOME/Exec/science/flame_wave

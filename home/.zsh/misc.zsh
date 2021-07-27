@@ -55,6 +55,17 @@ if [[ -f /usr/share/doc/pkgfile/command-not-found.zsh ]]; then
 fi
 
 
+# === Named directories ===
+
+if [[ -n ${CASTRO_HOME+x} ]]; then
+  hash -d castro=$CASTRO_HOME
+  hash -d fw=$CASTRO_HOME/Exec/science/flame_wave
+fi
+if [[ -n ${SCRATCH+x} ]]; then
+  hash -d scratch=$SCRATCH
+fi
+
+
 # === Completion ===
 
 setopt auto_menu
