@@ -5,8 +5,8 @@ if [[ -f "$HOME/.zsh/tmux.zsh" ]]; then
   source "$HOME/.zsh/tmux.zsh"
 fi
 
-# set hostname
-HOSTNAME=$(hostname)
+# set HOSTNAME if not already set
+: ${HOSTNAME:=$(hostname)}
 # allow override through dotfile
 if [[ -f "$HOME/.hostname" ]]; then
   HOSTNAME=$(<"$HOME/.hostname")
