@@ -9,9 +9,7 @@ function take() {
 # acts like cat on files, and like ls on directories
 function cls() {
   emulate -L zsh
-  local ls_args=()
-  local cat_args=()
-  local files=()
+  local -a ls_args cat_args files
   while [[ $# -gt 0 ]]; do
     local arg="$1"
     case "$1" in
