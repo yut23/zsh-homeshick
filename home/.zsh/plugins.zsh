@@ -2,7 +2,7 @@
 
 # don't automatically run multiline pastes
 #zinit ice wait lucid
-zinit load oz/safe-paste
+zinit snippet OMZ::plugins/safe-paste
 
 zinit load zsh-users/zsh-history-substring-search
 zinit ice wait'0' lucid
