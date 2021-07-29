@@ -33,15 +33,16 @@ zinit light "$HOME/.zsh/plugins"
 
 # homeshick completion
 zinit ice as'completion'
-zinit snippet "$HOME/.homesick/repos/homeshick/completions/_homeshick"
+zinit snippet '$HOME/.homesick/repos/homeshick/completions/_homeshick'
 
 # load ssh-ident
-zinit ice as'program' pick'bin/s*'
+zinit ice as'program' pick'bin/s*' has'python'
 zinit light yut23/ssh-ident
 
 # set theme stuff up now that we don't use OMZ
 fpath=($HOME/.zsh/themes $fpath)
 autoload -U promptinit && promptinit
 autoload -U colors && colors
+# IDK why this needs to be run twice, but it does
 prompt yut23
 prompt yut23
