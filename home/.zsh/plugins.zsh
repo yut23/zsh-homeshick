@@ -1,5 +1,7 @@
 # ~/.zsh/plugins.zsh
 
+# needed for safe-paste to add its binding to the right keymap, on zsh < 5.1
+bindkey -v
 # don't automatically run multiline pastes
 #zinit ice wait lucid
 zinit snippet OMZ::plugins/safe-paste
