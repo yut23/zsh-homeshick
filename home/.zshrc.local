@@ -25,8 +25,8 @@ if [[ -n "${system_name:+x}" && -f "$HOME/.zsh/$system_name/modules.zsh" ]]; the
 fi
 
 # If in ssh, get into tmux ASAP
-if [[ -f "$HOME/.zsh/tmux.zsh" ]]; then
-  source "$HOME/.zsh/tmux.zsh"
+if [[ -f "$HOME/.tmux/autotmux.zsh" ]]; then
+  source "$HOME/.tmux/autotmux.zsh"
 fi
 
 # Disable coredumps
