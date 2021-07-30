@@ -31,7 +31,7 @@ fancy-ctrl-z () {
     BUFFER="fg"
     zle accept-line
   else
-    zle push-input
+    zle push-line-or-edit
   fi
 }
 zle -N fancy-ctrl-z
