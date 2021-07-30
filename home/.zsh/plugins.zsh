@@ -33,7 +33,7 @@ zinit light "$HOME/.zsh/plugins"
 
 # homeshick completion
 zinit ice as'completion'
-zinit snippet '$HOME/.homesick/repos/homeshick/completions/_homeshick'
+zinit snippet "$HOME/.homesick/repos/homeshick/completions/_homeshick"
 
 # load ssh-ident
 zinit ice as'program' pick'bin/s*' has'python'
