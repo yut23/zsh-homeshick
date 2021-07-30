@@ -1,4 +1,16 @@
 # ~/.zshrc.pre
+
+# This is sort of a hack to disable automatically starting tmux without having
+# to create a file on the remote host, and without passing extra environment
+# variables (which is usually disabled by the sysadmins). We add an extra bit
+# to $TERM on the client, since that's always passed through by ssh.
+if [ "${TERM%.notmux}" != "$TERM" ]; then
+  # reset $TERM, so the shell gets the correct value
+  TERM=${TERM%.notmux}
+  # this will be read in ~/.tmux/autotmux.zsh
+  NO_AUTOTMUX=x
+fi
+
 # GRML settings
 
 export COMMAND_NOT_FOUND=0     # disable command not found hook
