@@ -20,6 +20,8 @@ zinit load lukechilds/zsh-better-npm-completion
 zinit ice wait'1' lucid has'keybase'
 zinit load fnoris/keybase-zsh-completion
 
+# treat hyphen as a normal character, rather than lua's *?
+export _ZL_HYPHEN=1
 zinit ice has'lua'
 zinit light skywind3000/z.lua
 
