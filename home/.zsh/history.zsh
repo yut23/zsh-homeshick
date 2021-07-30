@@ -1,4 +1,6 @@
 # ~/.zsh/history.zsh
+autoload -Uz is-at-least
+
 HISTFILE=~/.zsh/history/hist.log
 HISTSIZE=1000000
 SAVEHIST=1000000
@@ -9,7 +11,7 @@ setopt extended_history
 setopt share_history
 # this is mutually exclusive with share_history
 setopt no_inc_append_history
-setopt no_inc_append_history_time
+is-at-least 5.0.6 && setopt no_inc_append_history_time
 setopt hist_fcntl_lock
 
 # prevent history from becoming too cluttered
