@@ -14,6 +14,9 @@ setopt pushd_minus
 # Use slash as word separator
 WORDCHARS="${WORDCHARS:s@/@}"
 
+# Don't notify about other users logging in
+watch=($USER root)
+
 
 ## Cygwin only: commands that auto-complete with and without .exe or .dll suffixes are annoying.
 ## thanks Thorsten Kampe & Bart Schaefer
