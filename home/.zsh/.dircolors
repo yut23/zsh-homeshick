@@ -16,6 +16,7 @@ TERM console
 TERM cygwin
 TERM dtterm
 TERM gnome
+TERM gnome-256color
 TERM hurd
 TERM jfbterm
 TERM konsole
@@ -26,11 +27,17 @@ TERM mlterm
 TERM putty
 TERM rxvt*
 TERM screen*
+TERM screen
+TERM screen-256color
 TERM st
 TERM terminator
 TERM tmux*
+TERM tmux
+TERM tmux-256color
 TERM vt100
 TERM xterm*
+TERM xterm
+TERM xterm-256color
 # Below are the color init strings for the basic file types. A color init
 # string consists of one or more of the following numeric codes:
 # Attribute codes:
