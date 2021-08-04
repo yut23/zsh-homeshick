@@ -727,8 +727,8 @@ done && builtin unset -v mod
 
 # autoload zsh modules when they are referenced
 if is4 ; then
-    zmodload -a  zsh/stat    zstat
-    zmodload -a  zsh/zpty    zpty
+    zmodload -ai zsh/stat    zstat
+    zmodload -ai zsh/zpty    zpty
     zmodload -ap zsh/mapfile mapfile
 fi
 
