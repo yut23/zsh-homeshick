@@ -27,7 +27,11 @@ fi
 
 source "$HOME/.zsh/paths.zsh"
 if [[ -n "${system_name:+x}" && -f "$HOME/.zsh/$system_name/modules.zsh" ]]; then
-  source "$HOME/.zsh/$system_name/modules.zsh"
+  if [[ -z "${_MODULES_LOADED+x}" ]]; then
+    # set this before sourcing, so the local modules.zsh can modify it if needed
+    export _MODULES_LOADED=1
+    source "$HOME/.zsh/$system_name/modules.zsh"
+  fi
 fi
 
 # If in ssh, get into tmux ASAP
