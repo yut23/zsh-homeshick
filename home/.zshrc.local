@@ -19,6 +19,12 @@ if [[ -z "${system_name:+x}" ]]; then
   fi
 fi
 
+# work around some weird bug with OverlayFS encountered on cori08
+if [[ $system_name == cori ]] && ! readlink /etc/zsh.zshrc.local &>/dev/null; then
+  # /etc/zsh.zshrc.local should point to /etc/bash.bashrc.local
+  source "/etc/bash.bashrc.local"
+fi
+
 source "$HOME/.zsh/paths.zsh"
 if [[ -n "${system_name:+x}" && -f "$HOME/.zsh/$system_name/modules.zsh" ]]; then
   source "$HOME/.zsh/$system_name/modules.zsh"
