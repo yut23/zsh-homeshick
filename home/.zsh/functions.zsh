@@ -91,3 +91,18 @@ if (( $+commands[xprop] && $+commands[obxprop] )); then
     command xprop -notype $@ | sed -n 's/^_OB_APP_//p'
   }
 fi
+
+function find_tmux() {
+  local -a hosts
+  if [[ $system_name == summit ]]; then
+    hosts=(login{1..5})
+  elif [[ $system_name == cori ]]; then
+    hosts=(cori{01..23})
+  fi
+  local h
+  for h in "${hosts[@]}"; do
+    if ssh "$h" =tmux ls -F '\#{session_name}' 2>/dev/null | grep '^ssh-'"$USER"'$' &>/dev/null; then
+      echo "$h"
+    fi
+  done
+}
