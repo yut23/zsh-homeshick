@@ -72,10 +72,10 @@ function my_git_prompt_info() {
   if [[ $index =~ $'\n[AM]  ' ]]; then
     git_status="$symbol_added$git_status"
   fi
-  if [[ $index =~ $'\n[ A]M ' ]]; then
+  if [[ $index =~ $'\n[ AR]M ' ]]; then
     git_status="$symbol_modified$git_status"
   fi
-  if [[ $index =~ $'\nR  ' ]]; then
+  if [[ $index =~ $'\nR[ M] ' ]]; then
     git_status="$symbol_renamed$git_status"
   fi
   if [[ $index =~ $'\n[ A]D ' ]]; then
