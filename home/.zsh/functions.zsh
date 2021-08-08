@@ -93,6 +93,7 @@ if (( $+commands[xprop] && $+commands[obxprop] )); then
 fi
 
 function find_tmux() {
+  emulate -L zsh
   local -a hosts
   if [[ $system_name == summit ]]; then
     hosts=(login{1..5})
@@ -101,6 +102,10 @@ function find_tmux() {
   fi
   local h
   for h in "${hosts[@]}"; do
+    # exclude $HOSTNAME, if we're currently in tmux
+    if [[ $h == $HOSTNAME && -n ${TMUX_SSH+x} ]]; then
+      continue
+    fi
     if ssh "$h" =tmux ls -F '\#{session_name}' 2>/dev/null | grep '^ssh-'"$USER"'$' &>/dev/null; then
       echo "$h"
     fi
