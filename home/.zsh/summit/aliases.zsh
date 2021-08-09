@@ -5,4 +5,5 @@ if [[ $(whence -w which) == 'which: alias' ]]; then
   unalias which
 fi
 
-alias hsi='ptypipe "cd /hpss/prod/$PROJID/users/$USER" hsi'
+alias hsi='ptypipe "cdls /hpss/prod/$PROJID/users/$USER" hsi'
+alias bstat='jobstat -u $USER'
