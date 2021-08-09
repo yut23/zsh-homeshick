@@ -30,7 +30,7 @@ fi
 
 # from OMZ fancy-ctrl-z plugin (https://github.com/robbyrussell/oh-my-zsh/tree/master/plugins/fancy-ctrl-z)
 fancy-ctrl-z () {
-  if [[ $#BUFFER -eq 0 ]]; then
+  if [[ $#BUFFER -eq 0 && $CONTEXT == start ]]; then
     BUFFER="fg"
     zle accept-line
   else
