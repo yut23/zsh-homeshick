@@ -38,9 +38,9 @@ if (( $+commands[ag] )); then
   alias hagc="fc -ln 1 | grep -vE '^hagc? ' | ag"
   alias psa='ps ax | grep -vE "\bag\b" | ag'
 else
-  alias hag="fc -il 1 | grep -vE '  hagc? ' | grep"
-  alias hagc="fc -ln 1 | grep -vE '^hagc? ' | grep"
-  alias psa='ps ax | grep -vE "\bgrep\b" | grep --color=always'
+  alias hag="fc -il 1 | grep -vE '  hagc? ' | grep -E"
+  alias hagc="fc -ln 1 | grep -vE '^hagc? ' | grep -E"
+  alias psa='ps ax | grep -vE "\bgrep\b" | grep --color=always -E'
 fi
 
 alias free='free -m'
