@@ -44,7 +44,9 @@ else
 fi
 
 alias free='free -m'
-alias axel='axel -a'
+if (( $+commands[axel] )); then
+  alias axel='axel -a'
+fi
 
 alias hs='homeshick'
 

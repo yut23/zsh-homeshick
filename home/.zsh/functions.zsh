@@ -68,14 +68,16 @@ if [[ $(whence -w trans) == 'trans: function' ]]; then
   unfunction trans
 fi
 
-function clear-swap() {
-  sudo /usr/local/bin/deswappify
-  if command free -b | awk '/Mem:/ { free=$4 } /Swap:/ { swap=$3 } END { exit !(free-swap>0) }'; then
-    sudo swapoff -a && sudo swapon -a
-  else
-    echo Not enough free memory to clear swap
-  fi
-}
+if [[ -e /usr/local/bin/deswappify ]]; then
+  function clear-swap() {
+    sudo /usr/local/bin/deswappify
+    if command free -b | awk '/Mem:/ { free=$4 } /Swap:/ { swap=$3 } END { exit !(free-swap>0) }'; then
+      sudo swapoff -a && sudo swapon -a
+    else
+      echo Not enough free memory to clear swap
+    fi
+  }
+fi
 
 function remove-evince-metadata() {
   for file in "$@"; do
