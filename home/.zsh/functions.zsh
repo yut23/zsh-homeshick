@@ -13,7 +13,7 @@ function cls() {
   while [[ $# -gt 0 ]]; do
     local arg="$1"
     case "$1" in
-      -n|--show-all|--number-nonblank|--show-ends|--number|--squeeze-blank|--show-tabs|--show-nonprinting)
+      -n|-v|--show-all|--number-nonblank|--show-ends|--number|--squeeze-blank|--show-tabs|--show-nonprinting)
         cat_args+=("$1")
         ;;
       --)
