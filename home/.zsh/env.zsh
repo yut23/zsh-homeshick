@@ -54,3 +54,6 @@ export PYTHONPYCACHEPREFIX="$HOME/.cache/pycache"
 
 # fix man page colors in less
 export MANROFFOPT="-c"
+
+# show some lines before the match when searching in less
+export LESS="$LESS -j5"
