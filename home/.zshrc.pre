@@ -1,14 +1,14 @@
 # ~/.zshrc.pre
 
-# This is sort of a hack to disable automatically starting tmux without having
-# to create a file on the remote host, and without passing extra environment
-# variables (which is usually disabled by the sysadmins). We add an extra bit
-# to $TERM on the client, since that's always passed through by ssh.
-if [ "${TERM%.notmux}" != "$TERM" ]; then
-  # reset $TERM, so the shell gets the correct value
-  TERM=${TERM%.notmux}
+# This is sort of a hack to enable/disable automatically starting tmux without
+# having to create a file on the remote host, and without passing extra
+# environment variables (which is often disabled by sysadmins). We add an extra
+# bit to $TERM on the client, since that's always passed through by ssh.
+if [ "${TERM%.autotmux-*}" != "$TERM" ]; then
   # this will be read in ~/.tmux/autotmux.zsh
-  NO_AUTOTMUX=x
+  AUTOTMUX=${TERM#*.autotmux-}
+  # reset $TERM, so the shell gets the correct value
+  TERM=${TERM%.autotmux-*}
 fi
 
 # GRML settings
