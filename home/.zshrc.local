@@ -1,4 +1,6 @@
-# ~/.zshrc
+# ~/.zshrc.local
+# Note: this file is sourced from a function in ~/.zshrc (zrclocal), so any
+# local variables are effectively scoped to this file.
 
 # set HOSTNAME if not already set
 : ${HOSTNAME:=$(hostname)}
