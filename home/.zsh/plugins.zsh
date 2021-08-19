@@ -34,8 +34,9 @@ zinit light Tarrasch/zsh-autoenv
 zinit light "$HOME/.zsh/plugins"
 
 # homeshick completion
-zinit ice as'completion'
-zinit snippet "$HOME/.homesick/repos/homeshick/completions/_homeshick"
+if [[ ! -f $ZINIT[COMPLETIONS_DIR]/_homeshick ]]; then
+  zinit creinstall %HOME/.homesick/repos/homeshick/completions
+fi
 
 # load ssh-ident
 zinit ice as'program' pick'bin/s*' has'python'
