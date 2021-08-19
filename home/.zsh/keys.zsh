@@ -6,6 +6,7 @@ bindkey -v
 noop () { true; }
 zle -N noop
 
+zmodload zsh/terminfo
 # Fix keybindings
 bindkey 'OH' beginning-of-line
 bindkey 'OF' end-of-line
@@ -36,7 +37,6 @@ KEYTIMEOUT=20
 # Shift-Return to insert newline
 bindkey '^J' self-insert
 
-zmodload zsh/terminfo
 # bind UP and DOWN arrow keys
 bindkey "$terminfo[kcuu1]" history-substring-search-up
 bindkey "$terminfo[kcud1]" history-substring-search-down

@@ -23,7 +23,7 @@ zinit load fnoris/keybase-zsh-completion
 zinit ice wait'1' lucid has'conda'
 zinit load esc/conda-zsh-completion
 
-# treat hyphen as a normal character, rather than lua's *?
+# treat hyphen as a normal character, rather than lua's non-greedy *
 export _ZL_HYPHEN=1
 zinit ice has'lua'
 zinit light skywind3000/z.lua
