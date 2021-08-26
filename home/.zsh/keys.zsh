@@ -56,3 +56,9 @@ bindkey '[3;5~' kill-word
 bindkey '^[[127;5u' backward-kill-word
 # workaround for hsmw, waiting on https://github.com/zdharma/history-search-multi-word/issues/16
 bindkey -M emacs -s '^[[127;5u' '^W'
+
+# allow digit arguments before commands/keybindings in vi mode (same as emacs)
+for i in {0..9}; do
+  bindkey "^[$i" digit-argument
+done
+bindkey "^[-" neg-argument
