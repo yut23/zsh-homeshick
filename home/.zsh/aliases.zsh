@@ -126,3 +126,9 @@ fi
 
 alias urldecode='python -c "import sys; from urllib.parse import unquote; print(unquote(sys.stdin.read()))"'
 alias urlencode='python -c "import sys; from urllib.parse import quote; print(quote(sys.stdin.read()))"'
+
+if [[ -d ~/.tmux/clipboard ]]; then
+  alias purgeclip=~/.tmux/clipboard/purge.sh
+  alias putclip=~/.tmux/clipboard/pushclip.sh
+  alias getclip=~/.tmux/clipboard/getcopybuffer.sh
+fi
