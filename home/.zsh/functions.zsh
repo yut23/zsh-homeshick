@@ -101,6 +101,8 @@ function find_tmux() {
     hosts=(login{1..5})
   elif [[ $system_name == cori ]]; then
     hosts=(cori{01..23})
+  elif [[ $system_name == olcf-dtn ]]; then
+    hosts=(dtn{35..38})
   fi
   local h
   for h in "${hosts[@]}"; do

@@ -16,6 +16,10 @@ if [[ -z "${system_name:+x}" ]]; then
     system_name=$NERSC_HOST
   elif [[ -n "${LMOD_SYSTEM_NAME:+x}" ]]; then
     system_name=$LMOD_SYSTEM_NAME
+  elif [[ "$HOSTNAME" == dtn<->.ccs.ornl.gov ]]; then
+    system_name=olcf-dtn
+  elif [[ "$HOSTNAME" == home<->.ccs.ornl.gov ]]; then
+    system_name=olcf-home
   else
     system_name=$HOSTNAME
   fi
