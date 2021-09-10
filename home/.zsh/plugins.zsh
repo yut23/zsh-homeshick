@@ -36,6 +36,14 @@ zinit light Tarrasch/zsh-autoenv
 zinit ice has'virtualenv' has'pwgen'
 zinit light MichaelAquilina/zsh-autoswitch-virtualenv
 
+() {
+  # patch zsh-autoswitch-virtualenv to use my much-faster `pipenv --venv` script
+  local code
+  if code="$(typeset -f _activate_pipenv)"; then
+    eval "${code/pipenv --venv/~/bin/lib/get_pipenv_venv.py}"
+  fi
+}
+
 # load local plugins:
 # * smart-cd: runs ls and git status after cd
 zinit light "$HOME/.zsh/plugins"
