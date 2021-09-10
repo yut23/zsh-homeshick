@@ -33,6 +33,9 @@ AUTOENV_FILE_LEAVE=.autoenv.zsh
 zinit ice nocompletions
 zinit light Tarrasch/zsh-autoenv
 
+zinit ice has'virtualenv' has'pwgen'
+zinit light michaelAquilina/zsh-autoswitch-virtualenv
+
 # load local plugins:
 # * smart-cd: runs ls and git status after cd
 zinit light "$HOME/.zsh/plugins"

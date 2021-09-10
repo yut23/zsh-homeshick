@@ -43,11 +43,12 @@ if (( $+commands[aur] )); then
   fi
 fi
 
-# always use fancy shell in pipenv
-PIPENV_SHELL_FANCY=1
-
-# get rid of intrusive pygame import message
-export PYGAME_HIDE_SUPPORT_PROMPT=1
+if (( $+commands[pipenv] )); then
+  # always use fancy shell in pipenv
+  PIPENV_SHELL_FANCY=1
+  # look up entire directory tree for a Pipenv file
+  export PIPENV_MAX_DEPTH=50
+fi
 
 # remove __pycache__ folders (introduced in Python 3.8)
 export PYTHONPYCACHEPREFIX="$HOME/.cache/pycache"
