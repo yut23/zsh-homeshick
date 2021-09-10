@@ -1,0 +1,1079 @@
+#compdef xdotool
+# vim: foldmethod=marker
+
+# look at: Unix/_git, Unix/_sed, Zsh/_zle, Unix/_ffmpeg
+
+_xdotool_commands () { # {{{
+  local -a cmdtypes
+  cmdtypes=(
+    find_commands
+    keyboard_commands
+    mouse_commands
+    window_commands
+    pipeline_commands
+    desktop_commands
+    info_commands
+  )
+  local -a $cmdtypes
+
+  find_commands=(
+    search:'search for matching windows'
+    selectwindow:'select a window by clicking on it'
+    getactivewindow:'get the current active window (more reliable than getwindowfocus)'
+    getwindowfocus:'get the currently focused window'
+  )
+
+  keyboard_commands=(
+    key:'send a given keystroke'
+    keydown:'send key press events'
+    keyup:'send key release events'
+    type:'enter a string of characters'
+  )
+
+  mouse_commands=(
+    mousemove:'move the mouse to a specific position'
+    mousemove_relative:'move the mouse relative to its current position'
+    click:'press and release a mouse button'
+    mousedown:'press a mouse button'
+    mouseup:'release a mouse button'
+    getmouselocation:'output the position, screen, and window id of the mouse'
+  )
+
+  window_commands=(
+    getwindowname:'output the title of a window'
+    getwindowpid:'output the PID owning a window'
+    getwindowgeometry:'output the location and position of a window'
+    getdisplaygeometry:'output the size of the (primary?) display'
+    windowactivate:'activate a window and switch to its desktop'
+    windowfocus:'focus a window (without raising it)'
+    windowraise:'raise a window (without focusing it)'
+    windowmove:'move a window to another position'
+    windowsize:'set the size of a window'
+    windowminimize:'minimize (iconify) a window'
+    windowclose:'close a window'
+    windowkill:'close a window and kill the client controlling it'
+    windowmap:'map a window (make it visible on the screen)'
+    windowunmap:'unmap a window (hide it from the screen)'
+    windowreparent:'move a window in the parent-child hierarchy'
+    windowstate:'modify the WM state of a window'
+    set_window:'modify a window'\''s properties'
+  )
+
+  pipeline_commands=(
+    behave:'perform an action when an event occurs on a window'
+    behave_screen_edge:'perform an action when the mouse hits the screen edge or corner'
+    exec:'execute an external program'
+    sleep:'sleep for a specified number of seconds'
+  )
+
+  desktop_commands=(
+    get_num_desktops:'output the current number of desktops'
+    set_num_desktops:'change the number of desktops'
+    get_desktop:'output the current desktop'
+    set_desktop:'change to a specified desktop'
+    get_desktop_for_window:'output the desktop containing a window'
+    set_desktop_for_window:'move a window to a different desktop'
+    get_desktop_viewport:'output the current viewport'\''s position'
+    set_desktop_viewport:'move the viewport to a different position'
+  )
+
+  info_commands=(
+    help:'show a list of all commands'
+    version:'print program version'
+  )
+
+  # deep magic courtesy of _git
+  local cmdtype len sep
+  local -a allcmds allmatching alts disp expl compadd_opts
+
+  zstyle -s ":completion:${curcontext}:" list-separator sep || sep=--
+  for cmdtype in $cmdtypes; do
+    local -a ${cmdtype}_m
+    set -A ${cmdtype}_m ${(P)cmdtype%%:*}
+    allcmds+=( ${(P)${:-${cmdtype}_m}} )
+  done
+  zstyle -T ":completion:${curcontext}:" verbose && disp=(-ld '${cmdtype}_d')
+  _description '' expl '' # get applicable matchers
+  compadd "$expl[@]" -O allmatching -a allcmds
+  len=${#${(O)allmatching//?/.}[1]} # length of longest match
+  for cmdtype in $cmdtypes; do
+    local -a ${cmdtype}_d
+    (( $#disp )) && set -A ${cmdtype}_d \
+        ${${(r.COLUMNS-4.)${(P)cmdtype}/(#s)(#m)[^:]##:/${(r.len.)MATCH[1,-2]} $sep }%% #}
+    alts+=( "${cmdtype//_/-}:${${cmdtype//_/ }%%(e|)s}:compadd ${(e)disp} -a ${cmdtype}_m" )
+  done
+
+  compadd_opts=(-o nosort)
+  _alternative -O compadd_opts $alts
+} # }}}
+
+# helper functions {{{
+__debug_message () {
+  # delete leading spaces
+  msg=${1## #}
+  shift
+  while (( $# )); do
+    case ${(Pt)1} in
+      array*)
+        msg="$msg $1=(${${(q+)${(P)1}[@]}})" ;;
+      *)
+        msg="$msg $1=${(P)1}" ;;
+    esac
+    shift
+  done
+  #_message "$msg"
+}
+__before () {
+  prefix="before:"
+  if (( $# )); then
+    prefix="$1 $prefix"
+    shift
+  else
+    prefix="${funcstack[2]#_xdotool_} $prefix"
+  fi
+  __debug_message "$prefix" words CURRENT "$@"
+}
+__after () {
+  prefix="after:"
+  if (( $# )); then
+    prefix="$1 $prefix"
+    shift
+  else
+    prefix="${funcstack[2]#_xdotool_} $prefix"
+  fi
+  __debug_message "$prefix" words CURRENT line state "$@"
+}
+
+__xdotool_window () {
+  local windows=(${(f)"$(_call_program windows wmctrl -l 2>/dev/null | cut -d' ' -f 1,5- | sed 's/ /:/')"})
+  _describe -t windows 'window id' windows "$@"
+}
+__xdotool_stack () {
+  if (( windowstack )); then
+    local stacks=('%@:all windows in stack' '%1:first window in stack' '%2:second window in stack')
+    _describe -t stacks 'window stack' stacks "$@"
+  fi
+}
+__xdotool_window_or_stack () {
+  if [[ -n $words[CURRENT] && $words[CURRENT] != [0-9%]* ]]; then
+    return 1
+  fi
+  _alternative \
+    'windows::__xdotool_window' \
+    'stacks::__xdotool_stack'
+}
+__xdotool_desktop () {
+  local -a desktops
+  desktops=(${(f)"$(_call_program desktops wmctrl -d 2>/dev/null | cut -d' ' -f 1,3,14- | sed 's/ /:/')"})
+  _describe -t desktops 'desktop id' desktops "$@"
+}
+
+_guard_uint () {
+  _guard "${@[1,-2]}" "[0-9]#" "${@[-1]}"
+}
+_guard_int () {
+  _guard "${@[1,-2]}" "(|-)[0-9]#" "${@[-1]}"
+}
+_guard_ufloat () {
+  _guard "${@[1,-2]}" "[0-9]#(.[0-9]#)" "${@[-1]}"
+}
+_guard_float () {
+  _guard "${@[1,-2]}" "(|-)[0-9]#(.[0-9]#)" "${@[-1]}"
+}
+
+_guard_delay () {
+  _guard_uint "$@" "delay in milliseconds"
+}
+# }}}
+
+_xdotool_ () {
+  # chainable
+  local context state state_descr line
+  typeset -A opt_args
+  __before
+  _arguments -S \
+    '' \
+    '*::: := ->chain' && return
+  __after
+  if [[ $state == chain ]]; then
+    compstate[restore]=
+    return 300
+  fi
+  return 1
+}
+
+# find commands {{{
+_xdotool_search () {
+  windowstack=1
+  # chainable
+  local context state state_descr line
+  typeset -A opt_args
+  __before
+  _arguments -S \
+    '--name[check pattern against the window name]' \
+    '--class[check pattern against the window class]' \
+    '--classname[check pattern against the window classname]' \
+    '--maxdepth[set max search depth]: :_guard_int "search depth (-1 for infinite)"' \
+    '--onlyvisible[matches only windows currently visible]' \
+    '--pid[only show windows belonging to specific process]: :_pids' \
+    '--screen[only search a specific screen]: :_guard_uint "screen number"' \
+    '--desktop[only search a specific desktop number]: :__xdotool_desktop' \
+    '--limit[break search after N results]: :_guard_uint "limit (0 returns all)"' \
+    '--shell[print results as shell array WINDOWS]' \
+    '--prefix[add a prefix to --shell array name]:shell array prefix (max 16 chars):' \
+    '(--any)--all[require all conditions match a window]' \
+    '(--all)--any[windows matching any condition will be reported (default)]' \
+    '--sync[wait until a search result is found]' \
+    ': :_guard "(|[^-]*)" "pattern to match"' \
+    '*::: := ->chain' && return
+  __after
+  if [[ $state == chain ]]; then
+    compstate[restore]=
+    return 300
+  fi
+  return 1
+}
+
+_xdotool_getactivewindow () {
+  windowstack=1
+  return 300
+}
+
+_xdotool_selectwindow () {
+  windowstack=1
+  return 300
+}
+
+_xdotool_getwindowfocus ()
+{
+  windowstack=1
+  # chainable
+  local context state state_descr line
+  typeset -A opt_args
+  __before
+  _arguments -S \
+    '-f[report window with focus even if not top-level]' \
+    '::' \
+    '*:: := ->chain' && return
+  __after
+  if [[ $state == chain ]]; then
+    compstate[restore]=
+    return 300
+  fi
+  return 1
+}
+# }}}
+
+# keyboard commands {{{
+_xdotool_key () {
+  __before
+  _arguments -S \
+    '--clearmodifiers[clear active modifier keys during keystrokes]' \
+    '--delay[set delay between keystrokes]: :_guard_delay' \
+    '--repeat[how many times to repeat the key sequence]: :_guard_uint "repeat count"' \
+    '--repeat-delay[set delay between repetitions]: :_guard_delay' \
+    '--window[send keystrokes to a specific window]: :__xdotool_window_or_stack' \
+    '(-)*:key sequence: '
+  __after
+  return 0
+}
+functions -c _xdotool_key _xdotool_keydown
+functions -c _xdotool_key _xdotool_keyup
+
+_xdotool_type () {
+  # sometimes chainable
+  local context state state_descr line
+  typeset -A opt_args
+  __before
+  # parse options first
+  _arguments \
+    '--clearmodifiers[clear active modifier keys during keystrokes]' \
+    '--delay[set delay between keystrokes]: :_guard_delay' \
+    '--window[send keystrokes to a specific window]: :__xdotool_window_or_stack' \
+    '(--terminator)--args[how many arguments to expect; allows chaining]: :_guard_uint "number of arguments"' \
+    "(--args)--terminator[specify a terminator that marks the end of 'type' arguments]:terminator string" \
+    '--file[specify a file whose contents will be typed]: :_files' \
+    '*:::things to type:->arguments' && return
+  __after
+
+  case $state in
+    (arguments)
+      if (( opt_args[(I)--args] )); then
+        # remove N args from $words
+        if compset -n $(( opt_args[--args] + 1 )); then
+          state=(chain)
+        fi
+      elif (( opt_args[(I)--terminator] )); then
+        # remove up to and including TERM
+        if compset -N "${(b)opt_args[--terminator]}"; then
+          state=(chain)
+        fi
+      fi
+      if [[ $state == chain ]]; then
+        # prepend base command to words to make _arguments happy
+        words=(xdotool "$words[@]")
+        (( CURRENT++ ))
+        compstate[restore]=
+        return 300
+      else
+        _message -e "$context[-1]" "$state_descr"
+      fi
+      ;;
+  esac
+  return 1
+}
+# }}}
+
+# mouse commands {{{
+_xdotool_mousemove () {
+  # chainable
+  local context state state_descr line
+  typeset -A opt_args
+  __before
+  _arguments -S \
+    {-c,--clearmodifiers}'[clear active modifier keys during movement]' \
+    '--screen[which screen to move on]: :_guard_uint "screen number"' \
+    '--sync[only exit once the mouse has moved]' \
+    {-w,--window}'[specify a window to move relative to]: :__xdotool_window_or_stack' \
+    '*:: :->arguments' && return
+  __after
+
+  case $state in
+    (arguments)
+      # desired result:
+      # $ xdotool mousemove |
+      # completing _x coordinate_
+      # completing _arguments_
+      # restore  -- restore to previous location
+      if (( CURRENT == 1 )); then
+        local specs=('x-coord::_guard_uint "x coordinate"')
+        if [[ -z ${opt_args[(I)-w|--window]} ]]; then
+          specs+=('arguments:restore to previous location:(restore)')
+        fi
+        __before 'mousemove arg 1' specs
+        #if (( #words[CURRENT] == 0 )); then
+        #  # force both tags to be shown, even though there's only one given match
+        #  _message -e x-coord "x coordinate"
+        #fi
+        _alternative $specs && return
+        __after 'mousemove arg 1'
+      elif (( CURRENT == 2 )) && [[ $words[1] != restore ]]; then
+        # complete y-coordinate
+        __before 'mousemove arg 2'
+        _alternative 'y-coord::_guard_uint "y coordinate"' && return
+        __after 'mousemove arg 2'
+      else
+        # chain next command
+        if [[ $words[1] == restore ]]; then
+          compset -n 2
+        else
+          compset -n 3
+        fi
+        # prepend base command to words to make _arguments happy
+        words=(xdotool "$words[@]")
+        (( CURRENT++ ))
+        compstate[restore]=
+        return 300
+      fi
+
+      # old code {{{
+      #local tag descr mesgs
+      #_tags x-coord restore
+      #while _tags; do
+      #  tag=
+      #  if _requested x-coord; then
+      #    descr="x coordinate"
+      #    _description ""
+
+      #local word=$'[^\0]#\0'
+      #_regex_arguments _mousemove_args \
+      #  "/$word/" \
+      #  \( \
+      #    \( \
+      #      \( $'/[0-9]##\0/' ':x-coord:x coordinate:' \
+      #         $'/[0-9]##\0/' ':y-coord:y coordinate:' \) \
+      #      \| $'/restore\0/' ':restore:restore to previous location:' \
+      #    \) $'/[]/' ':chain:chain:' \# \
+      #  \| '/[]/' ':arguments:arguments:(( \:x\ coordinate restore\:restore\ to\ previous\ location ))' \
+      #  \)
+      #__before 'mousemove args'
+      #_mousemove_args
+      #__after 'mousemove args'
+
+      #local X Y SCREEN WINDOW
+      #eval "$(_call_program getmouselocation xdotool getmouselocation --shell)"
+      ##if (( CURRENT == 1 )); then
+      #local specs=('x_coord:x coordinate:()')
+      #if [[ -z ${opt_args[(I)-w|--window]} ]]; then
+      #  specs+=('arguments:arguments:((restore\:restore\ to\ previous\ location))')
+      #fi
+      #__before 'mousemove args' specs
+      #_alternative $specs
+      #__after 'mousemove args'
+
+      #_values
+
+      #if (( CURRENT > 1 && words[1] == restore )); then
+      #  state=(chain)
+      #fi
+
+      #if (( CURRENT == 2 )); then
+      #  __before 'mousemove args 2'
+      #  _alternative 'y_coord:y coordinate:'
+      #  __after 'mousemove args 2'
+      #fi
+      #if [[ words[1] == restore ]]; then
+      #  :
+      #fi
+      # }}}
+      ;;
+  esac
+  return 1
+}
+
+_xdotool_mousemove_relative () {
+  # chainable
+  local context state state_descr line
+  typeset -A opt_args
+  local -a offset_args
+  if (( words[(I)-p|--polar] )); then
+    offset_args=(
+      ':angle:_guard_int "angle (0 degrees is up, positive is clockwise)"'
+      ':distance:_guard_int "distance"'
+    )
+  else
+    offset_args=(
+      ':x-offset:_guard_int "x offset"'
+      ':y-offset:_guard_int "y offset"'
+    )
+  fi
+  __before
+  _arguments -S \
+    {-c,--clearmodifiers}'[clear active modifier keys during movement]' \
+    {-p,--polar}'[use polar coordinates]' \
+    '--sync[only exit once the mouse has moved]' \
+    $offset_args \
+    '*::: := ->chain' && return
+  __after
+  if [[ $state == chain ]]; then
+    compstate[restore]=
+    return 300
+  fi
+  return 1
+}
+
+__xdotool_mouse_button () {
+  local -a buttons
+  buttons=('1:left' '2:middle' '3:right' '4:wheel up' '5:wheel down')
+  _describe -t mouse-buttons 'mouse button' buttons "$@"
+}
+_xdotool_click () {
+  # chainable
+  local context state state_descr line
+  typeset -A opt_args
+  __before
+  _arguments -S \
+    '--clearmodifiers[clear active modifier keys while clicking]' \
+    '--window[send click to a specific window]: :__xdotool_window_or_stack' \
+    '--repeat[click multiple times]: :_guard_uint "repeat count"' \
+    '--delay[set delay between clicks]: :_guard_delay' \
+    ': :__xdotool_mouse_button' \
+    '*::: := ->chain' && return
+  __after
+  if [[ $state == chain ]]; then
+    compstate[restore]=
+    return 300
+  fi
+  return 1
+}
+
+_xdotool_mousedown () {
+  # chainable
+  local context state state_descr line
+  typeset -A opt_args
+  __before
+  _arguments -S \
+    '--clearmodifiers[clear active modifier keys while clicking]' \
+    '--window[send click to a specific window]: :__xdotool_window_or_stack' \
+    ': :__xdotool_mouse_button' \
+    '*::: := ->chain' && return
+  __after
+  if [[ $state == chain ]]; then
+    compstate[restore]=
+    return 300
+  fi
+  return 1
+}
+functions -c _xdotool_mousedown _xdotool_mouseup
+
+_xdotool_getmouselocation () {
+  # chainable
+  local context state state_descr line
+  typeset -A opt_args
+  __before
+  _arguments -S \
+    '--shell[output in eval-compatible format]' \
+    '--prefix[add a prefix to --shell variable names]:shell variable prefix (max 16 chars):' \
+    '*::: := ->chain' && return
+  __after
+  if [[ $state == chain ]]; then
+    compstate[restore]=
+    return 300
+  fi
+  return 1
+}
+# }}}
+
+# window commands {{{
+
+_xdotool_getwindowname () {
+  # chainable
+  local context state state_descr line
+  typeset -A opt_args
+  __before
+  _arguments -S \
+    $window_or_stack \
+    '*::: := ->chain' && return
+  __after
+  if [[ $state == chain ]]; then
+    compstate[restore]=
+    return 300
+  fi
+  return 1
+}
+functions -c _xdotool_getwindowname _xdotool_getwindowpid
+
+_xdotool_getwindowgeometry () {
+  # chainable
+  local context state state_descr line
+  typeset -A opt_args
+  __before
+  _arguments -S \
+    '--shell[output in eval-compatible format]' \
+    '--prefix[add a prefix to --shell variable names]:shell variable prefix (max 16 chars):' \
+    $window_or_stack \
+    '*::: := ->chain' && return
+  __after
+  if [[ $state == chain ]]; then
+    compstate[restore]=
+    return 300
+  fi
+  return 1
+}
+
+_xdotool_getdisplaygeometry () {
+  return 300
+}
+
+_xdotool_windowactivate () {
+  # chainable
+  local context state state_descr line
+  typeset -A opt_args
+  __before
+  _arguments -S \
+    '--sync[only exit once the window is visible and active]' \
+    $window_or_stack \
+    '*::: := ->chain' && return
+  __after
+  if [[ $state == chain ]]; then
+    compstate[restore]=
+    return 300
+  fi
+  return 1
+}
+
+_xdotool_windowfocus () {
+  # chainable
+  local context state state_descr line
+  typeset -A opt_args
+  __before
+  _arguments -S \
+    '--sync[only exit once the window has focus]' \
+    $window_or_stack \
+    '*::: := ->chain' && return
+  __after
+  if [[ $state == chain ]]; then
+    compstate[restore]=
+    return 300
+  fi
+  return 1
+}
+
+_xdotool_windowraise () {
+  # chainable
+  local context state state_descr line
+  typeset -A opt_args
+  __before
+  _arguments -S \
+    $window_or_stack \
+    '*::: := ->chain' && return
+  __after
+  if [[ $state == chain ]]; then
+    compstate[restore]=
+    return 300
+  fi
+  return 1
+}
+
+_xdotool_windowmove () {
+  # chainable
+  local context state state_descr line
+  typeset -A opt_args
+  local -a position_args
+  if (( words[(I)--relative] )); then
+    position_args=(
+      ': :_guard_int "x offset"'
+      ': :_guard_int "y offset"'
+    )
+  else
+    position_args=(
+      ': :_guard "(|-)[0-9]#|x" "x coordinate (\"x\" for no change)"' \
+      ': :_guard "(|-)[0-9]#|y" "y coordinate (\"y\" for no change)"' \
+    )
+  fi
+  __before
+  _arguments -S \
+    '--sync[only exit once the window has moved]' \
+    '--relative[move relative to the current window position]' \
+    $window_or_stack \
+    $position_args \
+    '*::: := ->chain' && return
+  __after
+  if [[ $state == chain ]]; then
+    compstate[restore]=
+    return 300
+  fi
+  return 1
+}
+
+_xdotool_windowsize () {
+  # chainable
+  local context state state_descr line
+  typeset -A opt_args
+  __before
+  _arguments -S \
+    '--sync[only exit once the window has resized]' \
+    '--usehints[use window sizing hints (e.g. font size in terminals)]' \
+    $window_or_stack \
+    ': :_guard_uint "width"' \
+    ': :_guard_uint "height"' \
+    '*::: := ->chain' && return
+  __after
+  if [[ $state == chain ]]; then
+    compstate[restore]=
+    return 300
+  fi
+  return 1
+}
+
+_xdotool_windowminimize () {
+  # chainable
+  local context state state_descr line
+  typeset -A opt_args
+  __before
+  _arguments -S \
+    '--sync[only exit once the window has minimized]' \
+    $window_or_stack \
+    '*::: := ->chain' && return
+  __after
+  if [[ $state == chain ]]; then
+    compstate[restore]=
+    return 300
+  fi
+  return 1
+}
+
+_xdotool_windowclose () {
+  # chainable
+  local context state state_descr line
+  typeset -A opt_args
+  __before
+  _arguments -S \
+    $window_or_stack \
+    '*::: := ->chain' && return
+  __after
+  if [[ $state == chain ]]; then
+    compstate[restore]=
+    return 300
+  fi
+  return 1
+}
+
+_xdotool_windowkill () {
+  # chainable
+  local context state state_descr line
+  typeset -A opt_args
+  __before
+  _arguments -S \
+    $window_or_stack \
+    '*::: := ->chain' && return
+  __after
+  if [[ $state == chain ]]; then
+    compstate[restore]=
+    return 300
+  fi
+  return 1
+}
+
+_xdotool_windowmap () {
+  # chainable
+  local context state state_descr line
+  typeset -A opt_args
+  __before
+  _arguments -S \
+    '--sync[only exit once the window has been mapped]' \
+    $window_or_stack \
+    '*::: := ->chain' && return
+  __after
+  if [[ $state == chain ]]; then
+    compstate[restore]=
+    return 300
+  fi
+  return 1
+}
+
+_xdotool_windowunmap () {
+  # chainable
+  local context state state_descr line
+  typeset -A opt_args
+  __before
+  _arguments -S \
+    '--sync[only exit once the window has been unmapped]' \
+    $window_or_stack \
+    '*::: := ->chain' && return
+  __after
+  if [[ $state == chain ]]; then
+    compstate[restore]=
+    return 300
+  fi
+  return 1
+}
+
+_xdotool_windowreparent () {
+  # chainable
+  local context state state_descr line
+  typeset -A opt_args
+  __before
+  _arguments -S \
+    $window_or_stack \
+    ': :__xdotool_window' \
+    '*::: := ->chain' && return
+  __after
+  if [[ $state == chain ]]; then
+    compstate[restore]=
+    return 300
+  fi
+  return 1
+}
+
+__xdotool_windowstate_property () {
+  local -a properties unknown
+  properties=(
+    'MODAL:unknown'
+    'STICKY:on all desktops?'
+    'MAXIMIZED_VERT:maximized vertically'
+    'MAXIMIZED_HORZ:maximized horizontally'
+    'SHADED:only titlebar visible'
+    'SKIP_TASKBAR:hide from taskbar/window switcher'
+    'SKIP_PAGER:hide from desktop pager'
+    'HIDDEN:unknown'
+    'FULLSCREEN:fullscreen (hides titlebar)'
+    'ABOVE:always on top'
+    'BELOW:always on bottom'
+    'DEMANDS_ATTENTION:unknown'
+  )
+  _describe -t windowstate-property "window property" properties
+}
+_xdotool_windowstate () {
+  # chainable
+  local context state state_descr line
+  typeset -A opt_args
+  __before
+  _arguments -S \
+    '--add:add a property:__xdotool_windowstate_property' \
+    '--remove:remove a property:__xdotool_windowstate_property' \
+    '--toggle:toggle a property:__xdotool_windowstate_property' \
+    $window_or_stack \
+    '*::: := ->chain' && return
+  __after
+  if [[ $state == chain ]]; then
+    compstate[restore]=
+    return 300
+  fi
+  return 1
+}
+
+_xdotool_set_window () {
+  # chainable
+  local context state state_descr line
+  typeset -A opt_args
+  __before
+  _arguments -S \
+    '--name[set the window name (aka title)]:window name' \
+    '--icon-name[set the window name while minimized/iconified]:window name' \
+    "--role[set the window's role string]:role" \
+    "--class[set the window's class]:class" \
+    "--classname[set the window's classname]:classname" \
+    '--overrideredirect[set override_redirect (tell WM not to manage this window)]:override:((1\:"WM will not manage this window" 0\:"WM will manage this window (default)"))' \
+    "--urgency[set the window's urgency hint]"':urgent:((1\:"set urgency flag" 0\:"remove urgency flag"))' \
+    $window_or_stack \
+    '*::: := ->chain' && return
+  __after
+  if [[ $state == chain ]]; then
+    compstate[restore]=
+    return 300
+  fi
+  return 1
+}
+# }}}
+
+# pipeline commands {{{
+__xdotool_behave_event () {
+  local -a events
+  events=(
+    'mouse-enter:when the mouse moves into the window'
+    'mouse-leave:when the mouse leaves a window'
+    'mouse-click:fired when the mouse button is released'
+    'focus:when the window gets focus'
+    'blur:when the window loses focus'
+  )
+  _describe -t events 'event' events "$@"
+}
+_xdotool_behave () {
+  # chainable (actual meaning is different from usual, but syntax is the same)
+  local context state state_descr line
+  typeset -A opt_args
+  __before
+  # TODO: fix optional $window_or_stack (xdotool getactivewindow behave blur |)
+  _arguments -S \
+    $window_or_stack \
+    ': :__xdotool_behave_event' \
+    '*::: := ->chain' && return
+  __after
+  if [[ $state == chain ]]; then
+    compstate[restore]=
+    return 300
+  fi
+  return 1
+}
+
+__xdotool_behave_edgeorcorner () {
+  local -a locations
+  locations=(
+    'mouse-enter:when the mouse moves into the window'
+    'mouse-leave:when the mouse leaves a window'
+    'mouse-click:fired when the mouse button is released'
+    'focus:when the window gets focus'
+    'blur:when the window loses focus'
+  )
+  _describe -t edge-or-corner 'where to activate' locations "$@"
+}
+_xdotool_behave_screen_edge () {
+  # chainable (actual meaning is different from usual, but syntax is the same)
+  local context state state_descr line
+  typeset -A opt_args
+  __before
+  _arguments -S \
+    '--delay[delay before activating (default 0)]: :_guard_delay' \
+    '--quiesce[quiet time after activating that no new activation will occur (default 2000)]: :_guard_delay' \
+    ': :__xdotool_behave_edgeorcorner' \
+    '*::: := ->chain' && return
+  __after
+  if [[ $state == chain ]]; then
+    compstate[restore]=
+    return 300
+  fi
+  return 1
+}
+
+_xdotool_exec () {
+  # sometimes chainable
+  local context state state_descr line
+  typeset -A opt_args
+  __before
+  # parse options first
+  _arguments \
+    '--sync[only exit when the command finishes]' \
+    '(--terminator)--args[how many arguments to expect; allows chaining]: :_guard_uint "number of arguments"' \
+    "(--args)--terminator[specify a terminator that marks the end of 'exec' arguments]:terminator string" \
+    '*:::arguments:->arguments' && return
+  __after
+
+  case $state in
+    (arguments)
+      if (( opt_args[(I)--args] && opt_args[--args] > 0 )); then
+        # remove N args from $words
+        if compset -n $(( opt_args[--args] + 1 )); then
+          state=(chain)
+        fi
+      elif (( opt_args[(I)--terminator] )); then
+        # remove up to and including TERM
+        if compset -N "${(b)opt_args[--terminator]}"; then
+          state=(chain)
+        fi
+      fi
+      if [[ $state == chain ]]; then
+        # prepend base command to words to make _arguments happy
+        words=(xdotool "$words[@]")
+        (( CURRENT++ ))
+        compstate[restore]=
+        return 300
+      elif (( CURRENT == 1 )); then
+        _command_names -e
+      else
+        _normal
+      fi
+      ;;
+  esac
+  return 1
+}
+_xdotool_sleep () {
+  # chainable
+  local context state state_descr line
+  typeset -A opt_args
+  __before
+  _arguments -S \
+    ': :_guard_ufloat "seconds to wait (fractions are valid)"' \
+    '*::: := ->chain' && return
+  __after
+  if [[ $state == chain ]]; then
+    compstate[restore]=
+    return 300
+  fi
+  return 1
+}
+# }}}
+
+# desktop commands {{{
+_xdotool_get_num_desktops () {
+  #_message 'no more arguments'
+  return 300
+}
+_xdotool_set_num_desktops () {
+  # 1:integer
+  _arguments -S ': :_guard_uint "number of desktops"'
+}
+_xdotool_get_desktop () {
+  #_message 'no more arguments'
+  return 300
+}
+_xdotool_set_desktop () {
+  # chainable
+  # --relative
+  # 1:desktop number or offset
+  local context state state_descr line
+  typeset -A opt_args
+  local desktop_arg=': :__xdotool_desktop'
+  if (( words[(I)--relative] )); then
+    desktop_arg=': :_guard_int "desktop offset"'
+  fi
+  __before
+  # TODO: fix the description for --relative not being shown (see zsh-completions-howto.org)
+  _arguments -S \
+    '--relative[move relative to the current desktop]' \
+    $desktop_arg \
+    '*::: := ->chain' && return
+  __after
+
+  if [[ $state == chain ]]; then
+    compstate[restore]=
+    return 300
+  fi
+  return 1
+}
+_xdotool_get_desktop_for_window () {
+  _arguments -S $window_or_stack
+}
+_xdotool_set_desktop_for_window () {
+  # 1:window
+  # 2:desktop number
+  _arguments -S \
+    $window_or_stack \
+    ': :__xdotool_desktop'
+}
+_xdotool_get_desktop_viewport () {
+  # chainable
+  local context state state_descr line
+  typeset -A opt_args
+  __before
+  _arguments -S \
+    '--shell[output in eval-compatible format]' \
+    '*::: := ->chain' && return
+  __after
+  if [[ $state == chain ]]; then
+    compstate[restore]=
+    return 300
+  fi
+  return 1
+}
+_xdotool_set_desktop_viewport () {
+  # 1:int
+  # 2:int
+  _arguments -S \
+    ': :_guard_uint "left edge (x coordinate)"' \
+    ': :_guard_uint "top edge (y coordinate)"'
+}
+# }}}
+
+# info commands {{{
+_xdotool_help () {
+  return 300
+}
+_xdotool_version () {
+  #_message 'no more arguments'
+  return 300
+}
+# }}}
+
+#_xdotool-getwindowfocus
+
+_xdotool () {
+  local context state line state_descr curcontext="$curcontext" ret=1
+  typeset -A opt_args
+  local windowstack=0 window_or_stack
+
+  while true; do
+    if (( windowstack )); then
+      # make this argument optional
+      window_or_stack=':: :__xdotool_window_or_stack'
+    else
+      window_or_stack=': :__xdotool_window_or_stack'
+    fi
+
+    __before '' curcontext ret
+    _arguments -C \
+      ': :->command' \
+      '*:: :->option-or-argument' && return
+    __after '' curcontext
+
+    ret=1
+    case $state in
+      (command)
+        _xdotool_commands && ret=0
+        ;;
+      (option-or-argument)
+        curcontext=${curcontext%:*:*}:xdotool-$words[1]:
+        if ! _call_function ret _xdotool_$words[1]; then
+          _message "unknown sub-command: $words[1]"
+          break
+        fi
+        __debug_message "after call:" words CURRENT line state ret
+        if (( ret == 300 )); then
+          # chain new command
+          # _arguments in a subcommand leaves the last used arg in words[1],
+          # and the unused args in words[2,-1].
+          words[1]=xdotool
+          curcontext=${curcontext%:*:*}:xdotool:
+          state=
+          continue
+        fi
+        ;;
+    esac
+    break
+  done
+
+  return ret
+}
+
+#zstyle ':completion:*:complete:xdotool-*:*:*' tag-order '(|*-)argument-* (|*-)option-* values options'
+#zstyle ':completion:*:complete:xdotool-*:*:*' prefix-needed false
