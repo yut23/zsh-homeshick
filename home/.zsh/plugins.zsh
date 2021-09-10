@@ -34,7 +34,7 @@ zinit ice nocompletions
 zinit light Tarrasch/zsh-autoenv
 
 zinit ice has'virtualenv' has'pwgen'
-zinit light michaelAquilina/zsh-autoswitch-virtualenv
+zinit light MichaelAquilina/zsh-autoswitch-virtualenv
 
 # load local plugins:
 # * smart-cd: runs ls and git status after cd
