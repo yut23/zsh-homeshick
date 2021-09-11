@@ -6,4 +6,4 @@ export MICROPHYSICS_HOME="$HOME/dev/Microphysics"
 
 export PROJID=ast106
 
-export SCRATCH=$MEMBERWORK/$PROJID
+export SCRATCH=$(readlink -f "$MEMBERWORK/$PROJID")
