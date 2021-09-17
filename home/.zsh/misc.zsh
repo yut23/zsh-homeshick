@@ -57,6 +57,10 @@ if [[ -f /usr/share/doc/pkgfile/command-not-found.zsh ]]; then
   source /usr/share/doc/pkgfile/command-not-found.zsh
 fi
 
+# zsh's builtin which is better than /usr/bin/which
+unalias which &>/dev/null
+unfunction which &>/dev/null
+
 
 # === Named directories ===
 
