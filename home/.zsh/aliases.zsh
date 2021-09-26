@@ -132,3 +132,7 @@ if [[ -d ~/.tmux/clipboard ]]; then
   alias putclip=~/.tmux/clipboard/pushclip.sh
   alias getclip=~/.tmux/clipboard/getcopybuffer.sh
 fi
+
+if (( $+commands[etckeeper] )); then
+  alias etckeeper='sudo etckeeper'
+fi
