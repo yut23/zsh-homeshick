@@ -11,7 +11,6 @@ function cls() {
   emulate -L zsh
   local -a ls_args cat_args files
   while [[ $# -gt 0 ]]; do
-    local arg="$1"
     case "$1" in
       -n|-v|--show-all|--number-nonblank|--show-ends|--number|--squeeze-blank|--show-tabs|--show-nonprinting)
         cat_args+=("$1")
@@ -35,11 +34,19 @@ function cls() {
   if [[ $# -eq 0 ]]; then
     ls "${ls_args[@]}"
   elif [[ $# -eq 1 ]]; then
-    [[ -f $1 ]] && cat "${cat_args[@]}" "$1" || ls "${ls_args[@]}" "$1"
+    if [[ -f $1 ]]; then
+      cat "${cat_args[@]}" -- "$1"
+    else
+      ls "${ls_args[@]}" -- "$1"
+    fi
   else
     for entry in "$@"; do
-      echo "==> $entry <=="
-      cls "${ls_args[@]}" "${cat_args[@]}" "$entry"
+      local sign=""
+      if [[ -d "$entry" ]]; then
+        sign="/"
+      fi
+      echo "==> $entry$sign <=="
+      cls "${ls_args[@]}" "${cat_args[@]}" -- "$entry"
       echo
     done
   fi
