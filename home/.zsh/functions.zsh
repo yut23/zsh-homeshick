@@ -95,7 +95,7 @@ function remove-evince-metadata() {
 }
 
 if (( $+commands[xprop] && $+commands[obxprop] )); then
-  # obxprop is worse than xprop, so alias it to something useful
+  # obxprop is worse than xprop, so just make it a wrapper around xprop
   function obxprop() {
     command xprop -notype $@ | sed -n 's/^_OB_APP_//p'
   }

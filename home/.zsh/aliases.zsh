@@ -135,4 +135,6 @@ fi
 
 if (( $+commands[etckeeper] )); then
   alias etckeeper='sudo etckeeper'
+  alias ek=etckeeper
+  alias ekg='etckeeper vcs'
 fi

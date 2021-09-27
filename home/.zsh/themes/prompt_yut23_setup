@@ -18,7 +18,7 @@ function prompt_yut23_setup {
   local git_prompt='$(my_git_prompt_info)'
   local groups
   groups=($(id -G))
-  # magic subscript globbing ahead
+  # check if gid 0 is present in the groups array
   (( ${+groups[(r)0]} )) && prompt_symbol='#' || prompt_symbol='\$'
   if (( SHLVL > 1 )); then
     prompt_symbol="$SHLVL$prompt_symbol"
