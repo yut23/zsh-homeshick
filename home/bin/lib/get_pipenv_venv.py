@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 """Just the code needed for `pipenv --venv`, without all the heavy imports.
 
 Extracted from https://github.com/pypa/pipenv/tree/9378cb515189d11841a4de49a5ac3c01fca509ec
