@@ -106,6 +106,8 @@ function find_tmux() {
   local -a hosts
   if [[ $system_name == summit ]]; then
     hosts=(login{1..5})
+  elif [[ $system_name == andes ]]; then
+    hosts=(andes-login{1..8})
   elif [[ $system_name == cori ]]; then
     hosts=(cori{01..23})
   elif [[ $system_name == olcf-dtn ]]; then
