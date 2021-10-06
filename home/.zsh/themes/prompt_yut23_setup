@@ -6,17 +6,17 @@ function prompt_yut23_setup {
   prompt_opts=(cr sp percent subst)
 
   # different color for ssh session
-  local user='%{$fg[green]%}%n%{$reset_color%}'
+  local user="%{$fg[green]%}%n%{$reset_color%}"
   if [[ -n "${SSH_CLIENT+1}" ]]; then
     # ssh
-    local host='%{$fg[cyan]%}@'$HOSTNAME'%{$reset_color%}'
+    local host="%{$fg[cyan]%}@$HOSTNAME%{$reset_color%}"
   else
     # local
-    local host='%{$fg[green]%}@'$HOSTNAME'%{$reset_color%}'
+    local host="%{$fg[green]%}@$HOSTNAME%{$reset_color%}"
   fi
-  local current_dir='%{$fg[yellow]%}%~%{$reset_color%}'
-  local git_prompt='$(my_git_prompt_info)'
-  local groups
+  local current_dir="%{$fg[yellow]%}%~%{$reset_color%}"
+  local git_prompt='$(_my_git_prompt_info)'
+  local -a groups
   groups=($(id -G))
   # check if gid 0 is present in the groups array
   (( ${+groups[(r)0]} )) && prompt_symbol='#' || prompt_symbol='\$'
@@ -25,19 +25,19 @@ function prompt_yut23_setup {
   fi
   local throttled=''
   if [[ -e "/sys/fs/cgroup/cpu/user.slice/user-$UID.slice/cpu.stat" ]]; then
-    throttled='$(check_throttled)'
+    throttled='$(_check_throttled)'
   fi
 
   PS1="
 ${user}${host}${throttled} ${current_dir} ${git_prompt}
 ${prompt_symbol} "
-  RPS1="%{$fg[green]%}\$(virtualenv_info)%{$reset_color%}${exit_code}"
+  RPS1="%{$fg[green]%}\$(_virtualenv_info)%{$reset_color%}${exit_code}"
 
   zle -N zle-keymap-select
   zle -N zle-line-finish
 }
 
-function virtualenv_info {
+function _virtualenv_info {
   if [[ -n "$CONDA_DEFAULT_ENV" ]]; then
     echo "($CONDA_DEFAULT_ENV) "
   elif [[ -n "$VIRTUAL_ENV" ]] then
@@ -45,7 +45,7 @@ function virtualenv_info {
   fi
 }
 
-function check_throttled {
+function _check_throttled {
   # read cpu.stat into an associative array
   local -A cpu_stat
   cpu_stat=(${(@)$(<"/sys/fs/cgroup/cpu/user.slice/user-$UID.slice/cpu.stat")})
@@ -63,7 +63,7 @@ function zle-line-finish {
   [[ $TERM =~ "xterm.*" || $TERM =~ "screen.*" ]] && echo -n '[5 q'
 }
 
-function my_git_prompt_info() {
+function _my_git_prompt_info() {
   local ref index git_status
   local symbol_untracked="%%"
   local symbol_added="+"
