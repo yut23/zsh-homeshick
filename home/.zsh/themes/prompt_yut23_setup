@@ -23,9 +23,13 @@ function prompt_yut23_setup {
   if (( SHLVL > 1 )); then
     prompt_symbol="$SHLVL$prompt_symbol"
   fi
+  local throttled=''
+  if [[ -e "/sys/fs/cgroup/cpu/user.slice/user-$UID.slice/cpu.stat" ]]; then
+    throttled='$(check_throttled)'
+  fi
 
   PS1="
-${user}${host} ${current_dir} ${git_prompt}
+${user}${host}${throttled} ${current_dir} ${git_prompt}
 ${prompt_symbol} "
   RPS1="%{$fg[green]%}\$(virtualenv_info)%{$reset_color%}${exit_code}"
 
@@ -38,6 +42,15 @@ function virtualenv_info {
     echo "($CONDA_DEFAULT_ENV) "
   elif [[ -n "$VIRTUAL_ENV" ]] then
     echo "%{$fg[blue]%}(${VIRTUAL_ENV:t}) "
+  fi
+}
+
+function check_throttled {
+  # read cpu.stat into an associative array
+  local -A cpu_stat
+  cpu_stat=(${(@)$(<"/sys/fs/cgroup/cpu/user.slice/user-$UID.slice/cpu.stat")})
+  if [[ $cpu_stat[nr_throttled] -gt 0 ]]; then
+    echo " %{$fg_bold[red]%}throttled%{$reset_color%}"
   fi
 }
 
