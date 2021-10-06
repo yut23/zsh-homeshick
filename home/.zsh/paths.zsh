@@ -26,6 +26,8 @@ fi
 
 # Prepend user bin and .local/bin
 path[1,0]=("$HOME/bin" "$HOME/.local/bin")
+# Prepend architecture-specific bin
+path[1,0]=("$HOME/bin/$(uname -m)")
 if [[ -n $system_name ]]; then
   # Prepend system-specific bin
   path[1,0]=("$HOME/bin/$system_name")
