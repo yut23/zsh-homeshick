@@ -44,6 +44,10 @@ zinit light MichaelAquilina/zsh-autoswitch-virtualenv
   fi
 }
 
+# replace any existing TPM-managed repo with a link to ours
+zinit ice atclone'rm -rf ~/.tmux/plugins/tmux-update-env; ln -s -T "$PWD" ~/.tmux/plugins/tmux-update-env'
+zinit light yut23/tmux-update-env
+
 # load local plugins:
 # * smart-cd: runs ls and git status after cd
 zinit light "$HOME/.zsh/plugins"
