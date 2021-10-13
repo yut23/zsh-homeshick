@@ -99,6 +99,7 @@ if (( $+commands[xprop] && $+commands[obxprop] )); then
   function obxprop() {
     command xprop -notype $@ | sed -n 's/^_OB_APP_//p'
   }
+  compdef obxprop=xprop
 fi
 
 function find_tmux() {

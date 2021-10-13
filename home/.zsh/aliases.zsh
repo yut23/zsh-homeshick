@@ -86,6 +86,9 @@ alias jctl='journalctl'
 alias sctlu='systemctl --user'
 alias jctlu='journalctl --user'
 
+alias cgtop='systemd-cgtop --cpu=time /user.slice/user-$UID.slice -1'
+alias cgls='systemd-cgls --no-pager /user.slice/user-$UID.slice'
+
 # various neovim aliases
 if (( $+commands[nvim] )); then
   alias nview='nvim -R'
