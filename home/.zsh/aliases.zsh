@@ -87,7 +87,7 @@ alias sctlu='systemctl --user'
 alias jctlu='journalctl --user'
 
 # systemd-cgtop doesn't clear the screen if the terminal is dumb (see cgtop.c#display())
-alias cgtop='TERM=dumb systemd-cgtop --cpu=time /user.slice/user-$UID.slice -1'
+alias cgtop='TERM=dumb systemd-cgtop --cpu=time /user.slice/user-$UID.slice -n 1'
 alias cgls='systemd-cgls --no-pager /user.slice/user-$UID.slice'
 
 # various neovim aliases
