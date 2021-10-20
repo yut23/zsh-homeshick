@@ -106,7 +106,17 @@ function find_tmux() {
   emulate -LR zsh
   unsetopt MONITOR
   local -a hosts
-  if [[ $system_name == summit ]]; then
+  local tmux_cmd
+  tmux_cmd=tmux
+  if (( $+commands[tmux] )); then
+    tmux_cmd==tmux
+  fi
+  if [[ "$1" == perlmutter ]]; then
+    # this only works from cori or dtn, since the login nodes don't have
+    # host-based authentication set up
+    hosts=(login{01..40}.perlmutter.nersc.gov)
+    tmux_cmd=tmux
+  elif [[ $system_name == summit ]]; then
     hosts=(login{1..5})
   elif [[ $system_name == andes ]]; then
     hosts=(andes-login{1..8})
@@ -122,7 +132,7 @@ function find_tmux() {
       continue
     fi
     # grep: match the whole line against a fixed string
-    ssh "$h" =tmux ls -F '\#{session_name}' 2>/dev/null | grep -qFx "ssh-$USER" && echo "$h" &
+    ssh "$h" "$tmux_cmd" ls -F '\#{session_name}' 2>/dev/null | grep -qFx "ssh-$USER" && echo "$h" &
     sleep 0.2
   done
   wait
