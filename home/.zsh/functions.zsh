@@ -103,7 +103,8 @@ if (( $+commands[xprop] && $+commands[obxprop] )); then
 fi
 
 function find_tmux() {
-  emulate -L zsh
+  emulate -LR zsh
+  unsetopt MONITOR
   local -a hosts
   if [[ $system_name == summit ]]; then
     hosts=(login{1..5})
@@ -120,8 +121,9 @@ function find_tmux() {
     if [[ $h == $HOSTNAME && -n ${TMUX_SSH+x} ]]; then
       continue
     fi
-    if ssh "$h" =tmux ls -F '\#{session_name}' 2>/dev/null | grep '^ssh-'"$USER"'$' &>/dev/null; then
-      echo "$h"
-    fi
+    # grep: match the whole line against a fixed string
+    ssh "$h" =tmux ls -F '\#{session_name}' 2>/dev/null | grep -qFx "ssh-$USER" && echo "$h" &
+    sleep 0.2
   done
+  wait
 }
