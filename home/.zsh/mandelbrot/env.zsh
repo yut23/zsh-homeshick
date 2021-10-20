@@ -18,3 +18,6 @@ export PERL_DESTRUCT_LEVEL=2
 
 # get rid of intrusive pygame import message
 export PYGAME_HIDE_SUPPORT_PROMPT=1
+
+# remove __pycache__ folders (introduced in Python 3.8)
+export PYTHONPYCACHEPREFIX="$HOME/.cache/pycache"

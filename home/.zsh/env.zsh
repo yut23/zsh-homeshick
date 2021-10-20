@@ -50,9 +50,6 @@ if (( $+commands[pipenv] )); then
   export PIPENV_MAX_DEPTH=50
 fi
 
-# remove __pycache__ folders (introduced in Python 3.8)
-export PYTHONPYCACHEPREFIX="$HOME/.cache/pycache"
-
 # fix man page colors in less
 export MANROFFOPT="-c"
 
