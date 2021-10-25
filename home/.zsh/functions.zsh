@@ -137,3 +137,19 @@ function find_tmux() {
   done
   wait
 }
+
+function read_ctlseq() {
+  local output
+  local char
+  printf "$@"
+  if read -s -t 0.1 -k char; then
+    output="$output$char"
+    while read -s -t -k char; do
+      output="$output$char"
+    done
+    printf '%s' "${(V)output}"
+  else
+    echo 'No response from terminal'
+  fi
+  REPLY="$output"
+}
