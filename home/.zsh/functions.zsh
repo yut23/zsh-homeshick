@@ -104,7 +104,6 @@ fi
 
 function find_tmux() {
   emulate -LR zsh
-  unsetopt MONITOR
   local -a hosts
   local tmux_cmd
   tmux_cmd=tmux
@@ -125,17 +124,13 @@ function find_tmux() {
   elif [[ $system_name == olcf-dtn ]]; then
     hosts=(dtn{35..38})
   fi
-  local h
-  for h in "${hosts[@]}"; do
-    # exclude $HOSTNAME, if we're currently in tmux
-    if [[ $h == $HOSTNAME && -n ${TMUX_SSH+x} ]]; then
-      continue
-    fi
-    # grep: match the whole line against a fixed string
-    ssh "$h" "$tmux_cmd" ls -F '\#{session_name}' 2>/dev/null | grep -qFx "ssh-$USER" && echo "$h" &
-    sleep 0.2
-  done
-  wait
+  # exclude $HOSTNAME, if we're currently in tmux
+  if [[ -n ${TMUX_SSH+x} ]]; then
+    hosts=("${hosts[@]:#$HOSTNAME}")
+  fi
+  local -a ssh_cmd
+  ssh_cmd=(sh -c "ssh '{}' '$tmux_cmd' has-session -t '\\=ssh-$USER' &>/dev/null && echo '{}' || true")
+  print -N "${hosts[@]}" | xargs -0 -I '{}' -n 1 -P 4 "${ssh_cmd[@]}"
 }
 
 function read_ctlseq() {
