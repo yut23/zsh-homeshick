@@ -142,3 +142,6 @@ if (( $+commands[etckeeper] )); then
   alias ek=etckeeper
   alias ekg='etckeeper vcs'
 fi
+
+# convert null-terminated lines to standard NL-terminated lines
+alias z2nl='tr \\000 \\n'
