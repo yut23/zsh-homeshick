@@ -1,7 +1,7 @@
 # ~/.zsh/summit/functions.zsh
 
 # wrapper that reads the new job ID and stores it in $last_job
-bsub_wrapper() {
+function bsub_wrapper() {
   emulate -LR zsh
   local myfd output exit_code
   exec {myfd}>&1
@@ -13,4 +13,16 @@ bsub_wrapper() {
     export last_job=$match[1]
   fi
   return $exit_code
+}
+
+function bslots() {
+  emulate -LR zsh
+  local -a lines
+  lines=("${(@f)$(command bslots "$@")}")
+  printf '%s\n' "${lines[1]/SLOTS/NODES}"
+  local line slots
+  for line in ${lines[2,-1]}; do
+    slots=${line%% *}
+    printf '%-*d%s\n' $#slots $(($slots / 42)) "${line:$#slots}"
+  done
 }
