@@ -103,6 +103,9 @@ zstyle '*' single-ignored show
 # Always show menu if there are multiple matches, even if a complete match is entered
 zstyle ':completion:*' accept-exact false
 
+# Group directories first in file completion listings
+zstyle ':completion:*' list-dirs-first true
+
 if (( $+commands[tmx] )); then
   compdef tmx=tmux
 fi
