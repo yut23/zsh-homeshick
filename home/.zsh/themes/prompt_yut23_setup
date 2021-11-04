@@ -64,58 +64,94 @@ function zle-line-finish {
 }
 
 function _my_git_prompt_info() {
-  local ref index git_status
-  local symbol_untracked="%%"
-  local symbol_added="+"
-  local symbol_modified="*"
-  local symbol_renamed="~"
-  local symbol_deleted="!"
-  local symbol_unmerged="?"
-  local symbol_ahead="↑"
-  local symbol_behind="↓"
-  local symbol_diverged="↕"
+  # largely based on Prezto's git-info function
+  local branch git_status format
+  local status_cmd
+  local ahead=0
+  local behind=0
 
-  ref=$(git symbolic-ref HEAD 2> /dev/null) || return
-  # Modified to use pure zsh functions instead of grep
-  index=$(command git status --porcelain -b 2> /dev/null)
-  git_status=""
-  if [[ $index =~ $'\n''\?\? ' ]]; then
-    git_status="$symbol_untracked$git_status"
-  fi
-  if [[ $index =~ $'\n[AM]  ' ]]; then
-    git_status="$symbol_added$git_status"
-  fi
-  if [[ $index =~ $'\n[ AR]M ' ]]; then
-    git_status="$symbol_modified$git_status"
-  fi
-  if [[ $index =~ $'\nR[ M] ' ]]; then
-    git_status="$symbol_renamed$git_status"
-  fi
-  if [[ $index =~ $'\n[ A]D ' ]]; then
-    git_status="$symbol_deleted$git_status"
-  elif [[ $index =~ $'\nD  ' ]]; then
-    git_status="$symbol_deleted$git_status"
-  fi
-  if [[ $index =~ $'\nUU ' ]]; then
-    git_status="$symbol_unmerged$git_status"
-  fi
-  if [[ $index =~ $'^## .*ahead' ]]; then
-    git_status="$symbol_ahead$git_status"
-  fi
-  if [[ $index =~ $'^## .*behind' ]]; then
-    git_status="$symbol_behind$git_status"
-  fi
-  if [[ $index =~ $'^## .*diverged' ]]; then
-    git_status="$symbol_diverged$git_status"
-  fi
-  if [[ -n $git_status ]]; then
-    if [[ $git_status =~ [%+*~\!?] ]]; then
-      echo "%{$terminfo[bold]$fg[red]%}(${ref#refs/heads/} $git_status)%{$reset_color%}"
-    else
-      echo "%{$terminfo[bold]$fg[yellow]%}(${ref#refs/heads/} $git_status)%{$reset_color%}"
+  local added=0
+  local deleted=0
+  local modified=0
+  local renamed=0
+  local unmerged=0
+  local untracked=0
+  local dirty=0
+
+  local -A symbols formats
+  symbols=(
+    [untracked]='%%'
+    [added]='+'
+    [modified]='*'
+    [renamed]='~'
+    [deleted]='!'
+    [unmerged]='?'
+    [ahead]='↑'
+    [behind]='↓'
+  )
+
+  # Use porcelain status for easy parsing.
+  status_cmd="command git status --porcelain --branch"
+
+  # Get current status, branch name, and commit differences with a single git call.
+  while IFS=$'\n' read line; do
+    if [[ -z $branch && "$line" == \#\#\ * ]]; then
+      if [[ "$line" =~ '## (.*)\.\.\.[^[]*(\[(ahead ([0-9]+)?)?((, )?behind ([0-9]+))?\])?' ]]; then
+        branch=$match[1]
+        ahead=${match[4]:-0}
+        behind=${match[7]:-0}
+      fi
+      # don't increment $dirty
+      continue
     fi
+    # Count added, deleted, modified, renamed, unmerged, untracked, dirty.
+    # T (type change) is undocumented, see http://git.io/FnpMGw.
+    # For a table of scenarii, see http://i.imgur.com/2YLu1.png.
+    [[ "$line" == ([ACDMT][\ MT]|[ACMT]D)\ * ]] && (( added++ ))
+    [[ "$line" == [\ ACMRT]D\ * ]] && (( deleted++ ))
+    [[ "$line" == ?[MT]\ * ]] && (( modified++ ))
+    [[ "$line" == R?\ * ]] && (( renamed++ ))
+    [[ "$line" == (AA|DD|U?|?U)\ * ]] && (( unmerged++ ))
+    [[ "$line" == \?\?\ * ]] && (( untracked++ ))
+    (( dirty++ ))
+  done < <(${(z)status_cmd} 2> /dev/null)
+
+  [[ -z $branch ]] && return
+
+  formats=(
+    [untracked]=u
+    [added]=a
+    [modified]=m
+    [renamed]=r
+    [deleted]=d
+    [unmerged]=U
+    [ahead]=A
+    [behind]=B
+  )
+  for key in untracked added modified renamed deleted unmerged ahead behind; do
+    # check values against 0, and replace with nothing if equal
+    # need extra escaping for zformat
+    format="%0($formats[$key]..${symbols[$key]//\%/%%})$format"
+  done
+  zformat -f git_status "$format" \
+    "a:$added" \
+    "A:$ahead" \
+    "B:$behind" \
+    "d:$deleted" \
+    "m:$modified" \
+    "r:$renamed" \
+    "U:$unmerged" \
+    "u:$untracked"
+
+  if [[ -n $git_status ]]; then
+    if (( dirty > 0 )); then
+      color=red
+    else
+      color=yellow
+    fi
+    echo "%{$terminfo[bold]$fg[$color]%}($branch $git_status)%{$reset_color%}"
   else
-    echo "%{$terminfo[bold]$fg[green]%}(${ref#refs/heads/})%{$reset_color%}"
+    echo "%{$terminfo[bold]$fg[green]%}($branch)%{$reset_color%}"
   fi
 }
 
