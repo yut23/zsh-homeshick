@@ -8,7 +8,7 @@ zinit snippet OMZ::plugins/safe-paste
 
 zinit load zsh-users/zsh-history-substring-search
 zinit ice wait'0' lucid
-zinit load zdharma/history-search-multi-word
+zinit load zdharma-continuum/history-search-multi-word
 
 # node version manager
 zinit ice wait'1' lucid has'npm'
@@ -64,7 +64,7 @@ zinit light yut23/ssh-ident
 # this must load after the last completion-related plugin
 zinit ice wait'1' lucid as'null' id-as'zsh-compinit-null' nocd \
   atload'zicompinit; zicdreplay'
-zinit light zdharma/null
+zinit light zdharma-continuum/null
 
 # set theme stuff up now that we don't use OMZ
 fpath=($HOME/.zsh/themes $fpath)
