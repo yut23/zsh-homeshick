@@ -46,3 +46,15 @@ function zoom_arrange() {
   wmctrl -F -r 'Zoom Meeting' -b add,sticky,above
   wmctrl -F -r 'Zoom Meeting' -t -1
 }
+
+function duplicacy-changes() {
+  local repo=$1
+  pushd -q ~/duplicacy
+  if ! [[ -d $repo ]]; then
+    echo "$PWD/$repo: $(errno ENOENT | cut -d' ' -f3-)."
+    return 2
+  fi
+  ~/duplicacy/scripts/backup -n $repo | tee /tmp/duplicacy_$repo.log && \
+  ~/projects/backup/duplicacy_to_ncdu.py /tmp/duplicacy_$repo.log | ncdu -f -
+}
+compdef '_files -W ~/duplicacy -/ -F "*scripts"' duplicacy-changes
