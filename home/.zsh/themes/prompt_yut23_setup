@@ -96,10 +96,10 @@ function _my_git_prompt_info() {
   # Get current status, branch name, and commit differences with a single git call.
   while IFS=$'\n' read line; do
     if [[ -z $branch && "$line" == \#\#\ * ]]; then
-      if [[ "$line" =~ '## (.*)\.\.\.[^[]*(\[(ahead ([0-9]+)?)?((, )?behind ([0-9]+))?\])?' ]]; then
+      if [[ "$line" =~ '## (.*)(\.\.\.[^[]*(\[(ahead ([0-9]+)?)?((, )?behind ([0-9]+))?\])?|$)' ]]; then
         branch=$match[1]
-        ahead=${match[4]:-0}
-        behind=${match[7]:-0}
+        ahead=${match[5]:-0}
+        behind=${match[8]:-0}
       fi
       # don't increment $dirty
       continue
