@@ -66,7 +66,7 @@ function zle-line-finish {
 function _my_git_prompt_info() {
   # largely based on Prezto's git-info function
   local branch git_status format
-  local status_cmd
+  local git_cmd status_cmd
   local ahead=0
   local behind=0
 
@@ -91,7 +91,14 @@ function _my_git_prompt_info() {
   )
 
   # Use porcelain status for easy parsing.
-  status_cmd="command git status --porcelain --branch"
+  git_cmd='command git'
+  if (( $+commands[etckeeper] )); then
+    case $PWD/ in
+      /etc/*)
+        git_cmd='command sudo -p"[etckeeper] password for %u: " etckeeper vcs' ;;
+    esac
+  fi
+  status_cmd="$git_cmd status --porcelain --branch"
 
   # Get current status, branch name, and commit differences with a single git call.
   while IFS=$'\n' read line; do
@@ -114,7 +121,7 @@ function _my_git_prompt_info() {
     [[ "$line" == (AA|DD|U?|?U)\ * ]] && (( unmerged++ ))
     [[ "$line" == \?\?\ * ]] && (( untracked++ ))
     (( dirty++ ))
-  done < <(${(z)status_cmd} 2> /dev/null)
+  done < <(${(Q)${(z)status_cmd}} 2> /dev/null)
 
   [[ -z $branch ]] && return
 
