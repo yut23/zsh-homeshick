@@ -80,14 +80,14 @@ function _my_git_prompt_info() {
 
   local -A symbols formats
   symbols=(
-    [untracked]='%%'
-    [added]='+'
-    [modified]='*'
-    [renamed]='~'
-    [deleted]='!'
-    [unmerged]='?'
-    [ahead]='↑'
-    [behind]='↓'
+    untracked '%%'
+    added '+'
+    modified '*'
+    renamed '~'
+    deleted '!'
+    unmerged '?'
+    ahead '↑'
+    behind '↓'
   )
 
   # Use porcelain status for easy parsing.
@@ -126,14 +126,14 @@ function _my_git_prompt_info() {
   [[ -z $branch ]] && return
 
   formats=(
-    [untracked]=u
-    [added]=a
-    [modified]=m
-    [renamed]=r
-    [deleted]=d
-    [unmerged]=U
-    [ahead]=A
-    [behind]=B
+    untracked u
+    added a
+    modified m
+    renamed r
+    deleted d
+    unmerged U
+    ahead A
+    behind B
   )
   for key in untracked added modified renamed deleted unmerged ahead behind; do
     # check values against 0, and replace with nothing if equal
