@@ -56,11 +56,17 @@ function _check_throttled {
 
 function zle-keymap-select {
   zle reset-prompt
-  [[ ($TERM =~ "xterm.*" || $TERM =~ "screen.*") && $KEYMAP == 'vicmd' ]] && echo -n '[1 q' || echo -n '[5 q'
+  case $TERM in
+    linux|dumb) ;;
+    *) [[ $KEYMAP == 'vicmd' ]] && printf '\033[1 q' || printf '\033[5 q' ;;
+  esac
 }
 
 function zle-line-finish {
-  [[ $TERM =~ "xterm.*" || $TERM =~ "screen.*" ]] && echo -n '[5 q'
+  case $TERM in
+    linux|dumb) ;;
+    *) printf '\033[5 q' ;;
+  esac
 }
 
 function _my_git_prompt_info() {
