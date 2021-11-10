@@ -67,6 +67,8 @@ function zle-line-finish {
     linux|dumb) ;;
     *) printf '\033[5 q' ;;
   esac
+  # from GRML zshrc
+  zle-rmkx
 }
 
 function _my_git_prompt_info() {
