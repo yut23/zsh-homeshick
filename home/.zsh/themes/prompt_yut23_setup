@@ -65,10 +65,12 @@ function zle-keymap-select {
 function zle-line-finish {
   case $TERM in
     linux|dumb) ;;
-    *) printf '\033[5 q' ;;
+    *)
+      printf '\033[5 q'
+      # from GRML zshrc
+      zle-rmkx
+      ;;
   esac
-  # from GRML zshrc
-  zle-rmkx
 }
 
 function _my_git_prompt_info() {
