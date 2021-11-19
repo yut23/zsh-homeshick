@@ -7,11 +7,6 @@ else
   export PAGER=less
 fi
 
-# Terminal emulator stuff
-if [[ ! ($TERM =~ screen || $TERM =~ tmux) && $TEMU == terminator ]]; then
-  export TERM=xterm-256color
-fi
-
 # Set editor
 if (( $+commands[nvim] )); then
   export EDITOR=nvim
