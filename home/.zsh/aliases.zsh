@@ -33,15 +33,22 @@ alias locater='noglob locate --regex'
 
 alias history='fc -il'
 # hag searches history and displays extra metadata, hagc just prints commands
-if (( $+commands[ag] )); then
-  alias hag="fc -il 1 | grep -vE '  hagc? ' | ag"
-  alias hagc="fc -ln 1 | grep -vE '^hagc? ' | ag"
-  alias psa='ps ax | grep -vE "\bag\b" | ag'
-else
-  alias hag="fc -il 1 | grep -vE '  hagc? ' | grep -E"
-  alias hagc="fc -ln 1 | grep -vE '^hagc? ' | grep -E"
-  alias psa='ps ax | grep -vE "\bgrep\b" | grep --color=always -E'
-fi
+() {
+  local searcher cmd
+  if (( $+commands[rg] )); then
+    searcher=rg
+    cmd=rg
+  elif (( $+commands[ag] )); then
+    searcher=ag
+    cmd=ag
+  else
+    searcher=grep
+    cmd="grep -E"
+  fi
+  alias hag="fc -il 1 | grep -vE '  hagc? ' | $cmd"
+  alias hagc="fc -ln 1 | grep -vE '^hagc? ' | $cmd"
+  alias psa='ps ax | grep -vE "\b'"$searcher"'\b" | '"$cmd"
+}
 
 alias free='free -m'
 if (( $+commands[axel] )); then
