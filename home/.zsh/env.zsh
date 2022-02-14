@@ -54,3 +54,10 @@ export MANROFFOPT="-c"
 # -j5: show 5 lines before the search target
 # -R: output color escape sequences raw
 export LESS="Fij5R"
+
+if (( $+commands[rg] )) ; then
+  export RIPGREP_CONFIG_PATH=$HOME/.config/ripgreprc
+  if ! [[ -e "$RIPGREP_CONFIG_PATH" ]]; then
+    unset RIPGREP_CONFIG_PATH
+  fi
+fi
