@@ -24,6 +24,7 @@ if [[ -z "${system_name:+x}" ]]; then
     system_name=$HOSTNAME
   fi
 fi
+export system_name
 
 # work around some weird bug with OverlayFS encountered on cori08
 if [[ $system_name == cori ]] && ! readlink /etc/zsh.zshrc.local &>/dev/null; then
