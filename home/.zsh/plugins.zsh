@@ -50,7 +50,7 @@ zinit light yut23/tmux-update-env
 
 # load local plugins:
 # * smart-cd: runs ls and git status after cd
-zinit light "$HOME/.zsh/plugins"
+zinit light "$HOME/.zsh/plugins/smart-cd"
 
 # homeshick completion
 if [[ ! -f $ZINIT[COMPLETIONS_DIR]/_homeshick ]]; then

@@ -7,9 +7,8 @@ _smart_cd_chpwd_handler () {
   emulate -L zsh
 
   if [[ $SMART_CD_LS == true ]]; then
-    if [[ ($SMART_CD_ONLY_IF_FITS != true) ||
-          (($SMART_CD_ONLY_IF_FITS == true) &&
-          ($(ls -CF --group-directories-first --width=$(tput cols) | wc -l) -lt $(tput lines))) ]]; then
+    if [[ $SMART_CD_ONLY_IF_FITS != true ||
+          $(ls -CF --group-directories-first --width=$(tput cols) | wc -l) -lt $(tput lines) ]]; then
       ls -hF --group-directories-first --color=auto
     fi
   fi
