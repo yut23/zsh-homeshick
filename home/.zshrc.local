@@ -50,6 +50,8 @@ fi
 ulimit -c 0
 
 # Disable flow control keybindings (ctrl-s and ctrl-q)
-stty -ixon
+if [[ -t 0 ]]; then
+  stty -ixon
+fi
 
 source "${HOME}/.zsh/zshrc"
