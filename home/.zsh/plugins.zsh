@@ -57,7 +57,7 @@ zinit light yut23/ssh-ident
 
 # this must load after the last completion-related plugin
 zinit ice wait'1' lucid as'null' id-as'zsh-compinit-null' nocd \
-  atload'zicompinit; zicdreplay'
+  atload'zicdreplay'
 zinit light zdharma-continuum/null
 
 # set theme stuff up now that we don't use OMZ
