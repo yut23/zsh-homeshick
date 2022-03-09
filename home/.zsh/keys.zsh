@@ -37,15 +37,22 @@ KEYTIMEOUT=20
 # Shift-Return to insert newline
 bindkey '^J' self-insert
 
-# bind UP and DOWN arrow keys
-bindkey "$terminfo[kcuu1]" history-substring-search-up
-bindkey "$terminfo[kcud1]" history-substring-search-down
-bindkey '[A' history-substring-search-up
-bindkey '[B' history-substring-search-down
+# bind up and down arrow keys to search through history
+if zle -l history-substring-search-up history-substring-search-down; then
+  bindkey "$terminfo[kcuu1]" history-substring-search-up
+  bindkey "$terminfo[kcud1]" history-substring-search-down
+  bindkey '[A' history-substring-search-up
+  bindkey '[B' history-substring-search-down
 
-# bind k and j for VI mode
-bindkey -M vicmd 'k' history-substring-search-up
-bindkey -M vicmd 'j' history-substring-search-down
+  # bind k and j for VI mode
+  bindkey -M vicmd 'k' history-substring-search-up
+  bindkey -M vicmd 'j' history-substring-search-down
+else
+  bindkey "$terminfo[kcuu1]" up-line-or-search
+  bindkey "$terminfo[kcud1]" down-line-or-search
+  bindkey '[A' up-line-or-search
+  bindkey '[B' down-line-or-search
+fi
 
 # bind ctrl-backspace to delete previous word
 bindkey '' backward-kill-word
