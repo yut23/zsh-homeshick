@@ -1,7 +1,5 @@
 # ~/.zsh/misc.zsh
 
-cachedir="$HOME/.zsh/cache"
-
 # === Shell Options ===
 # error on invalid globs
 setopt nomatch
@@ -81,7 +79,7 @@ zstyle ':completion:*:*:*:*:*' menu select
 
 # Use caching
 zstyle ':completion::complete:*' use-cache 1
-zstyle ':completion::complete:*' cache-path "$cachedir"
+zstyle ':completion::complete:*' cache-path "$cache_dir"
 
 # Don't complete uninteresting users
 zstyle ':completion:*:*:*:users' ignored-patterns \

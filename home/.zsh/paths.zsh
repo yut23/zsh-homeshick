@@ -9,15 +9,37 @@ typeset -gxU infopath INFOPATH
 # Tie the new paths.
 typeset -gxTU INFOPATH infopath
 
-# Ruby gems
-if (( $+commands[ruby] && $+commands[gem] )); then
-  path[1,0]="$(ruby -rrubygems -e 'puts Gem.user_dir')/bin"
-fi
+() {
+  # these are relatively expensive, so cache them
+  local cache_file="$cache_dir/paths"
+  local -A path_cache
+  if [[ -e "$cache_file" ]]; then
+    . "$cache_file"
+  fi
+  local modified=0
+  function cache_lookup() {
+    local name=$1
+    shift
+    if ! (( $+path_cache[$name] )); then
+      path_cache[$name]="$("$@")"
+      modified=1
+    fi
+    path[1,0]="$path_cache[$name]"
+  }
+  # Ruby gems
+  if (( $+commands[ruby] && $+commands[gem] )); then
+    cache_lookup rubygems ruby -rrubygems -e 'puts Gem.user_dir + "/bin"'
+  fi
 
-# LuaRocks rocks
-if (( $+commands[luarocks] )); then
-  path[1,0]="$(luarocks --local config deploy_bin_dir)"
-fi
+  # LuaRocks rocks
+  if (( $+commands[luarocks] )); then
+    cache_lookup luarocks luarocks --local config deploy_bin_dir
+  fi
+
+  if (( $modified )); then
+    typeset path_cache > "$cache_file"
+  fi
+}
 
 # dotnet tools
 if (( $+commands[dotnet] )); then

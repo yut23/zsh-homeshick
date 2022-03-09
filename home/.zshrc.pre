@@ -11,14 +11,15 @@ if [ "${TERM%.autotmux-*}" != "$TERM" ]; then
   TERM=${TERM%.autotmux-*}
 fi
 
-# GRML settings
+cache_dir="$HOME/.zsh/cache"
 
+# GRML settings
 export COMMAND_NOT_FOUND=0     # disable command not found hook
 export GRML_COMP_CACHING='no'  # handled by antigen
 export GRML_NO_APT_ALIASES=1   # disable apt-* aliases
 export GRML_NO_SMALL_ALIASES=1 # disable extraneous aliases
 export REPORTTIME=5  # show time info for commands that run longer than 5 seconds
-export COMPDUMPFILE="$HOME/.zsh/cache/zcompdump"  # use unified compdump file
+export COMPDUMPFILE="$cache_dir/zcompdump"  # use unified compdump file
 
 # disable persistent dirstack
 zstyle ':grml:chpwd:dirstack' enable false
