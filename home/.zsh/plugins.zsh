@@ -33,16 +33,10 @@ AUTOENV_FILE_LEAVE=.autoenv.zsh
 zinit ice nocompletions
 zinit light Tarrasch/zsh-autoenv
 
-zinit ice has'virtualenv' has'pwgen'
+# use my much-faster `pipenv --venv` script
+zinit ice has'virtualenv' has'pwgen' \
+  subst'pipenv --venv -> ~/bin/lib/get_pipenv_venv.py'
 zinit light MichaelAquilina/zsh-autoswitch-virtualenv
-
-() {
-  # patch zsh-autoswitch-virtualenv to use my much-faster `pipenv --venv` script
-  local code
-  if code="$(typeset -f _activate_pipenv)"; then
-    eval "${code/pipenv --venv/~/bin/lib/get_pipenv_venv.py}"
-  fi
-}
 
 # replace any existing TPM-managed repo with a link to ours
 zinit ice atclone'rm -rf ~/.tmux/plugins/tmux-update-env; ln -s -T "$PWD" ~/.tmux/plugins/tmux-update-env'
