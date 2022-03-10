@@ -24,7 +24,7 @@ function prompt_yut23_setup {
     prompt_symbol="$SHLVL$prompt_symbol"
   fi
   local throttled=''
-  if [[ $system_name == summit ]]; then
+  if [[ $system_name == summit && -e "/sys/fs/cgroup/cpu/user.slice/user-$UID.slice" ]]; then
     throttled='$(_check_throttled)'
   fi
 
