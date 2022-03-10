@@ -171,4 +171,5 @@ function _my_git_prompt_info() {
   fi
 }
 
+prompt_yut23_setup
 # vim: filetype=zsh

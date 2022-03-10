@@ -64,6 +64,4 @@ zinit light zdharma-continuum/null
 fpath=($HOME/.zsh/themes $fpath)
 autoload -U promptinit && promptinit
 autoload -U colors && colors
-# IDK why this needs to be run twice, but it does
-prompt yut23
 prompt yut23
