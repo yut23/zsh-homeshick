@@ -3,8 +3,15 @@
 # needed for safe-paste to add its binding to the right keymap, on zsh < 5.1
 bindkey -v
 # don't automatically run multiline pastes
-#zinit ice wait lucid
-zinit snippet OMZ::plugins/safe-paste
+if [[ $HOST != ZB<->-host ]]; then
+  #zinit ice wait lucid
+  zinit snippet OMZ::plugins/safe-paste
+else
+  # zsh-bench compatible version for zsh >= 5.1
+  set zle_bracketed_paste  # Explicitly restore this zsh default
+  autoload -Uz bracketed-paste-magic
+  zle -N bracketed-paste bracketed-paste-magic
+fi
 
 zinit load zsh-users/zsh-history-substring-search
 zinit ice wait'0' lucid

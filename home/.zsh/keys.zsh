@@ -34,8 +34,10 @@ bindkey -M viins 'jj' vi-cmd-mode
 # Decrease the time to wait for the rest of a prefix from 0.4s to 0.2s
 KEYTIMEOUT=20
 
-# Shift-Return to insert newline
-bindkey '^J' self-insert
+if [[ $HOST != ZB<->-host ]]; then  # breaks zsh-bench
+  # Shift-Return to insert newline
+  bindkey '^J' self-insert
+fi
 
 # bind up and down arrow keys to search through history
 if zle -l history-substring-search-up history-substring-search-down; then
