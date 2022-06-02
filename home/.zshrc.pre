@@ -12,6 +12,9 @@ if [ "${TERM%.autotmux-*}" != "$TERM" ]; then
 fi
 
 cache_dir="$HOME/.zsh/cache"
+if ! [[ -d "$cache_dir" ]]; then
+  mkdir -p "$cache_dir"
+fi
 
 # GRML settings
 export COMMAND_NOT_FOUND=0     # disable command not found hook
