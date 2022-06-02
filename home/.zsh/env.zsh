@@ -61,3 +61,8 @@ if (( $+commands[rg] )) ; then
     unset RIPGREP_CONFIG_PATH
   fi
 fi
+
+# Forwarded ssh agent: managed by ~/.ssh/rc (in tmux castle)
+if [[ -e ~/.ssh/ssh_auth_sock ]]; then
+  export SSH_AUTH_SOCK=~/.ssh/ssh_auth_sock
+fi
