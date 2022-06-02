@@ -68,7 +68,7 @@ zinit ice wait'1' lucid as'null' id-as'zsh-compinit-null' nocd \
 zinit light zdharma-continuum/null
 
 if [[ $system_name == blackwidow ]] || [[ $system_name == xrb ]]; then
-  zinit ice wait'0' lucid as'null' id-as'conda-base' nocd \
+  zinit ice wait'0' lucid as'null' id-as'conda-base' has'conda' nocd \
     atload'conda activate base'
   zinit light zdharma-continuum/null
 fi
