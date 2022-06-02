@@ -67,6 +67,12 @@ zinit ice wait'1' lucid as'null' id-as'zsh-compinit-null' nocd \
   atload'zicdreplay'
 zinit light zdharma-continuum/null
 
+if [[ $system_name == blackwidow ]]; then
+  zinit ice wait'0' lucid as'null' id-as'conda-base' has'conda' nocd \
+    atload'conda activate base'
+  zinit light zdharma-continuum/null
+fi
+
 # set theme stuff up now that we don't use OMZ
 fpath=($HOME/.zsh/themes $fpath)
 autoload -U promptinit && promptinit
