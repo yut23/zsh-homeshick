@@ -716,7 +716,8 @@ typeset -U path PATH cdpath CDPATH fpath FPATH manpath MANPATH
 
 # Load a few modules
 is4 && \
-for mod in parameter complist deltochar mathfunc ; do
+#for mod in parameter complist deltochar mathfunc ; do
+for mod in parameter complist ; do
     zmodload -i zsh/${mod} 2>/dev/null
     grml_status_feature mod:$mod $?
 done && builtin unset -v mod
@@ -915,6 +916,7 @@ function grmlcomp () {
 
     # use generic completion system for programs not yet defined; (_gnu_generic works
     # with commands that provide a --help option with "standard" gnu-like output.)
+    if false; then
     for compcom in cp deborphan df feh fetchipac gpasswd head hnb ipacsum mv \
                    pal stow uname ; do
         [[ -z ${_comps[$compcom]} ]] && compdef _gnu_generic ${compcom}
@@ -922,6 +924,7 @@ function grmlcomp () {
 
     # see upgrade function in this file
     compdef _hosts upgrade
+    fi
 }
 
 # Keyboard setup: The following is based on the same code, we wrote for
@@ -2498,7 +2501,8 @@ function grml_prompt_fallback () {
     fi
 }
 
-if zrcautoload promptinit && promptinit 2>/dev/null ; then
+#if zrcautoload promptinit && promptinit 2>/dev/null ; then
+if false; then
     grml_status_feature promptinit 0
     # Since we define the required functions in here and not in files in
     # $fpath, we need to stick the theme's name into `$prompt_themes'
@@ -2508,10 +2512,11 @@ if zrcautoload promptinit && promptinit 2>/dev/null ; then
     prompt_themes=( "${(@on)prompt_themes}" )
 else
     grml_status_feature promptinit 1
-    grml_prompt_fallback
-    function precmd () { (( ${+functions[vcs_info]} )) && vcs_info; }
+    #grml_prompt_fallback
+    #function precmd () { (( ${+functions[vcs_info]} )) && vcs_info; }
 fi
 
+if false; then
 if is437; then
     # The prompt themes use modern features of zsh, that require at least
     # version 4.3.7 of the shell. Use the fallback otherwise.
@@ -2543,6 +2548,7 @@ if is437; then
 else
     grml_prompt_fallback
     function precmd () { (( ${+functions[vcs_info]} )) && vcs_info; }
+fi
 fi
 
 # make sure to use right prompt only when not running a command
@@ -2719,9 +2725,11 @@ function iso2utf () {
 }
 
 # especially for roadwarriors using GNU screen and ssh:
+if false; then
 if ! check_com asc &>/dev/null ; then
   function asc () { autossh -t "$@" 'screen -RdU' }
   compdef asc=ssh
+fi
 fi
 
 #f1# Hints for the use of zsh on grml
@@ -3027,6 +3035,7 @@ function sll () {
     return ${RTN}
 }
 
+if false; then
 if check_com -c $PAGER ; then
     #f3# View Debian's changelog of given package(s)
     function dchange () {
@@ -3115,6 +3124,7 @@ if check_com -c $PAGER ; then
     function _uchange () { _files -W /usr/share/doc -/ }
     compdef _uchange uchange
 fi
+fi
 
 # zsh profiling
 function profile () {
@@ -3133,6 +3143,7 @@ function edfunc () {
 }
 compdef _functions edfunc
 
+if false; then
 # use it e.g. via 'Restart apache2'
 #m# f6 Start() \kbd{service \em{process}}\quad\kbd{start}
 #m# f6 Restart() \kbd{service \em{process}}\quad\kbd{restart}
@@ -3180,6 +3191,7 @@ if [[ -d /etc/init.d || -d /etc/service ]] ; then
         compdef _grmlinitd $i
     done
     builtin unset -v i
+fi
 fi
 
 #f1# Provides useful information on globbing
