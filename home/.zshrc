@@ -2560,7 +2560,7 @@ function ESC_print () {
     info_print $'\ek' $'\e\\' "$@"
 }
 function set_title () {
-    info_print  $'\e]0;' $'\a' "$@"
+    info_print  $'\e]0;' $'\e\\' "$@"
 }
 
 function info_print () {
@@ -3726,12 +3726,12 @@ function __archive_or_uri () {
         '_urls:Remote Archives:_urls'
 }
 
-function _simple_extract () {
+function _simple-extract () {
     _arguments \
         '-d[delete original archivefile after extraction]' \
         '*:Archive Or Uri:__archive_or_uri'
 }
-compdef _simple_extract simple-extract
+compdef _simple-extract simple-extract
 [[ -n "$GRML_NO_SMALL_ALIASES" ]] || alias se=simple-extract
 
 #f5# Change the xterm title from within GNU-screen
