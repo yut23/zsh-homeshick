@@ -42,7 +42,7 @@ if [[ -n "${system_name:+x}" && -f "$HOME/.zsh/$system_name/modules.zsh" ]]; the
 fi
 
 # If in ssh, get into tmux ASAP
-if [[ -f "$HOME/.tmux/autotmux.zsh" ]]; then
+if [[ -f "$HOME/.tmux/autotmux.zsh" && $HOST != ZB<->-host ]]; then
   source "$HOME/.tmux/autotmux.zsh"
 fi
 
