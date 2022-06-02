@@ -157,10 +157,33 @@ if [[ $system_name == (summit|andes|olcf-dtn) ]]; then
     fi
     local suffix=${${PWD:t}#run}
     cd -q "../analysis$suffix" 2>/dev/null || true
-    for plotfile in ../run$suffix/*plt*; do
-      [[ "$plotfile" == *plt*.old.* ]] && continue
-      [[ -e "${plotfile:t}_slice.png" ]] && continue
-      echo "${plotfile:t}"
+    {
+      find ../run$suffix -maxdepth 1 -type d \( -name *plt* -a \! -name *plt*.old.* \)
+      if [[ -d ../run$suffix/plotfiles ]]; then
+        find ../run$suffix/plotfiles -maxdepth 1 -type d \( -name *plt* -a \! -name *plt*.old.* \)
+      fi
+    } | while read -r plotfile; do
+      [[ -e "${plotfile:t}_slice.png" ]] || echo "${plotfile:t}"
     done | sort
   )
+fi
+
+if [[ -e ~/submit/run_backup.zsh ]]; then
+  alias run_backup=$HOME/submit/run_backup.zsh
+  if (( $+commands[bsub] )); then
+    function bsub() {
+      if [[ $# -ge 1 && -e "${@[$#]}" ]]; then
+        ~/submit/run_backup.zsh -n "${@[$#]}"
+      fi
+      command bsub "$@"
+    }
+  fi
+  if (( $+commands[sbatch] )); then
+    function sbatch() {
+      if [[ $# -ge 1 && -e "${@[$#]}" ]]; then
+        ~/submit/run_backup.zsh -n "${@[$#]}"
+      fi
+      command sbatch "$@"
+    }
+  fi
 fi
