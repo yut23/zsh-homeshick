@@ -28,3 +28,7 @@ zstyle ':grml:chpwd:dirstack' enable false
 declare -A ZINIT
 ZINIT[ZCOMPDUMP_PATH]="$COMPDUMPFILE"
 source "$HOME/.zinit/bin/zinit.zsh"
+
+# add custom completions before compinit
+fpath[1,0]=("$HOME/.zsh/completions")
+fpath=($^fpath(N-/))

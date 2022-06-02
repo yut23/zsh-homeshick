@@ -1075,5 +1075,6 @@ _xdotool () {
   return ret
 }
 
+_xdotool "$@"
 #zstyle ':completion:*:complete:xdotool-*:*:*' tag-order '(|*-)argument-* (|*-)option-* values options'
 #zstyle ':completion:*:complete:xdotool-*:*:*' prefix-needed false

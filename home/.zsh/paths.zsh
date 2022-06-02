@@ -57,10 +57,6 @@ fi
 # Remove any entries that don't actually exist
 path=($^path(N-/))
 
-# Add custom completions
-fpath[1,0]=("$HOME/.zsh/completions")
-fpath=($^fpath(N-/))
-
 # Include user info
 infopath+=("$HOME/.local/share/info")
 infopath=($^infopath(N-/))
