@@ -53,9 +53,19 @@ export MANROFFOPT="-c"
 # -i: case-insensitive search, unless there are capital letters
 # -j5: show 5 lines before the search target
 # -R: output color escape sequences raw
+# --mouse: turn on mouse scrolling
+# --wheel-lines=8: scroll by 8 lines with the mouse wheel (default for terminator)
 export LESS="Fij5R"
+if (( $+commands[less] )); then
+  less_version="${${=$(less --version)}[2]}"
+  if (( less_version >= 550 )); then
+    LESS="$LESS --mouse --wheel-lines=8"
+  fi
+  unset less_version
+fi
 
-if (( $+commands[rg] )) ; then
+
+if (( $+commands[rg] )); then
   export RIPGREP_CONFIG_PATH=$HOME/.config/ripgreprc
   if ! [[ -e "$RIPGREP_CONFIG_PATH" ]]; then
     unset RIPGREP_CONFIG_PATH
