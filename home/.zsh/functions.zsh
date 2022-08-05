@@ -187,3 +187,16 @@ if [[ -e ~/submit/run_backup.zsh ]]; then
     }
   fi
 fi
+
+# takes absolute paths on stdin and transforms any under the current directory
+# into relative paths (others are left unchanged)
+function make_relative() {
+  local line
+  local pwd=${PWD%/}/
+  while read -r line; do
+    if [[ $line[1] == / ]] && [[ ${line#$pwd} != $line ]]; then
+      line="./${line#$pwd}"
+    fi
+    print -r "$line"
+  done
+}
