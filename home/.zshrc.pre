@@ -35,3 +35,7 @@ source "$HOME/.zinit/bin/zinit.zsh"
 # add custom completions before compinit
 fpath[1,0]=("$HOME/.zsh/completions")
 fpath=($^fpath(N-/))
+
+# enable the vi keymap before compinit so that any completion files with
+# `#compdef -k` put their bindings there rather than the emacs keymap
+bindkey -v
