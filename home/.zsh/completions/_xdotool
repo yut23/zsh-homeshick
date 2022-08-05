@@ -108,6 +108,8 @@ _xdotool_commands () { # {{{
 } # }}}
 
 # helper functions {{{
+# This function outputs a line to the completion area with a message (first
+# argument), followed by the values of some variables (rest of the arguments).
 __debug_message () {
   # delete leading spaces
   msg=${1## #}
@@ -117,7 +119,7 @@ __debug_message () {
       array*)
         msg="$msg $1=(${${(q+)${(P)1}[@]}})" ;;
       *)
-        msg="$msg $1=${(P)1}" ;;
+        msg="$msg $1=${(q+)${(P)1}}" ;;
     esac
     shift
   done
