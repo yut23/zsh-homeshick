@@ -20,6 +20,8 @@ if [[ -z "${system_name:+x}" ]]; then
     system_name=olcf-dtn
   elif [[ "$HOSTNAME" == home<->.ccs.ornl.gov ]]; then
     system_name=olcf-home
+  elif [[ "$HOSTNAME" == *polaris.alcf.anl.gov ]]; then
+    system_name=polaris
   else
     system_name=$HOSTNAME
   fi
