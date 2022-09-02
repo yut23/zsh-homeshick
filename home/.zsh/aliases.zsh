@@ -103,7 +103,7 @@ if (( $+commands[nvim] )); then
   alias nvimdiff='nvim -d'
 fi
 if (( $+commands[nvim-qt] )); then
-  alias gnvim='NVIM_GUI=1 nvim-qt --no-ext-tabline'
+  alias gnvim='NVIM_GUI=1 nvim-qt'
   alias gnview='gnvim -- -R'
   alias gnvimdiff='gnvim -- -d'
 fi
