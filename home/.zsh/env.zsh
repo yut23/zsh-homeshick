@@ -45,6 +45,11 @@ if (( $+commands[pipenv] )); then
   export PIPENV_MAX_DEPTH=50
 fi
 
+# disable big ascii art banner when running mamba
+if (( $+commands[mamba] )); then
+  export MAMBA_NO_BANNER=1
+fi
+
 # fix man page colors in less
 export MANROFFOPT="-c"
 
