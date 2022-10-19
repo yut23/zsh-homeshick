@@ -34,12 +34,25 @@ if [[ $system_name == cori ]] && ! readlink /etc/zsh.zshrc.local &>/dev/null; th
   source "/etc/bash.bashrc.local"
 fi
 
-source "$HOME/.zsh/paths.zsh"
-if [[ -n "${system_name:+x}" && -f "$HOME/.zsh/$system_name/modules.zsh" ]]; then
+ZSH_CONFIG="$HOME/.zsh"
+
+function source_config_files() {
+  local file="$1"
+  if [[ -f "$ZSH_CONFIG/$file" ]]; then
+    source "$ZSH_CONFIG/$file"
+  fi
+  if [[ -n "${system_name:+x}" && -f "$ZSH_CONFIG/$system_name/$file" ]]; then
+    source "$ZSH_CONFIG/$system_name/$file"
+  fi
+}
+
+source_config_files "paths.zsh"
+
+if [[ -n "${system_name:+x}" && -f "$ZSH_CONFIG/$system_name/modules.zsh" ]]; then
   if [[ -z "${_MODULES_LOADED+x}" ]]; then
     # set this before sourcing, so the local modules.zsh can modify it if needed
     export _MODULES_LOADED=1
-    source "$HOME/.zsh/$system_name/modules.zsh"
+    source "$ZSH_CONFIG/$system_name/modules.zsh"
   fi
 fi
 
@@ -57,3 +70,6 @@ if [[ -t 0 ]]; then
 fi
 
 source "${HOME}/.zsh/zshrc"
+
+# clean up after ourselves
+unfunction source_config_files

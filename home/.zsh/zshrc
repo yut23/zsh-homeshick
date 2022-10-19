@@ -1,37 +1,23 @@
 # ~/.zsh/zshrc
+# source_config_files() is defined in ~/.zshrc.local
 
-ZSH_CONFIG="$HOME/.zsh"
+# Inspired by http://github.com/seebi/zshrc
 
-# Compile a list of additional files to be sourced
-# From http://github.com/seebi/zshrc
-typeset -ga sources
-
-sources+="env.zsh"
-
-# Zinit plugins
-sources+="plugins.zsh"
-
-sources+="aliases.zsh"
-sources+="functions.zsh"
-sources+="history.zsh"
-sources+="misc.zsh"
-
-sources+="keys.zsh"
-
-sources+="private.zsh"
-
-# note: paths.zsh and */modules.zsh are sourced from ~/.zshrc.local
+# paths.zsh, */paths.zsh, and */modules.zsh are sourced from ~/.zshrc.local
 
 # Homeshick
 source "$HOME/.homesick/repos/homeshick/homeshick.sh"
 
-for file in $sources; do
-  if [[ -f $ZSH_CONFIG/$file ]]; then
-    source "$ZSH_CONFIG/$file"
-  fi
-  if [[ -d $ZSH_CONFIG/$system_name ]]; then
-    if [[ -f $ZSH_CONFIG/$system_name/$file ]]; then
-      source "$ZSH_CONFIG/$system_name/$file"
-    fi
-  fi
-done
+source_config_files "env.zsh"
+
+# Zinit plugins
+source_config_files "plugins.zsh"
+
+source_config_files "aliases.zsh"
+source_config_files "functions.zsh"
+source_config_files "history.zsh"
+source_config_files "misc.zsh"
+
+source_config_files "keys.zsh"
+
+source_config_files "private.zsh"
