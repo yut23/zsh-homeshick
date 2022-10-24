@@ -26,6 +26,11 @@ if [[ ${OSTYPE} == 'cygwin' ]] ; then
   zstyle ':completion:*' fake-files '/:c' '/:d' '/:h' '/:v' '/:x'
 fi
 
+# Ignore these everywhere except for rm
+# https://github.com/wolph/dotfiles/blob/6bfc5c1e1c85017f415e99b70f679276b6c13699/_zshrc
+zstyle ':completion:*:*:*' ignored-patterns '(|*/)__pycache__' '(|*/)*.egg-info' '(|*/).mypy_cache'
+zstyle ':completion:*:rm:*' ignored-patterns
+
 # from OMZ fancy-ctrl-z plugin (https://github.com/robbyrussell/oh-my-zsh/tree/master/plugins/fancy-ctrl-z)
 fancy-ctrl-z () {
   if [[ $#BUFFER -eq 0 && $CONTEXT == start ]]; then
