@@ -31,13 +31,20 @@ function cls() {
   # restore file parameters
   set -- "${files[@]}" "$@"
 
+  # we want to explicitly enable alias expansion for the ls and cat calls
   if [[ $# -eq 0 ]]; then
+    setopt aliases
     ls "${ls_args[@]}"
+    unsetopt aliases
   elif [[ $# -eq 1 ]]; then
     if [[ -f $1 ]]; then
+      setopt aliases
       cat "${cat_args[@]}" -- "$1"
+      unsetopt aliases
     else
+      setopt aliases
       ls "${ls_args[@]}" -- "$1"
+      unsetopt aliases
     fi
   else
     for entry in "$@"; do
