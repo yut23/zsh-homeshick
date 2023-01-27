@@ -10,8 +10,9 @@ export ANDROID_HOME=/opt/android-sdk
 #export ASAN_OPTIONS="detect_leaks=0:log_path=$HOME/logs/asan"
 #export UBSAN_OPTIONS=print_stacktrace=1
 
-export CASTRO_HOME="$HOME/school/research/Castro"
-export AMREX_HOME="$HOME/school/research/amrex"
+export CASTRO_HOME="$HOME/dev/Castro"
+export MICROPHYSICS_HOME="$HOME/dev/Microphysics"
+export AMREX_HOME="$HOME/dev/amrex"
 
 # fix urxvt segfault on exit (https://www.reddit.com/r/archlinux/comments/htq7hk)
 export PERL_DESTRUCT_LEVEL=2
