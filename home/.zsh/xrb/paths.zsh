@@ -15,3 +15,5 @@
 #fi
 #unset __conda_setup
 # <<< conda initialize <<<
+
+path+=(/usr/local/cuda-12.0/bin)
