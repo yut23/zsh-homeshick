@@ -101,6 +101,11 @@
 #   Furthermore, in 'grml-zsh-refcard.tex.in' @@INSERT-aliases@@ is
 #   exactly the same as @@INSERT-aliases-default@@. If you want a list of
 #   *all* aliases, for example, use @@INSERT-aliases-all@@.
+if [[ $ZSH_XTRACE_RC -gt 0 ]] ; then
+    PS4=$'\n\\\011%D{%s%6.}\011%x\011%I\011%N\011%e\011'
+    exec 3>&2 2>/tmp/zshstart.$$.log
+    setopt xtrace prompt_subst
+fi
 
 # zsh profiling
 # just execute 'ZSH_PROFILE_RC=1 zsh' and run 'zprof' to get the details
@@ -1817,7 +1822,9 @@ PS2='\`%_> '
 # selection prompt used within a select loop.
 PS3='?# '
 # the execution trace prompt (setopt xtrace). default: '+%N:%i>'
-PS4='+%N:%i:%_> '
+if ! [[ $ZSH_XTRACE_RC -gt 0 ]] ; then
+    PS4='+%N:%i:%_> '
+fi
 
 # Some additional features to use with our prompt:
 #
@@ -3948,6 +3955,10 @@ unfunction grml_status_feature
 ### example: split functions-search 8,16,24,32
 #@# split functions-search 8
 
+if [[ $ZSH_XTRACE_RC -gt 0 ]] ; then
+    unsetopt xtrace
+    exec 2>&3 3>&-
+fi
 ## END OF FILE #################################################################
 # vim:filetype=zsh foldmethod=marker autoindent expandtab shiftwidth=4
 # Local variables:

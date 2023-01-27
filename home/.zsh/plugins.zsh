@@ -14,21 +14,24 @@ else
 fi
 
 zinit load zsh-users/zsh-history-substring-search
-zinit ice wait'0' lucid
-zinit load zdharma-continuum/history-search-multi-word
+if ! [[ $ZSH_XTRACE_RC -gt 0 ]] ; then
+  # disable asynchronous plugins if profiling startup
+  zinit ice wait'0' lucid
+  zinit load zdharma-continuum/history-search-multi-word
 
-# node version manager
-zinit ice wait'1' lucid has'npm'
-zinit load lukechilds/zsh-nvm
-# and completion
-zinit ice wait'1' lucid has'npm'
-zinit load lukechilds/zsh-better-npm-completion
+  # node version manager
+  zinit ice wait'1' lucid has'npm'
+  zinit load lukechilds/zsh-nvm
+  # and completion
+  zinit ice wait'1' lucid has'npm'
+  zinit load lukechilds/zsh-better-npm-completion
 
-zinit ice wait'1' lucid has'keybase'
-zinit load fnoris/keybase-zsh-completion
+  zinit ice wait'1' lucid has'keybase'
+  zinit load fnoris/keybase-zsh-completion
 
-zinit ice wait'1' lucid has'conda'
-zinit load esc/conda-zsh-completion
+  zinit ice wait'1' lucid has'conda'
+  zinit load esc/conda-zsh-completion
+fi
 
 # treat hyphen as a normal character, rather than lua's non-greedy *
 export _ZL_HYPHEN=1
@@ -63,14 +66,17 @@ zinit ice as'program' pick'bin/s*' has'python'
 zinit light yut23/ssh-ident
 
 # this must load after the last completion-related plugin
-zinit ice wait'1' lucid as'null' id-as'zsh-compinit-null' nocd \
-  atload'zicdreplay'
-zinit light zdharma-continuum/null
-
-if [[ $system_name == blackwidow ]] || [[ $system_name == xrb ]]; then
-  zinit ice wait'0' lucid as'null' id-as'conda-base' has'conda' nocd \
-    atload'conda activate base'
+if ! [[ $ZSH_XTRACE_RC -gt 0 ]] ; then
+  # disable asynchronous plugins if profiling startup
+  zinit ice wait'1' lucid as'null' id-as'zsh-compinit-null' nocd \
+    atload'zicdreplay'
   zinit light zdharma-continuum/null
+
+  if [[ $system_name == blackwidow ]] || [[ $system_name == xrb ]]; then
+    zinit ice wait'0' lucid as'null' id-as'conda-base' has'conda' nocd \
+      atload'conda activate base'
+    zinit light zdharma-continuum/null
+  fi
 fi
 
 # set theme stuff up now that we don't use OMZ
