@@ -10,21 +10,11 @@ if [[ -f "$HOME/.hostname" ]]; then
 fi
 export HOSTNAME
 
+ZSH_CONFIG="$HOME/.zsh"
+
 # Figure out what system we're on
 if [[ -z "${system_name:+x}" ]]; then
-  if [[ -n "${NERSC_HOST:+x}" ]]; then
-    system_name=$NERSC_HOST
-  elif [[ -n "${LMOD_SYSTEM_NAME:+x}" ]]; then
-    system_name=$LMOD_SYSTEM_NAME
-  elif [[ "$HOSTNAME" == dtn<->.ccs.ornl.gov ]]; then
-    system_name=olcf-dtn
-  elif [[ "$HOSTNAME" == home<->.ccs.ornl.gov ]]; then
-    system_name=olcf-home
-  elif [[ "$HOSTNAME" == *polaris.alcf.anl.gov ]]; then
-    system_name=polaris
-  else
-    system_name=$HOSTNAME
-  fi
+  source "$ZSH_CONFIG/system_name.zsh"
 fi
 export system_name
 
@@ -33,8 +23,6 @@ if [[ $system_name == cori ]] && ! readlink /etc/zsh.zshrc.local &>/dev/null; th
   # /etc/zsh.zshrc.local should point to /etc/bash.bashrc.local
   source "/etc/bash.bashrc.local"
 fi
-
-ZSH_CONFIG="$HOME/.zsh"
 
 function source_config_files() {
   local file="$1"
