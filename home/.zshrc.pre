@@ -1,4 +1,8 @@
 # ~/.zshrc.pre
+if [[ -f $HOME/.zinit/module/Src/zdharma_continuum/zinit.so ]]; then
+  module_path+=( "$HOME/.zinit/module/Src" )
+  zmodload zdharma_continuum/zinit
+fi
 
 # This is sort of a hack to enable/disable automatically starting tmux without
 # having to create a file on the remote host, and without passing extra
