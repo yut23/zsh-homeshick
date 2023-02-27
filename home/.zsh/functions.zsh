@@ -58,6 +58,7 @@ function cls() {
 
 function total_mem() {
   local PAGESIZE=$(getconf PAGESIZE)
+  # field 2 of statm is the number of resident pages
   pgrep "$@" |
     xargs -i cat /proc/{}/statm |
     awk -v PAGESIZE=$PAGESIZE '{pages += $2}; END {printf("%d\n", pages*PAGESIZE)}' |
@@ -208,3 +209,13 @@ function make_relative() {
     print -r "$line"
   done
 }
+
+# fix __vte_prompt_command so it works in zsh, and disable setting the title
+if (( $+functions[__vte_prompt_command] )); then
+  unfunction __vte_prompt_command
+  function __vte_prompt_command() {
+    # semicolons are used as separators in OSC-777, so replace them with spaces
+    printf '\033]777;notify;Command completed;%s\033\\\033]777;precmd\033\\' "${$(fc -ln -1)//;/ }"
+  }
+  #add-zsh-hook precmd __vte_prompt_command
+fi
