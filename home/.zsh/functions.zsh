@@ -10,6 +10,10 @@ function take() {
 function cls() {
   emulate -L zsh
   local -a ls_args cat_args files
+  # toggling alias expansion on and off doesn't work inside a function, so parse any aliases beforehand
+  local -a ls_alias cat_alias
+  ls_alias=(${(@Qz)"$(alias ls)"#ls=}) || ls_alias=(ls)
+  cat_alias=(${(@Qz)"$(alias cat)"#cat=}) || cat_alias=(cat)
   while [[ $# -gt 0 ]]; do
     case "$1" in
       -n|-v|--show-all|--number-nonblank|--show-ends|--number|--squeeze-blank|--show-tabs|--show-nonprinting)
@@ -31,20 +35,13 @@ function cls() {
   # restore file parameters
   set -- "${files[@]}" "$@"
 
-  # we want to explicitly enable alias expansion for the ls and cat calls
   if [[ $# -eq 0 ]]; then
-    setopt aliases
-    ls "${ls_args[@]}"
-    unsetopt aliases
+    "${ls_alias[@]}" "${ls_args[@]}"
   elif [[ $# -eq 1 ]]; then
     if [[ -f $1 ]]; then
-      setopt aliases
-      cat "${cat_args[@]}" -- "$1"
-      unsetopt aliases
+      "${cat_alias[@]}" "${cat_args[@]}" -- "$1"
     else
-      setopt aliases
-      ls "${ls_args[@]}" -- "$1"
-      unsetopt aliases
+      "${ls_alias[@]}" "${ls_args[@]}" -- "$1"
     fi
   else
     for entry in "$@"; do
