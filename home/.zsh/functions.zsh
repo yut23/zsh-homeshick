@@ -160,6 +160,9 @@ function read_ctlseq() {
 
 if [[ $system_name == (summit|andes|olcf-dtn) ]]; then
   function missing_plots() (
+    if [[ $# -eq 1 ]]; then
+      cd -q $1 2>/dev/null || true
+    fi
     if [[ ${PWD:t} != run* ]]; then
       >&2 echo "Error: not in a directory named run*"
       return 1
