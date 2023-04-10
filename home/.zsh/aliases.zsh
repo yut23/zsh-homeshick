@@ -103,7 +103,12 @@ if (( $+commands[nvim] )); then
   alias nvimdiff='nvim -d'
 fi
 if (( $+commands[nvim-qt] )); then
-  alias gnvim='NVIM_GUI=1 nvim-qt'
+  if [[ $system_name == xrb ]]; then
+    # run nvim-qt in a new cgroup, so linters don't take down the terminal
+    alias gnvim='systemd-run --quiet --user --scope --setenv=NVIM_GUI=1 nvim-qt'
+  else
+    alias gnvim='NVIM_GUI=1 nvim-qt'
+  fi
   alias gnview='gnvim -- -R'
   alias gnvimdiff='gnvim -- -d'
 fi
