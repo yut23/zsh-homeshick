@@ -23,6 +23,10 @@ alias l='ls -la'
 alias la='ls -lA'
 alias ll='ls -l'
 
+if (( $+commands[tree] )); then
+  alias tree='tree --dirsfirst -F'
+fi
+
 #alias echo='echo -e'
 #alias cd..='cd ..'
 #alias ..='cd ..'
