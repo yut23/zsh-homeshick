@@ -159,5 +159,10 @@ if (( $+commands[etckeeper] )); then
   alias ekg='etckeeper vcs'
 fi
 
+# fix complaint about no LINES variable in environment
+if (( $+commands[uniname] )) && (( $+LINES )); then
+  alias uniname='LINES=$LINES uniname'
+fi
+
 # convert null-terminated lines to standard NL-terminated lines
 alias z2nl='tr \\000 \\n'
