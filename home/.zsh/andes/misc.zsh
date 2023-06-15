@@ -1,3 +1,3 @@
 # ~/.zsh/andes/misc.zsh
 
-conda activate andes
+conda activate andes_mamba

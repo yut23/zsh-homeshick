@@ -1,5 +1,6 @@
 # ~/.zsh/andes/paths.zsh
 
+PROJID=ast106
 # this needs to run before misc.zsh is loaded, so it can find mamba
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
@@ -12,6 +13,11 @@
     else
         export PATH="/ccs/proj/$PROJID/$USER/mambaforge_x86_64/bin:$PATH"
     fi
+    #if [ -f "/sw/andes/python/3.7/anaconda-base/etc/profile.d/conda.sh" ]; then
+    #    . "/sw/andes/python/3.7/anaconda-base/etc/profile.d/conda.sh"
+    #else
+    #    export PATH="/sw/andes/python/3.7/anaconda-base/bin:$PATH"
+    #fi
 #fi
 #unset __conda_setup
 # <<< conda initialize <<<
