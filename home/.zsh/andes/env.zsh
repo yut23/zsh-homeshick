@@ -1,1 +1,1 @@
-../summit/env.zsh
+../olcf/env.zsh
