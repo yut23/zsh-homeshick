@@ -222,3 +222,14 @@ if (( $+functions[__vte_prompt_command] )); then
   }
   #add-zsh-hook precmd __vte_prompt_command
 fi
+
+# run a command and don't report the time it took
+function noreporttime {
+  setopt localoptions localtraps
+  # use double quotes so $REPORTTIME gets expanded before we modify it
+  trap "REPORTTIME=$REPORTTIME" EXIT HUP INT QUIT TERM
+  REPORTTIME=-1
+  "$@"
+}
+# enable tab completion for wrapped commands
+compdef _precommand noreporttime
