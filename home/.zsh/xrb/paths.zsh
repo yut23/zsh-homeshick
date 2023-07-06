@@ -1,6 +1,6 @@
 # ~/.zsh/xrb/paths.zsh
 
-# this needs to run before plugins.zsh is loaded, so zinit can detect conda
+# this needs to run before env.zsh is loaded, so it can detect mamba
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
 #__conda_setup="$('/home/eric/mambaforge/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"

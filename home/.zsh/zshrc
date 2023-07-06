@@ -10,13 +10,13 @@ source "$HOME/.homesick/repos/homeshick/homeshick.sh"
 
 source_config_files "env.zsh"
 
-# Zinit plugins
-source_config_files "plugins.zsh"
-
 source_config_files "aliases.zsh"
 source_config_files "functions.zsh"
 source_config_files "history.zsh"
 source_config_files "misc.zsh"
+
+# Zinit plugins
+source_config_files "plugins.zsh"
 
 source_config_files "keys.zsh"
 

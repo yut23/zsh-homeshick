@@ -3,7 +3,7 @@
 # need $PROJID
 source ~/.zsh/olcf/env.zsh
 
-# this needs to run before misc.zsh is loaded, so it can find mamba
+# this needs to run before env.zsh is loaded, so it can detect mamba
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
 #__conda_setup="$("/ccs/proj/$PROJID/$USER/mambaforge_$(uname -m)/bin/conda" 'shell.zsh' 'hook' 2> /dev/null)"
