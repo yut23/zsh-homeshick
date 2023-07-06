@@ -77,6 +77,12 @@ if ! [[ $ZSH_XTRACE_RC -gt 0 ]] ; then
       atload'conda activate base'
     zinit light zdharma-continuum/null
   fi
+
+  if [[ $system_name == mandelbrot ]]; then
+    zinit ice wait'0' lucid as'null' id-as'conda-main' has'conda' nocd \
+      atload'conda activate main'
+    zinit light zdharma-continuum/null
+  fi
 fi
 
 # set theme stuff up now that we don't use OMZ
