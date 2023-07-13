@@ -166,3 +166,5 @@ fi
 
 # convert null-terminated lines to standard NL-terminated lines
 alias z2nl='tr \\000 \\n'
+# and vice versa
+alias nl2z='tr \\n \\000'
