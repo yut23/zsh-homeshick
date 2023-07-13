@@ -71,3 +71,14 @@ for i in {0..9}; do
   bindkey "^[$i" digit-argument
 done
 bindkey "^[-" neg-argument
+
+# from OMZ fancy-ctrl-z plugin (https://github.com/robbyrussell/oh-my-zsh/tree/master/plugins/fancy-ctrl-z)
+fancy-ctrl-z () {
+  if [[ $#BUFFER -eq 0 && $CONTEXT == start ]]; then
+    zle grml-zsh-fg
+  else
+    zle push-line-or-edit
+  fi
+}
+zle -N fancy-ctrl-z
+bindkey '^Z' fancy-ctrl-z
