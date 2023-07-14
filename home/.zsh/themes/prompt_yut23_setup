@@ -87,17 +87,31 @@ function _my_git_prompt_info() {
   local untracked=0
   local dirty=0
 
-  local -A symbols formats
-  symbols=(
-    untracked '%%'
-    added '+'
-    modified '*'
-    renamed '~'
-    deleted '!'
-    unmerged '?'
-    ahead '↑'
-    behind '↓'
+  # normal array
+  local -a format_keys
+  format_keys=(
+    behind
+    ahead
+    unmerged
+    deleted
+    renamed
+    modified
+    added
+    untracked
   )
+  # associative array (unordered)
+  local -A symbols
+  symbols=(
+    behind '↓'
+    ahead '↑'
+    unmerged '?'
+    deleted '!'
+    renamed '~'
+    modified '*'
+    added '+'
+    untracked '%%'
+  )
+  [[ $#symbols == $#format_keys ]] || >&2 echo "mismatch between symbols and format_keys"
 
   # Use porcelain status for easy parsing.
   git_cmd='command git'
@@ -121,8 +135,8 @@ function _my_git_prompt_info() {
       continue
     fi
     # Count added, deleted, modified, renamed, unmerged, untracked, dirty.
-    # T (type change) is undocumented, see http://git.io/FnpMGw.
-    # For a table of scenarii, see http://i.imgur.com/2YLu1.png.
+    # T (type change) is undocumented, see https://git.io/FnpMGw.
+    # For a table of scenarii, see https://i.imgur.com/2YLu1.png.
     [[ "$line" == ([ACDMT][\ MT]|[ACMT]D)\ * ]] && (( added++ ))
     [[ "$line" == [\ ACMRT]D\ * ]] && (( deleted++ ))
     [[ "$line" == ?[MT]\ * ]] && (( modified++ ))
@@ -134,30 +148,27 @@ function _my_git_prompt_info() {
 
   [[ -z $branch ]] && return
 
+  local -A formats
   formats=(
-    untracked u
-    added a
-    modified m
-    renamed r
-    deleted d
-    unmerged U
-    ahead A
     behind B
+    ahead A
+    unmerged U
+    deleted d
+    renamed r
+    modified m
+    added a
+    untracked u
   )
-  for key in untracked added modified renamed deleted unmerged ahead behind; do
+  [[ $#formats == $#format_keys ]] || >&2 echo "mismatch between formats and format_keys"
+
+  local -a replacements=()
+  for key in ${format_keys[@]}; do
     # check values against 0, and replace with nothing if equal
     # need extra escaping for zformat
-    format="%0($formats[$key]..${symbols[$key]//\%/%%})$format"
+    format="$format%0($formats[$key]..${symbols[$key]//\%/%%})"
+    replacements+=("$formats[$key]:${(P)key}")
   done
-  zformat -f git_status "$format" \
-    "a:$added" \
-    "A:$ahead" \
-    "B:$behind" \
-    "d:$deleted" \
-    "m:$modified" \
-    "r:$renamed" \
-    "U:$unmerged" \
-    "u:$untracked"
+  zformat -f git_status "$format" "${replacements[@]}"
 
   if [[ -n $git_status ]]; then
     if (( dirty > 0 )); then
