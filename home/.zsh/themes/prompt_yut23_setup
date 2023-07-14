@@ -5,8 +5,24 @@ function prompt_yut23_setup {
   local exit_code="%(?..%{$fg_bold[red]%}%?%{$reset_color%})"
   prompt_opts=(cr sp percent subst)
 
+  local -a groups
+  groups=($(id -G))
+  local is_root=
+  local prompt_symbol user_color
+  # check if gid 0 is present in the groups array
+  if (( ${+groups[(r)0]} )); then
+    prompt_symbol="%{$fg_bold[red]%}#%{$reset_color%}"
+    user_color="$fg_bold[red]"
+  else
+    prompt_symbol='\$'
+    user_color="$fg[green]"
+  fi
+  if (( SHLVL > 1 )); then
+    prompt_symbol="$SHLVL$prompt_symbol"
+  fi
+  local user="%{$user_color%}%n%{$reset_color%}"
+
   # different color for ssh session
-  local user="%{$fg[green]%}%n%{$reset_color%}"
   if [[ -n "${SSH_CONNECTION+1}" ]]; then
     # ssh
     local host="%{$fg[cyan]%}@$HOSTNAME%{$reset_color%}"
@@ -16,13 +32,6 @@ function prompt_yut23_setup {
   fi
   local current_dir="%{$fg[yellow]%}%~%{$reset_color%}"
   local git_prompt='$(_my_git_prompt_info)'
-  local -a groups
-  groups=($(id -G))
-  # check if gid 0 is present in the groups array
-  (( ${+groups[(r)0]} )) && prompt_symbol='#' || prompt_symbol='\$'
-  if (( SHLVL > 1 )); then
-    prompt_symbol="$SHLVL$prompt_symbol"
-  fi
   local throttled=''
   if [[ $system_name == summit && -e "/sys/fs/cgroup/cpu/user.slice/user-$UID.slice" ]]; then
     throttled='$(_check_throttled)'
