@@ -78,6 +78,7 @@ function _my_git_prompt_info() {
   local git_cmd status_cmd
   local ahead=0
   local behind=0
+  local gone=0
 
   local added=0
   local deleted=0
@@ -92,6 +93,7 @@ function _my_git_prompt_info() {
   format_keys=(
     behind
     ahead
+    gone
     unmerged
     deleted
     renamed
@@ -104,6 +106,7 @@ function _my_git_prompt_info() {
   symbols=(
     behind '↓'
     ahead '↑'
+    gone '✗'
     unmerged '?'
     deleted '!'
     renamed '~'
@@ -126,10 +129,13 @@ function _my_git_prompt_info() {
   # Get current status, branch name, and commit differences with a single git call.
   while IFS=$'\n' read line; do
     if [[ -z $branch && "$line" == \#\#\ * ]]; then
-      if [[ "$line" =~ '^## ([^ ]*)( \[(ahead ([0-9]+)?)?((, )?behind ([0-9]+))?\])?$' ]]; then
+      if [[ "$line" =~ '^## ([^ ]*)( \[(ahead ([0-9]+)?)?((, )?behind ([0-9]+))?(gone)?\])?$' ]]; then
+        # groups:           1      2   3      4          56           7         8
         branch=${match[1]%...*}
         ahead=${match[4]:-0}
         behind=${match[7]:-0}
+        # substitute 1 if non-null, or substitute 0 if null
+        gone=${${match[8]:+1}:-0}
       fi
       # don't increment $dirty
       continue
@@ -152,6 +158,7 @@ function _my_git_prompt_info() {
   formats=(
     behind B
     ahead A
+    gone G
     unmerged U
     deleted d
     renamed r
