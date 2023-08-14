@@ -49,7 +49,8 @@ ${prompt_symbol} "
 function _virtualenv_info {
   if [[ -n "$CONDA_DEFAULT_ENV" ]]; then
     echo "($CONDA_DEFAULT_ENV) "
-  elif [[ -n "$VIRTUAL_ENV" ]] then
+  fi
+  if [[ -n "$VIRTUAL_ENV" ]] then
     echo "%{$fg[blue]%}(${VIRTUAL_ENV:t}) "
   fi
 }
