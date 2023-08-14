@@ -41,6 +41,10 @@ typeset -gxTU INFOPATH infopath
   fi
 }
 
+if [[ $system_name == mandelbrot ]]; then
+  path[1,0]="/usr/lib/ccache/bin"
+fi
+
 # dotnet tools
 if (( $+commands[dotnet] )); then
   path[1,0]="$HOME/.dotnet/tools"
