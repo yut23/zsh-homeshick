@@ -72,15 +72,27 @@ if ! [[ $ZSH_XTRACE_RC -gt 0 ]] ; then
     atload'zicdreplay'
   zinit light zdharma-continuum/null
 
-  if [[ $system_name == blackwidow ]] || [[ $system_name == xrb ]]; then
-    zinit ice wait'0' lucid as'null' id-as'conda-base' has'conda' nocd \
-      atload'conda activate base'
-    zinit light zdharma-continuum/null
-  fi
-
-  if [[ $system_name == mandelbrot ]]; then
-    zinit ice wait'0' lucid as'null' id-as'conda-main' has'conda' nocd \
-      atload'conda activate main'
+  local default_conda_env
+  case $system_name in
+    blackwidow|xrb)
+      default_conda_env=base
+      ;;
+    mandelbrot)
+      default_conda_env=main
+      ;;
+    #summit)  # activated earlier in ~/.zsh/summit/misc.zsh
+    #  default_conda_env=/ccs/proj/$PROJID/$USER/mambaforge_ppc64le/envs/summit
+    #  ;;
+    andes)
+      default_conda_env=/ccs/proj/$PROJID/$USER/mambaforge_x86_64/envs/andes_mamba
+      ;;
+    *)
+      default_conda_env=
+      ;;
+  esac
+  if [[ -n "$default_conda_env" ]]; then
+    zinit ice wait'0' lucid as'null' id-as'conda-activate' has'conda' nocd \
+      atload"conda activate '$default_conda_env'"
     zinit light zdharma-continuum/null
   fi
 fi
