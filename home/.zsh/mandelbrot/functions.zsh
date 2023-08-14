@@ -55,6 +55,6 @@ function duplicacy-changes() {
     return 2
   fi
   ~/duplicacy/scripts/backup -n $repo | tee /tmp/duplicacy_$repo.log && \
-  ~/projects/backup/duplicacy_to_ncdu.py /tmp/duplicacy_$repo.log | ncdu -f -
+    ~/projects/backup/duplicacy_to_ncdu.py /tmp/duplicacy_$repo.log | ncdu -f -
 }
 compdef '_files -W ~/duplicacy -/ -F "*scripts"' duplicacy-changes
