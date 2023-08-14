@@ -23,3 +23,5 @@ alias pipenv='PIP_USER=0 pipenv'
 
 alias amrvis2d=$HOME/school/research/Amrvis/amrvis2d.gnu.ex
 alias amrvis3d=$HOME/school/research/Amrvis/amrvis3d.gnu.ex
+
+alias pacdiff="DIFFPROG='nvim -d' sudo -E pacdiff -3"
