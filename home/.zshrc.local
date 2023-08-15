@@ -23,6 +23,9 @@ if [[ $system_name == cori ]] && ! readlink /etc/zsh.zshrc.local &>/dev/null; th
   # /etc/zsh.zshrc.local should point to /etc/bash.bashrc.local
   source "/etc/bash.bashrc.local"
 fi
+if [[ $system_name == perlmutter ]] && ! (( $+commands[module] )); then
+  source "/etc/profile.d/zz-cray-pe.sh"
+fi
 
 function source_config_files() {
   local file="$1"
