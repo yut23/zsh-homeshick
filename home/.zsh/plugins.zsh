@@ -83,6 +83,9 @@ if ! [[ $ZSH_XTRACE_RC -gt 0 ]] ; then
     #summit)  # activated earlier in ~/.zsh/summit/misc.zsh
     #  default_conda_env=/ccs/proj/$PROJID/$USER/mambaforge_ppc64le/envs/summit
     #  ;;
+    frontier)
+      default_conda_env=/ccs/proj/$PROJID/$USER/mambaforge_x86_64/envs/frontier
+      ;;
     andes)
       default_conda_env=/ccs/proj/$PROJID/$USER/mambaforge_x86_64/envs/andes_mamba
       ;;
