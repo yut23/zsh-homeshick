@@ -4,23 +4,6 @@ if [[ -f $HOME/.zinit/module/Src/zdharma_continuum/zinit.so ]]; then
   zmodload zdharma_continuum/zinit
 fi
 
-# workaround for zsh Lmod error: The following module(s) are unknown: ""
-# The error occurs in /etc/profile.d/zz-cray-pe.sh: if $site_module_list is
-# empty, $mlist will have a trailing space. zsh doesn't do word splitting on
-# unquoted variables like bash does (unless the SH_WORD_SPLIT option is set),
-# so the space is retained in `echo ${mlist}`, leading to a trailing : in
-# $LMOD_SYSTEM_DEFAULT_MODULES.
-if [[ $LMOD_SYSTEM_NAME == frontier ]]; then
-  if [[ $(module --redirect list) == 'No modules loaded' ]] && [[ ${LMOD_SYSTEM_DEFAULT_MODULES: -1} == : ]]; then
-    echo 'Working around Lmod error...'
-    LMOD_SYSTEM_DEFAULT_MODULES=${LMOD_SYSTEM_DEFAULT_MODULES%:}
-    module --initial_load --no_redirect restore && echo 'Default modules loaded successfully.'
-    export __fixed_lmod=true
-  elif [[ -z $__fixed_lmod ]]; then
-    echo 'Modules appear to be working properly; please remove this workaround from ~/.zprofile if there was no error message from Lmod.'
-  fi
-fi
-
 # This is sort of a hack to enable/disable automatically starting tmux without
 # having to create a file on the remote host, and without passing extra
 # environment variables (which is often disabled by sysadmins). We add an extra
