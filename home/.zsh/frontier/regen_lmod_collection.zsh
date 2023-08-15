@@ -1,7 +1,7 @@
 # ~/.zsh/frontier/regen_lmod_collection.zsh
 # this file should be sourced, so the module command is available
 
-module purge
+module --no_redirect purge
 # restore the default system modules, fixing them if necessary
 () {
 # save the original value so modules.zsh doesn't think the default modules changed
@@ -13,18 +13,18 @@ local orig_default_modules=$LMOD_SYSTEM_DEFAULT_MODULES
 # so the space is retained in `echo ${mlist}`, leading to a trailing : in
 # $LMOD_SYSTEM_DEFAULT_MODULES.
 if [[ ${LMOD_SYSTEM_DEFAULT_MODULES: -1} == : ]]; then
-  echo 'Working around Lmod error...'
+  print -ru2 'Working around Lmod error...'
   LMOD_SYSTEM_DEFAULT_MODULES=${LMOD_SYSTEM_DEFAULT_MODULES%:}
 else
-  echo 'Default modules appear to work properly.'
-  echo 'Please remove this workaround from ~/.zsh/frontier/regen_lmod_collection.zsh if there is no error message from Lmod.'
+  print -ru2 'Default modules appear to work properly.'
+  print -ru2 'Please remove this workaround from ~/.zsh/frontier/regen_lmod_collection.zsh if there is no error message from Lmod.'
 fi
 module --no_redirect restore
 LMOD_SYSTEM_DEFAULT_MODULES=$orig_default_modules
 }
 # from https://amrex-astro.github.io/workflow/olcf-compilers.html#frontier
-module load PrgEnv-gnu craype-accel-amd-gfx90a cray-mpich rocm amd-mixed
+module --no_redirect load PrgEnv-gnu craype-accel-amd-gfx90a cray-mpich rocm amd-mixed
 # development tools
-module load git htop tmux imagemagick valgrind4hpc
+module --no_redirect load git htop tmux imagemagick valgrind4hpc
 
-module save development
+module --no_redirect save development

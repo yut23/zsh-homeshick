@@ -124,7 +124,7 @@ function _my_git_prompt_info() {
     added '+'
     untracked '%%'
   )
-  [[ $#symbols == $#format_keys ]] || >&2 echo "mismatch between symbols and format_keys"
+  [[ $#symbols == $#format_keys ]] || print -ru2 "mismatch between symbols and format_keys"
 
   # Use porcelain status for easy parsing.
   git_cmd='command git'
@@ -176,7 +176,7 @@ function _my_git_prompt_info() {
     added a
     untracked u
   )
-  [[ $#formats == $#format_keys ]] || >&2 echo "mismatch between formats and format_keys"
+  [[ $#formats == $#format_keys ]] || print -ru2 "mismatch between formats and format_keys"
 
   local -a replacements=()
   for key in ${format_keys[@]}; do
