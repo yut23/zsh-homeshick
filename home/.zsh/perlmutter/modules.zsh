@@ -12,4 +12,4 @@ fi
 module --no_redirect purge
 # From a combination of $LMOD_SYSTEM_DEFAULT_MODULES and the result of
 # `ml cudatoolkit`.
-module --no_redirect load craype-x86-milan craype-network-ofi perftools-base xpmem PrgEnv-gnu cpe xalt/2.10.2 gpu cudatoolkit python/3.9-anaconda-2021.11
+module --no_redirect load craype-x86-milan craype-network-ofi perftools-base xpmem PrgEnv-gnu cpe xalt/2.10.2 gpu cudatoolkit conda
