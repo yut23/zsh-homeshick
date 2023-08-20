@@ -233,3 +233,22 @@ function noreporttime {
 }
 # enable tab completion for wrapped commands
 compdef _precommand noreporttime
+
+function stop-zinit-scheduler() {
+  setopt localoptions pipefail
+  add-zsh-hook -d chpwd @zinit-scheduler
+  local keep_going=1
+  local i
+  while (( keep_going )); do
+    keep_going=0
+    for ((i = 1; i <= $#zsh_scheduled_events; ++i)); do
+      # events look like <scheduled timestamp>:<options>:<command>
+      # here <command> has colons, so skip the first 2 fields and rejoin the rest
+      if [[ ${(j.:.)${(s.:.)zsh_scheduled_events[i]}[2,-1]} == 'ZINIT[lro-data]="$_:$?:${options[printexitvalue]}"; @zinit-scheduler following "${ZINIT[lro-data]%:*:*}"' ]]; then
+        sched "-$i"
+        keep_going=1
+        break
+      fi
+    done
+  done
+}
