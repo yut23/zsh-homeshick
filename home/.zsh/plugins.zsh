@@ -107,6 +107,10 @@ if ! [[ $ZSH_XTRACE_RC -gt 0 ]] ; then
       atload"conda activate '$default_conda_env'"
     zinit light zdharma-continuum/null
   fi
+
+  zinit ice wait'2' lucid as'null' id-as'stop-scheduler' nocd \
+    atload'stop-zinit-scheduler'
+  zinit light zdharma-continuum/null
 fi
 
 # set theme stuff up now that we don't use OMZ
