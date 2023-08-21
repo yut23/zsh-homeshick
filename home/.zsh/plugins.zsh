@@ -103,7 +103,9 @@ if ! [[ $ZSH_XTRACE_RC -gt 0 ]] ; then
       ;;
   esac
   if [[ -n "$default_conda_env" ]]; then
+    # only activate the default environment if we're not already in one
     zinit ice wait'!0' lucid as'null' id-as'conda-activate' has'conda' nocd \
+      if'[[ -z ${CONDA_PREFIX:+x} ]]' \
       atload"conda activate '$default_conda_env'"
     zinit light zdharma-continuum/null
   fi
