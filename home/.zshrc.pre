@@ -36,6 +36,26 @@ declare -A ZINIT
 ZINIT[ZCOMPDUMP_PATH]="$COMPDUMPFILE"
 source "$HOME/.zinit/bin/zinit.zsh"
 
+# patch out chpwd hook in @zinit-scheduler, as it starts duplicate sched chains
+() {
+  local result
+  local patchfile=$HOME/.homesick/repos/zsh/zinit-scheduler-fix.patch
+  local -a patchopts=(
+    --ignore-whitespace
+    --silent  # no messages if patch succeeds
+    --strip=1
+    --forward
+    --batch
+    --output=-  # output patched file to stdout
+    --reject-file=-  # discard rejects
+  )
+  if result=$(patch "${patchopts[@]}" =(print -r -- $functions[@zinit-scheduler]) $patchfile); then
+    functions[@zinit-scheduler]=$result
+  else
+    print -ru2 'Patching @zinit-scheduler to remove chpwd hook failed'
+  fi
+}
+
 # add custom completions before compinit
 fpath[1,0]=("$HOME/.zsh/completions")
 fpath=($^fpath(N-/))

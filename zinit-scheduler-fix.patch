@@ -1,0 +1,12 @@
+diff --git a/@zinit-scheduler b/@zinit-scheduler
+index 0acb859..c6d0fb6 100644
+--- a/@zinit-scheduler
++++ b/@zinit-scheduler
+@@ -42,7 +42,6 @@
+ 		fi
+ 	else
+ 		add-zsh-hook -d -- precmd @zinit-scheduler
+-		add-zsh-hook -- chpwd @zinit-scheduler
+ 		() {
+ 			builtin emulate -L zsh ${=${options[xtrace]:#off}:+-o xtrace}
+ 			builtin setopt extendedglob
