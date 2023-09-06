@@ -119,11 +119,8 @@ function find_tmux() {
   if (( $+commands[tmux] )); then
     tmux_cmd==tmux
   fi
-  if [[ "$1" == perlmutter ]]; then
-    # this only works from cori or dtn, since the login nodes don't have
-    # host-based authentication set up
-    hosts=(login{01..40}.perlmutter.nersc.gov)
-    tmux_cmd=tmux
+  if [[ $system_name == perlmutter ]]; then
+    hosts=(login{01..40})
   elif [[ $system_name == summit ]]; then
     hosts=(login{1..5})
   elif [[ $system_name == andes ]]; then
