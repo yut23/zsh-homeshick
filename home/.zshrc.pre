@@ -39,7 +39,7 @@ source "$HOME/.zinit/bin/zinit.zsh"
 # patch out chpwd hook in @zinit-scheduler, as it starts duplicate sched chains
 () {
   local result
-  if (( $+command[patch] )); then
+  if (( $+commands[patch] )); then
     local patchfile=$HOME/.homesick/repos/zsh/zinit-scheduler-fix.patch
     local -a patchopts=(
       --ignore-whitespace
