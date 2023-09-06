@@ -38,10 +38,11 @@ source "$HOME/.zinit/bin/zinit.zsh"
 
 # patch out chpwd hook in @zinit-scheduler, as it starts duplicate sched chains
 () {
-  local result
   if (( $+commands[patch] )); then
-    local patchfile=$HOME/.homesick/repos/zsh/zinit-scheduler-fix.patch
-    local -a patchopts=(
+    local patchfile result
+    local -a patchopts
+    patchfile=$HOME/.homesick/repos/zsh/zinit-scheduler-fix.patch
+    patchopts=(
       --ignore-whitespace
       --silent  # no messages if patch succeeds
       --strip=1
@@ -56,7 +57,8 @@ source "$HOME/.zinit/bin/zinit.zsh"
       print -ru2 'Patching @zinit-scheduler to remove chpwd hook failed'
     fi
   else
-    local lines=(${(@f)functions[@zinit-scheduler]})
+    local -a lines
+    lines=(${(@f)functions[@zinit-scheduler]})
     if [[ $lines[45] == $'\t\tadd-zsh-hook -- chpwd @zinit-scheduler' ]]; then
       lines[45]=()
       functions[@zinit-scheduler]=${(@F)lines}

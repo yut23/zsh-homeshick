@@ -62,11 +62,12 @@ if [[ ! -f $ZINIT[COMPLETIONS_DIR]/_homeshick ]]; then
 fi
 
 # load ssh-ident
+local -a ssh_ident_ice
 if [[ $system_name == frontier ]]; then
   # python gets loaded asynchronously
-  local ssh_ident_ice=()
+  ssh_ident_ice=()
 else
-  local ssh_ident_ice=(has'python')
+  ssh_ident_ice=(has'python')
 fi
 zinit ice as'program' pick'bin/s*' "${ssh_ident_ice[@]}"
 zinit light yut23/ssh-ident

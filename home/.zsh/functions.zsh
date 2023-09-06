@@ -232,7 +232,6 @@ function noreporttime {
 compdef _precommand noreporttime
 
 function stop-zinit-scheduler() {
-  setopt localoptions pipefail
   add-zsh-hook -d chpwd @zinit-scheduler
   local keep_going=1
   local i

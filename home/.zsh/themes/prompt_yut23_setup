@@ -178,7 +178,7 @@ function _my_git_prompt_info() {
   )
   [[ $#formats == $#format_keys ]] || print -ru2 "mismatch between formats and format_keys"
 
-  local -a replacements=()
+  local -a replacements
   for key in ${format_keys[@]}; do
     # check values against 0, and replace with nothing if equal
     # need extra escaping for zformat
