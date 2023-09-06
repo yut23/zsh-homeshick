@@ -11,7 +11,7 @@ typeset -gxTU INFOPATH infopath
 
 () {
   # these are relatively expensive, so cache them
-  local cache_file="$cache_dir/paths"
+  local cache_file="$cache_dir/paths.$system_name"
   local -A path_cache
   if [[ -e "$cache_file" ]]; then
     . "$cache_file"
