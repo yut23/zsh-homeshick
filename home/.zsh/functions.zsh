@@ -185,7 +185,7 @@ if [[ -e ~/submit/run_backup.zsh ]]; then
   if (( $+commands[bsub] )); then
     function bsub() {
       if [[ $# -ge 1 && -e "${@[$#]}" ]]; then
-        ~/submit/run_backup.zsh -n "${@[$#]}"
+        ~/submit/run_backup.zsh -m "automatic backup for \"bsub $*\" on $system_name" "${@[$#]}"
       fi
       command bsub "$@"
     }
@@ -193,7 +193,7 @@ if [[ -e ~/submit/run_backup.zsh ]]; then
   if (( $+commands[sbatch] )); then
     function sbatch() {
       if [[ $# -ge 1 && -e "${@[$#]}" ]]; then
-        ~/submit/run_backup.zsh -n "${@[$#]}"
+        ~/submit/run_backup.zsh -m "automatic backup for \"sbatch $*\" on $system_name" "${@[$#]}"
       fi
       command sbatch "$@"
     }
