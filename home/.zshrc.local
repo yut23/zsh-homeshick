@@ -60,7 +60,22 @@ if [[ -t 0 ]]; then
   stty -ixon
 fi
 
-source "${HOME}/.zsh/zshrc"
+# Homeshick
+source "$HOME/.homesick/repos/homeshick/homeshick.sh"
+
+source_config_files "env.zsh"
+
+source_config_files "aliases.zsh"
+source_config_files "functions.zsh"
+source_config_files "history.zsh"
+source_config_files "misc.zsh"
+
+# Zinit plugins
+source_config_files "plugins.zsh"
+
+source_config_files "keys.zsh"
+
+source_config_files "private.zsh"
 
 # clean up after ourselves
 unfunction source_config_files
