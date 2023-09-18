@@ -69,8 +69,8 @@ if (( $+commands[less] )); then
   unset less_version
 fi
 
-
-if (( $+commands[rg] )); then
+# if we have conda, assume that ripgrep is installed and just isn't loaded yet
+if (( $+commands[rg] )) || (( $+commands[conda] )); then
   export RIPGREP_CONFIG_PATH=$HOME/.config/ripgreprc
   if ! [[ -e "$RIPGREP_CONFIG_PATH" ]]; then
     unset RIPGREP_CONFIG_PATH
