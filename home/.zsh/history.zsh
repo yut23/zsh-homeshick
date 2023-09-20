@@ -15,7 +15,7 @@ is-at-least 5.0.6 && setopt no_inc_append_history_time
 setopt hist_fcntl_lock
 
 # prevent history from becoming too cluttered
-HISTORY_IGNORE='(l|l *|ls|ls *|la|la *|ll|ll *|cd|cd ..|cd -*|g st|g ls)'
+HISTORY_IGNORE='(l|l *|ls|ls *|la|la *|ll|ll *|d|g st|g ls)'
 
 # ensure history directory exists
 if [[ ! -d ${HISTFILE%/*} ]]; then
