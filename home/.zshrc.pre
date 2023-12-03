@@ -11,6 +11,11 @@ fi
 if [ "${TERM%.autotmux-*}" != "$TERM" ]; then
   # this will be read in ~/.tmux/autotmux.zsh
   AUTOTMUX=${TERM#*.autotmux-}
+  if [[ $AUTOTMUX == y-?* ]]; then
+    # connect to a different tmux session with "y-<session name>"
+    TMX_SESSION=${AUTOTMUX#y-}
+    AUTOTMUX=y
+  fi
   # reset $TERM, so the shell gets the correct value
   TERM=${TERM%.autotmux-*}
 fi
