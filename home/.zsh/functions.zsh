@@ -123,6 +123,9 @@ function find_tmux() {
     hosts=(login{01..40})
   elif [[ $system_name == summit ]]; then
     hosts=(login{1..5})
+  elif [[ $system_name == frontier ]]; then
+    # see /etc/ssh/shosts.equiv
+    hosts=(login{01..16})
   elif [[ $system_name == andes ]]; then
     hosts=(andes-login{1..8})
   elif [[ $system_name == cori ]]; then
