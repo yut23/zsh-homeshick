@@ -158,7 +158,7 @@ function read_ctlseq() {
   REPLY="$output"
 }
 
-if [[ $system_name == (summit|andes|olcf-dtn) ]]; then
+if [[ $system_name == (summit|frontier|andes|olcf-dtn) ]]; then
   function missing_plots() (
     if [[ $# -eq 1 ]]; then
       cd -q $1 2>/dev/null || true
@@ -170,12 +170,15 @@ if [[ $system_name == (summit|andes|olcf-dtn) ]]; then
     local suffix=${${PWD:t}#run}
     cd -q "../analysis$suffix" 2>/dev/null || true
     {
-      find ../run$suffix -maxdepth 1 -type d \( -name *plt* -a \! -name *plt*.old.* \)
+      find ../run$suffix -maxdepth 1 -type d \( -name *plt* -a \! -name *plt*.old.* -a \! -name *plt*.temp \)
       if [[ -d ../run$suffix/plotfiles ]]; then
         find ../run$suffix/plotfiles -maxdepth 1 -type d \( -name *plt* -a \! -name *plt*.old.* \)
       fi
     } | while read -r plotfile; do
-      [[ -e "${plotfile:t}_slice.png" ]] || echo "${plotfile:t}"
+      if [[ -e "${plotfile:t}_slice.png" ]] || [[ -e "${plotfile:t}_enuc_annotated_top.png" ]]; then
+        continue
+      fi
+      echo "${plotfile:t}"
     done | sort
   )
 fi
