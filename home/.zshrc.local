@@ -53,7 +53,7 @@ if [[ -f "$HOME/.tmux/autotmux.zsh" && $HOST != ZB<->-host ]]; then
 fi
 
 # Disable coredumps
-ulimit -c 0
+#ulimit -c 0
 
 # Disable flow control keybindings (ctrl-s and ctrl-q)
 if [[ -t 0 ]]; then
