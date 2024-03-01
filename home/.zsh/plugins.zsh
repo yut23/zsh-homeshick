@@ -48,9 +48,11 @@ zinit ice has'virtualenv' has'pwgen' \
   subst'pipenv --venv -> ~/bin/lib/get_pipenv_venv.py'
 zinit light MichaelAquilina/zsh-autoswitch-virtualenv
 
-# replace any existing TPM-managed repo with a link to ours
-zinit ice atclone'rm -rf ~/.tmux/plugins/tmux-update-env; ln -s -T "$PWD" ~/.tmux/plugins/tmux-update-env'
-zinit light yut23/tmux-update-env
+if [[ -d ~/.tmux/plugins ]]; then
+  # replace any existing TPM-managed repo with a link to ours
+  zinit ice atclone'rm -rf ~/.tmux/plugins/tmux-update-env; ln -s -T "$PWD" ~/.tmux/plugins/tmux-update-env'
+  zinit light yut23/tmux-update-env
+fi
 
 # load local plugins:
 # * smart-cd: runs ls and git status after cd
