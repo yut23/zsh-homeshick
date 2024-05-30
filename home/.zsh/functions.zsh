@@ -139,7 +139,7 @@ function find_tmux() {
   fi
   local -a ssh_cmd
   ssh_cmd=(sh -c "ssh '{}' '$tmux_cmd' has-session -t '\\=ssh-$USER' &>/dev/null && echo '{}' || true")
-  print -N "${hosts[@]}" | xargs -0 -I '{}' -n 1 -P 4 "${ssh_cmd[@]}"
+  print -N "${hosts[@]}" | xargs -0 -I '{}' -n 1 "${ssh_cmd[@]}"
 }
 
 function read_ctlseq() {
