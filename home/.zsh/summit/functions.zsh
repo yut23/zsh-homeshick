@@ -26,3 +26,19 @@ function bslots() {
     printf '%-*d%s\n' $#slots $(($slots / 42)) "${line:$#slots}"
   done
 }
+
+alias hsi=hsi_wrapper
+function hsi_wrapper() {
+  # canonicalize paths, so we can do a proper prefix match
+  local real_pwd=${PWD:A}
+  local real_scratch=${SCRATCH:A}
+  local subdir=${real_pwd#${real_scratch}/}
+
+  local hpss_root=/hpss/prod/$PROJID/users/$USER
+  local feed_str="cdls $hpss_root"
+  if [[ $subdir != $real_pwd ]]; then
+    feed_str="cd $hpss_root"$'\n'"cdls $subdir"
+  fi
+  #feed_str="cd $hpss_root"$'\n'"cdls flame_wave/aprox19_hot_dense"
+  ptypipe $feed_str hsi "$@"
+}
