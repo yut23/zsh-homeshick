@@ -65,7 +65,7 @@ fi
 
 # load ssh-ident
 local -a ssh_ident_ice
-if [[ $system_name == frontier ]]; then
+if [[ $system_name == (frontier|polaris) ]]; then
   # python gets loaded asynchronously
   ssh_ident_ice=()
 else
@@ -100,6 +100,9 @@ if ! [[ $ZSH_XTRACE_RC -gt 0 ]] ; then
       ;;
     perlmutter)
       default_conda_env=pm
+      ;;
+    polaris)
+      default_conda_env=base
       ;;
     *)
       default_conda_env=
