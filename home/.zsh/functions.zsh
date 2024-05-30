@@ -146,9 +146,11 @@ function read_ctlseq() {
   local output
   local char
   printf "$@"
+  # wait for up to 0.1 seconds to get a response from the terminal
   if read -s -t 0.1 -k char; then
     output="$output$char"
-    while read -s -t -k char; do
+    # read all characters from the input buffer (non-blocking)
+    while read -s -t 0 -k char; do
       output="$output$char"
     done
     printf '%s' "${(V)output}"
