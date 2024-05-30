@@ -179,25 +179,72 @@ function read_raw_input() {
 
 if [[ $system_name == (summit|frontier|andes|olcf-dtn) ]]; then
   function missing_plots() (
-    if [[ $# -eq 1 ]]; then
-      cd -q $1 2>/dev/null || true
+    if [[ $1 == (-h|--help) ]]; then
+      cat <<'EOF'
+Usage: missing_plots [run_* directory] [image specs...]
+
+image spec: '|'-separated list of suffixes to add to the plotfile name
+            May be followed by ~ and a string to match against plotfiles that
+            should be skipped
+Examples:
+  slice|enuc_annotated_top
+    look for one of ${plotfile}_slice.png or ${plotfile}_enuc_annotated_top.png
+  species~smallplt
+    look for ${plotfile}_species.png for all plotfiles except those containing "smallplt"
+EOF
+      return 0
     fi
+    if [[ $# -ge 1 ]] && [[ -d $1 ]]; then
+      cd -q $1 2>/dev/null || true
+      shift
+    fi
+    local dir_suffix
+    local -a image_suffixes
+    local -A skip_globs
+    local -a missing
     if [[ ${PWD:t} != run* ]]; then
       print -ru2 'Error: not in a directory named run*'
       return 1
     fi
-    local suffix=${${PWD:t}#run}
-    cd -q "../analysis$suffix" 2>/dev/null || true
+    dir_suffix=${${PWD:t}#run}
+    if [[ $# -eq 0 ]]; then
+      set -- 'slice|enuc_annotated_top' 'species~smallplt'
+    fi
+    for arg in $@; do
+      # split on |, remove leading _ and trailing .png from each element, join with |
+      image_suffix="${(@j:|:)${(@)${(s:|:)arg%\~*}#_}%.png}"
+      image_suffixes+=("$image_suffix")
+      if [[ $arg == *?\~?* ]]; then
+        skip_globs[$image_suffix]=${arg#*~}
+      fi
+    done
+    cd -q "../analysis$dir_suffix" 2>/dev/null || true
     {
-      find ../run$suffix -maxdepth 1 -type d \( -name *plt* -a \! -name *plt*.old.* -a \! -name *plt*.temp \)
-      if [[ -d ../run$suffix/plotfiles ]]; then
-        find ../run$suffix/plotfiles -maxdepth 1 -type d \( -name *plt* -a \! -name *plt*.old.* \)
+      find ../run$dir_suffix -maxdepth 1 -type d \( -name *plt* -a \! -name *plt*.old.* -a \! -name *plt*.temp \)
+      if [[ -d ../run$dir_suffix/plotfiles ]]; then
+        find ../run$dir_suffix/plotfiles -maxdepth 1 -type d \( -name *plt* -a \! -name *plt*.old.* \)
       fi
     } | while read -r plotfile; do
-      if [[ -e "${plotfile:t}_slice.png" ]] || [[ -e "${plotfile:t}_enuc_annotated_top.png" ]]; then
-        continue
+      missing=()
+      for image_suffix in ${image_suffixes[@]}; do
+        if [[ -n ${skip_globs[$image_suffix]} ]]; then
+          if [[ $plotfile == *${skip_globs[$image_suffix]}* ]]; then
+            #print -ru2 "skipping $plotfile due to glob: ${(q-)skip_globs[$image_suffix]}"
+            continue
+          fi
+        fi
+        for opt in "${(s:|:)image_suffix}"; do
+          if [[ -e "${plotfile:t}_${opt}.png" ]]; then
+            # break out of opt loop and continue with next iteration of
+            # image_suffix loop
+            continue 2
+          fi
+        done
+        missing+=("$image_suffix")
+      done
+      if [[ ${#missing[@]} -gt 0 ]]; then
+        echo "${plotfile:t}\t${missing[*]}"
       fi
-      echo "${plotfile:t}"
     done | sort
   )
 fi
