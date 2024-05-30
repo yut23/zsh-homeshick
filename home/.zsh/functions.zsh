@@ -228,10 +228,7 @@ fi
 
 # run a command and don't report the time it took
 function noreporttime {
-  setopt localoptions localtraps
-  # use double quotes so $REPORTTIME gets expanded before we modify it
-  trap "REPORTTIME=$REPORTTIME" EXIT HUP INT QUIT TERM
-  REPORTTIME=-1
+  local REPORTTIME=-1
   "$@"
 }
 # enable tab completion for wrapped commands
