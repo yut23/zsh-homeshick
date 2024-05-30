@@ -20,6 +20,10 @@ function prompt_yut23_setup {
   if (( SHLVL > 1 )); then
     prompt_symbol="$SHLVL$prompt_symbol"
   fi
+  # add magenta cube for toolbx(1) sessions
+  if [ -f /run/.containerenv ] && [ -f /run/.toolboxenv ]; then
+    prompt_symbol="%{$fg[magenta]%}⬢%{$reset_color%} $prompt_symbol"
+  fi
   local user="%{$user_color%}%n%{$reset_color%}"
 
   # different color for ssh session
