@@ -60,6 +60,8 @@ fi
 bindkey '^H' backward-kill-word
 # bind ctrl-delete to delete next word
 bindkey '^[[3;5~' kill-word
+# bind alt-delete as well, for symmetry with alt-backspace
+bindkey '^[[3;3~' kill-word
 
 # bind ctrl-backspace in neovim terminal
 bindkey '^[[127;5u' backward-kill-word
