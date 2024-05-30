@@ -160,6 +160,23 @@ function read_ctlseq() {
   REPLY="$output"
 }
 
+function read_raw_input() {
+  local output
+  local char
+  # this will block until a character is read, unless `-t <num>` is passed
+  if read -s -k "$@" char; then
+    output="$output$char"
+    # read all characters from the input buffer (non-blocking)
+    while read -s -t 0 -k char; do
+      output="$output$char"
+    done
+    printf '%s\n' "${(V)output}"
+  else
+    echo 'No input was read'
+  fi
+  REPLY="$output"
+}
+
 if [[ $system_name == (summit|frontier|andes|olcf-dtn) ]]; then
   function missing_plots() (
     if [[ $# -eq 1 ]]; then
