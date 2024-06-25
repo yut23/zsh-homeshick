@@ -16,4 +16,12 @@
 #unset __conda_setup
 # <<< conda initialize <<<
 
+# work around fresh terminals somehow having CONDA_SHLVL set without anything in PATH
+if [[ -f "/home/eric/mambaforge/etc/profile.d/conda.sh" ]] && [[ -n ${CONDA_SHLVL+x} ]] && ! (( $path[(I)${CONDA_EXE:h:h}/condabin] )); then
+  conda deactivate
+  unset CONDA_SHLVL
+  # source again to set the path
+  . "/home/eric/mambaforge/etc/profile.d/conda.sh"
+fi
+
 path+=(/usr/local/cuda/bin)
