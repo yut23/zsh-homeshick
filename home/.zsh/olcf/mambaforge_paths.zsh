@@ -22,4 +22,8 @@ source ~/.zsh/olcf/env.zsh
     #fi
 #fi
 #unset __conda_setup
+
+if [ -f "/ccs/proj/$PROJID/$USER/mambaforge_$(uname -m)/etc/profile.d/mamba.sh" ]; then
+    . "/ccs/proj/$PROJID/$USER/mambaforge_$(uname -m)/etc/profile.d/mamba.sh"
+fi
 # <<< conda initialize <<<

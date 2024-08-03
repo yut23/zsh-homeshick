@@ -14,6 +14,10 @@
     fi
 #fi
 #unset __conda_setup
+
+if [ -f "/home/eric/mambaforge/etc/profile.d/mamba.sh" ]; then
+    . "/home/eric/mambaforge/etc/profile.d/mamba.sh"
+fi
 # <<< conda initialize <<<
 
 # work around fresh terminals somehow having CONDA_SHLVL set without anything in PATH

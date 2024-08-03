@@ -38,3 +38,9 @@ Common config files are stored in `~/.zsh/`, while host-specific ones are in `~/
   - prompt
 11. keys.zsh
 12. private.zsh
+
+
+## Conda/Mamba environments
+
+* `conda init` and `mamba init` code goes in per-system `paths.zsh`
+* activating the default environment is handled in `plugins.zsh`
