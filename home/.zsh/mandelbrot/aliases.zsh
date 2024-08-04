@@ -1,5 +1,6 @@
 # ~/.zsh/mandelbrot/aliases.zsh
 
+alias asp='printf "\033[1;31masp is dead, use pkgctl instead\033[m\n"'
 
 alias ccm32='sudo ccm32'
 alias ccm64='sudo ccm64'
