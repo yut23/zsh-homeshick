@@ -1,12 +1,5 @@
 # ~/.zsh/mandelbrot/aliases.zsh
 
-alias vim='echo Use nvim! #'
-alias view='echo Use nvim! #'
-alias vimdiff='echo Use nvim! #'
-
-alias gvim='echo Use nvim-qt! #'
-alias gview='echo Use nvim-qt! #'
-alias gvimdiff='echo Use nvim-qt! #'
 
 alias ccm32='sudo ccm32'
 alias ccm64='sudo ccm64'
