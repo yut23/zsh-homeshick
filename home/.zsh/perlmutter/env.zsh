@@ -1,1 +1,1 @@
-../cori/env.zsh
+../nersc/env.zsh
