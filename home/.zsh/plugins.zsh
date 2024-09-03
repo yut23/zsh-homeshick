@@ -99,7 +99,7 @@ if ! [[ $ZSH_XTRACE_RC -gt 0 ]] ; then
       default_conda_env=/ccs/proj/$PROJID/$USER/mambaforge_x86_64/envs/andes_mamba
       ;;
     perlmutter)
-      default_conda_env=pm
+      default_conda_env=/global/common/software/$PROJID/env/envs/ejohnson_pm
       ;;
     polaris)
       default_conda_env=base

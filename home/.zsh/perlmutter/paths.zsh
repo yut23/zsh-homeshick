@@ -1,0 +1,1 @@
+../nersc/mambaforge_paths.zsh
