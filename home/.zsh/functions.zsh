@@ -249,6 +249,17 @@ EOF
   )
 fi
 
+if [[ ${HOME:A} != $HOME ]]; then
+  # $HOME is a symlink
+  function fix_pwd() {
+    # fix the working directory after a tmux restore (which always resolves symlinks)
+    if [[ ${PWD#${HOME:A}} != $PWD ]]; then
+      # replace $HOME:A with $HOME, then remove the old entry from the dirstack
+      cd -q ${HOME:A} $HOME && popd -q -1
+    fi
+  }
+fi
+
 if [[ -e ~/submit/run_backup.zsh ]]; then
   alias run_backup=$HOME/submit/run_backup.zsh
   if (( $+commands[bsub] )); then

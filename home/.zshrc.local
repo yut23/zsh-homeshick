@@ -77,5 +77,10 @@ source_config_files "keys.zsh"
 
 source_config_files "private.zsh"
 
+if [[ ${HOME:A} != $HOME ]] && [[ -n "${TMUX+x}" ]]; then
+  # $HOME is a symlink: fix $PWD in case it was resolved by tmux
+  fix_pwd
+fi
+
 # clean up after ourselves
 unfunction source_config_files
