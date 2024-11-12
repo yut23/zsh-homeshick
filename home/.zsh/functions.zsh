@@ -177,7 +177,7 @@ function read_raw_input() {
   REPLY="$output"
 }
 
-if [[ $system_name == (summit|frontier|andes|olcf-dtn) ]]; then
+if [[ $system_name == (summit|frontier|andes|olcf-dtn|perlmutter) ]]; then
   function missing_plots() (
     if [[ $1 == (-h|--help) ]]; then
       cat <<'EOF'
