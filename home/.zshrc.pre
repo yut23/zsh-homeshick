@@ -47,6 +47,11 @@ source "$HOME/.zinit/bin/zinit.zsh"
     local patchfile result
     local -a patchopts
     patchfile=$HOME/.homesick/repos/zsh/zinit-scheduler-fix.patch
+    # For some reason, patch tries to write to a temporary file in $PWD (not
+    # sure why passing --output=- doesn't stop this), which triggers a fatal
+    # error if we don't have write permissions there. To try and avoid this,
+    # have patch cd to $TMPDIR before doing anything using the --directory
+    # option.
     patchopts=(
       --ignore-whitespace
       --silent  # no messages if patch succeeds
@@ -55,21 +60,22 @@ source "$HOME/.zinit/bin/zinit.zsh"
       --batch
       --output=-  # output patched file to stdout
       --reject-file=-  # discard rejects
+      --directory=${TMPDIR:-/tmp}  # cd to $TMPDIR, as explained above
     )
     if result=$(patch "${patchopts[@]}" =(print -r -- $functions[@zinit-scheduler]) $patchfile); then
       functions[@zinit-scheduler]=$result
+      return
     else
-      print -ru2 'Patching @zinit-scheduler to remove chpwd hook failed'
+      print -ru2 'Patching @zinit-scheduler to remove chpwd hook failed; trying manually'
     fi
+  fi
+  local -a lines
+  lines=(${(@f)functions[@zinit-scheduler]})
+  if [[ $lines[45] == $'\t\tadd-zsh-hook -- chpwd @zinit-scheduler' ]]; then
+    lines[45]=()
+    functions[@zinit-scheduler]=${(@F)lines}
   else
-    local -a lines
-    lines=(${(@f)functions[@zinit-scheduler]})
-    if [[ $lines[45] == $'\t\tadd-zsh-hook -- chpwd @zinit-scheduler' ]]; then
-      lines[45]=()
-      functions[@zinit-scheduler]=${(@F)lines}
-    else
-      print -ru2 'Manually patching @zinit-scheduler to remove chpwd hook failed'
-    fi
+    print -ru2 'Manually patching @zinit-scheduler to remove chpwd hook failed'
   fi
 }
 
