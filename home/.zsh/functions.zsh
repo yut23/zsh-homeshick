@@ -135,7 +135,8 @@ function find_tmux() {
   fi
   # exclude $HOSTNAME, if we're currently in tmux
   if [[ -n ${TMUX_SSH+x} ]]; then
-    hosts=("${hosts[@]:#$HOSTNAME}")
+    local -a own_hosts=($HOSTNAME $(hostname -s))
+    hosts=("${hosts[@]:|own_hosts}")
   fi
   local -a ssh_cmd
   ssh_cmd=(sh -c "ssh '{}' '$tmux_cmd' has-session -t '\\=ssh-$USER' &>/dev/null && echo '{}' || true")
