@@ -14,4 +14,3 @@ module --no_redirect purge
 # From a combination of $LMOD_SYSTEM_DEFAULT_MODULES and the result of
 # `ml cudatoolkit`.
 module --no_redirect load craype-x86-milan craype-network-ofi perftools-base xpmem PrgEnv-gnu cpe gpu darshan cudatoolkit
-module --no_redirect load parallel
