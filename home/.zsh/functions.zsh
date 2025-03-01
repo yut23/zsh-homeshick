@@ -61,6 +61,8 @@ function st() {
     git status
   elif (( $+commands[sqs] )); then
     sqs
+  else
+    echo "not in a git repository or at a supercomputing center"
   fi
 }
 
