@@ -56,6 +56,14 @@ function cls() {
   fi
 }
 
+function st() {
+  if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+    git status
+  elif (( $+commands[sqs] )); then
+    sqs
+  fi
+}
+
 function total_mem() {
   local PAGESIZE=$(getconf PAGESIZE)
   # field 2 of statm is the number of resident pages
