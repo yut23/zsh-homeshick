@@ -126,9 +126,7 @@ alias fugitive="$EDITOR"' +Ge\ :'
 alias find='noglob find'
 
 # calculate the sum of numbers on stdin
-alias total='python -c "import sys; print(sum(map(int, sys.stdin)))"'
-# same but for floating point numbers
-alias totalf='python -c "import sys; print(sum(map(float, sys.stdin)))"'
+alias total='python -c "import sys; print((lambda x: int(x) if x%1 == 0 else x)(sum(map(float, sys.stdin))))"'
 
 # don't display icons in xprop
 if (( $+commands[xprop] )); then
