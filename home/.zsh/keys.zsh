@@ -56,6 +56,10 @@ else
   bindkey '^[[B' down-line-or-search
 fi
 
+# bind ctrl+up/down to pure history navigation, for IPython compatibility
+bindkey '^[[1;5A' up-history
+bindkey '^[[1;5B' down-history
+
 # bind ctrl-backspace to delete previous word
 bindkey '^H' backward-kill-word
 # bind ctrl-delete to delete next word
