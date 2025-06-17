@@ -321,6 +321,8 @@ function noreporttime {
 }
 # enable tab completion for wrapped commands
 compdef _precommand noreporttime
+# expand aliases in first argument
+alias noreporttime='noreporttime '
 
 function stop-zinit-scheduler() {
   add-zsh-hook -d chpwd @zinit-scheduler
