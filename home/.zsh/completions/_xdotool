@@ -619,25 +619,33 @@ _xdotool_windowraise () {
 
 _xdotool_windowmove () {
   # chainable
+  # first arg is technically optional; see note in _xdotool_behave
   local context state state_descr line
+  local gnome_note
   typeset -A opt_args
   local -a position_args
   if (( words[(I)--relative] )); then
+    if [[ $XDG_CURRENT_DESKTOP == GNOME ]]; then
+      gnome_note=' (subtract 37)'
+    fi
     position_args=(
       ': :_guard_int "x offset"'
-      ': :_guard_int "y offset"'
+      ': :_guard_int "y offset'$gnome_note'"'
     )
   else
+    if [[ $XDG_CURRENT_DESKTOP == GNOME ]]; then
+      gnome_note='; subtract 37'
+    fi
     position_args=(
       ': :_guard "(|-)[0-9]#|x" "x coordinate (\"x\" for no change)"' \
-      ': :_guard "(|-)[0-9]#|y" "y coordinate (\"y\" for no change)"' \
+      ': :_guard "(|-)[0-9]#|y" "y coordinate (\"y\" for no change'$gnome_note')"' \
     )
   fi
   __before
   _arguments -S \
     '--sync[only exit once the window has moved]' \
     '--relative[move relative to the current window position]' \
-    $window_or_stack \
+    ': :__xdotool_window_or_stack' \
     $position_args \
     '*::: := ->chain' && return
   __after
@@ -650,13 +658,14 @@ _xdotool_windowmove () {
 
 _xdotool_windowsize () {
   # chainable
+  # first arg is technically optional; see note in _xdotool_behave
   local context state state_descr line
   typeset -A opt_args
   __before
   _arguments -S \
     '--sync[only exit once the window has resized]' \
     '--usehints[use window sizing hints (e.g. font size in terminals)]' \
-    $window_or_stack \
+    ': :__xdotool_window_or_stack' \
     ': :_guard_uint "width"' \
     ': :_guard_uint "height"' \
     '*::: := ->chain' && return
@@ -753,11 +762,12 @@ _xdotool_windowunmap () {
 
 _xdotool_windowreparent () {
   # chainable
+  # first arg is technically optional; see note in _xdotool_behave
   local context state state_descr line
   typeset -A opt_args
   __before
   _arguments -S \
-    $window_or_stack \
+    ': :__xdotool_window_or_stack' \
     ': :__xdotool_window' \
     '*::: := ->chain' && return
   __after
@@ -847,8 +857,10 @@ _xdotool_behave () {
   typeset -A opt_args
   __before
   # TODO: fix optional $window_or_stack (xdotool getactivewindow behave blur |)
+  # 2025-03-24: just make it required for all commands that have positional
+  # arguments afterward
   _arguments -S \
-    $window_or_stack \
+    ': :__xdotool_window_or_stack' \
     ': :__xdotool_behave_event' \
     '*::: := ->chain' && return
   __after
@@ -987,10 +999,10 @@ _xdotool_get_desktop_for_window () {
   _arguments -S $window_or_stack
 }
 _xdotool_set_desktop_for_window () {
-  # 1:window
+  # 1:window (technically optional)
   # 2:desktop number
   _arguments -S \
-    $window_or_stack \
+    ': :__xdotool_window_or_stack' \
     ': :__xdotool_desktop'
 }
 _xdotool_get_desktop_viewport () {
@@ -1042,7 +1054,7 @@ _xdotool () {
       window_or_stack=': :__xdotool_window_or_stack'
     fi
 
-    __before '' curcontext ret
+    __before '' windowstack curcontext ret
     _arguments -C \
       ': :->command' \
       '*:: :->option-or-argument' && return
