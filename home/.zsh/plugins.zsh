@@ -74,6 +74,11 @@ fi
 zinit ice as'program' pick'bin/s*' "${ssh_ident_ice[@]}"
 zinit light yut23/ssh-ident
 
+#if [[ $system_name == (xrb|mandelbrot) ]]; then
+#  zinit ice as'program' pick'rofi-zotero.py' has'rofi'
+#  zinit light yut23/rofi-zotero
+#fi
+
 # this must load after the last completion-related plugin
 if ! [[ $ZSH_XTRACE_RC -gt 0 ]] ; then
   # disable asynchronous plugins if profiling startup
