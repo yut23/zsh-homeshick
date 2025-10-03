@@ -12,6 +12,8 @@ elif [[ "$HOSTNAME" == *polaris.alcf.anl.gov ]]; then
   system_name=polaris
 elif [[ "$HOSTNAME" == *.astro.sunysb.edu ]]; then
   system_name=${HOSTNAME%.astro.sunysb.edu}
+elif [[ -f "$HOME/.system_name" ]]; then
+  system_name="$(<"$HOME/.system_name")"
 else
   system_name=$HOSTNAME
 fi
