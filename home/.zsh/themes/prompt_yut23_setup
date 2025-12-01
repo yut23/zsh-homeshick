@@ -93,6 +93,7 @@ function _my_git_prompt_info() {
   local ahead=0
   local behind=0
   local gone=0
+  local detached=0
 
   local added=0
   local deleted=0
@@ -150,6 +151,9 @@ function _my_git_prompt_info() {
         behind=${match[7]:-0}
         # substitute 1 if non-null, or substitute 0 if null
         gone=${${match[8]:+1}:-0}
+      elif [[ "$line" == '## HEAD (no branch)' ]]; then
+        branch=detached
+        detached=1
       fi
       # don't increment $dirty
       continue
@@ -191,15 +195,19 @@ function _my_git_prompt_info() {
   done
   zformat -f git_status "$format" "${replacements[@]}"
 
-  if [[ -n $git_status ]]; then
+  # strip trailing space in case $git_status is empty
+  local info="${${:-$branch $git_status}% }"
+  if (( detached )); then
+    echo "%{$terminfo[bold]$fg[cyan]%}[$info]%{$reset_color%}"
+  else
     if (( dirty > 0 )); then
       color=red
-    else
+    elif [[ -n $git_status ]]; then
       color=yellow
+    else
+      color=green
     fi
-    echo "%{$terminfo[bold]$fg[$color]%}($branch $git_status)%{$reset_color%}"
-  else
-    echo "%{$terminfo[bold]$fg[green]%}($branch)%{$reset_color%}"
+    echo "%{$terminfo[bold]$fg[$color]%}($info)%{$reset_color%}"
   fi
 }
 
