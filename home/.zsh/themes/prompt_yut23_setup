@@ -88,12 +88,15 @@ function zle-line-finish {
 
 function _my_git_prompt_info() {
   # largely based on Prezto's git-info function
-  local branch git_status format
+  local branch git_status format info
+  local branch_oid branch_head
   local git_cmd status_cmd
   local ahead=0
   local behind=0
   local gone=0
   local detached=0
+  local has_upstream=0
+  local upstream_exists=0
 
   local added=0
   local deleted=0
@@ -139,21 +142,21 @@ function _my_git_prompt_info() {
         git_cmd='command sudo -p"[etckeeper] password for %u: " etckeeper vcs' ;;
     esac
   fi
-  status_cmd="$git_cmd status --porcelain --branch"
+  status_cmd="$git_cmd status --porcelain=v2 --branch"
 
   # Get current status, branch name, and commit differences with a single git call.
   while IFS=$'\n' read line; do
-    if [[ -z $branch && "$line" == \#\#\ * ]]; then
-      if [[ "$line" =~ '^## ([^ ]*)( \[(ahead ([0-9]+)?)?((, )?behind ([0-9]+))?(gone)?\])?$' ]]; then
-        # groups:           1      2   3      4          56           7         8
-        branch=${match[1]%...*}
-        ahead=${match[4]:-0}
-        behind=${match[7]:-0}
-        # substitute 1 if non-null, or substitute 0 if null
-        gone=${${match[8]:+1}:-0}
-      elif [[ "$line" == '## HEAD (no branch)' ]]; then
-        branch=detached
-        detached=1
+    if [[ "$line" == \#\ * ]]; then
+      if [[ "$line" == '# branch.oid '* ]]; then
+        branch_oid=${line#'# branch.oid '}
+      elif [[ "$line" == '# branch.head '* ]]; then
+        branch_head=${line#'# branch.head '}
+      elif [[ "$line" == '# branch.upstream '* ]]; then
+        has_upstream=1
+      elif [[ "$line" =~ '^# branch.ab \+([0-9]+) -([0-9]+)$' ]]; then
+        upstream_exists=1
+        ahead=${match[1]}
+        behind=${match[2]}
       fi
       # don't increment $dirty
       continue
@@ -161,14 +164,25 @@ function _my_git_prompt_info() {
     # Count added, deleted, modified, renamed, unmerged, untracked, dirty.
     # T (type change) is undocumented, see https://git.io/FnpMGw.
     # For a table of scenarii, see https://i.imgur.com/2YLu1.png.
-    [[ "$line" == ([ACDMT][\ MT]|[ACMT]D)\ * ]] && (( added++ ))
-    [[ "$line" == [\ ACMRT]D\ * ]] && (( deleted++ ))
-    [[ "$line" == ?[MT]\ * ]] && (( modified++ ))
-    [[ "$line" == R?\ * ]] && (( renamed++ ))
-    [[ "$line" == (AA|DD|U?|?U)\ * ]] && (( unmerged++ ))
-    [[ "$line" == \?\?\ * ]] && (( untracked++ ))
+    [[ "$line" == ?\ ([ACDMT][.MT]|[ACMT]D)\ * ]] && (( added++ ))
+    [[ "$line" == ?\ [.ACMRT]D\ * ]] && (( deleted++ ))
+    [[ "$line" == ?\ ?[MT]\ * ]] && (( modified++ ))
+    [[ "$line" == 2\ R?\ * ]] && (( renamed++ ))
+    [[ "$line" == u\ * ]] && (( unmerged++ ))
+    [[ "$line" == \?\ * ]] && (( untracked++ ))
     (( dirty++ ))
   done < <(${(Q)${(z)status_cmd}} 2> /dev/null)
+
+  if [[ $branch_head == '(detached)' ]]; then
+    branch="${branch_oid:0:7}"
+    detached=1
+  else
+    branch="$branch_head"
+  fi
+
+  if (( has_upstream == 1 && upstream_exists == 0 )); then
+    gone=1
+  fi
 
   [[ -z $branch ]] && return
 
@@ -196,19 +210,21 @@ function _my_git_prompt_info() {
   zformat -f git_status "$format" "${replacements[@]}"
 
   # strip trailing space in case $git_status is empty
-  local info="${${:-$branch $git_status}% }"
-  if (( detached )); then
-    echo "%{$terminfo[bold]$fg[cyan]%}[$info]%{$reset_color%}"
+  if (( dirty > 0 )); then
+    color=red
+  elif [[ -n $git_status ]]; then
+    color=yellow
   else
-    if (( dirty > 0 )); then
-      color=red
-    elif [[ -n $git_status ]]; then
-      color=yellow
-    else
-      color=green
-    fi
-    echo "%{$terminfo[bold]$fg[$color]%}($info)%{$reset_color%}"
+    color=green
   fi
+  if (( detached )); then
+    # highlight detached branch in cyan
+    branch="%{$fg[cyan]%}:$branch%{$fg[$color]%}"
+  fi
+  info="$branch $git_status"
+  # strip trailing space if git_status is empty
+  info="${info% }"
+  echo "%{$terminfo[bold]$fg[$color]%}($info)%{$reset_color%}"
 }
 
 prompt_yut23_setup
