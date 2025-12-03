@@ -69,7 +69,7 @@ if [[ $system_name == (frontier|polaris) ]]; then
   # python gets loaded asynchronously
   ssh_ident_ice=()
 else
-  ssh_ident_ice=(has'python')
+  ssh_ident_ice=(has'python3')
 fi
 zinit ice as'program' pick'bin/s*' "${ssh_ident_ice[@]}"
 zinit light yut23/ssh-ident
