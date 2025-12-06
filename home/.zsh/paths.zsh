@@ -35,6 +35,11 @@ typeset -gxTU INFOPATH infopath
   # LuaRocks rocks
   if (( $+commands[luarocks] )); then
     cache_lookup luarocks luarocks --local config deploy_bin_dir
+    # only set these if it looks like we haven't inherited them from the parent
+    # shell
+    if [[ $LUA_PATH != *luarocks* ]] || [[ $LUA_CPATH != *luarocks* ]]; then
+      eval "$(luarocks path --no-bin)"
+    fi
   fi
 
   if (( $modified )); then
