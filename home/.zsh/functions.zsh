@@ -304,6 +304,25 @@ function make_relative() {
   done
 }
 
+# check for upstream updates in all git repos under a specified directory
+function check_git_updates() {
+  local dir=${1:-$PWD}
+  local -x VERBOSITY=WARNING
+  for f in ${(D)${(f)"$(find "$dir" -name .git -type d)"}:a:h}; do
+    (
+      cd -q $~f || exit
+      git fetch --quiet || exit
+      local ab=(${${(s: :)"$(git status --porcelain=v2 --branch | grep -F '# branch.ab')"}[3,-1]#[+-]}) || exit 0
+      if (( ab[1] + ab[2] > 0 )); then
+        local desc=()
+        (( ab[1] > 0 )) && desc+=("ahead $ab[1]")
+        (( ab[2] > 0 )) && desc+=("behind $ab[2]")
+        echo "$f: ${(j:, :)desc}"
+      fi
+    ) || echo "$f: error=$?"
+  done
+}
+
 # fix __vte_prompt_command so it works in zsh, and disable setting the title
 if (( $+functions[__vte_prompt_command] )); then
   unfunction __vte_prompt_command
