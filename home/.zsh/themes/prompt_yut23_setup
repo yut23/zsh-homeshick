@@ -75,16 +75,27 @@ function zle-keymap-select {
   esac
 }
 
-function zle-line-finish {
-  case $TERM in
-    linux|dumb) ;;
-    *)
-      printf '\033[5 q'
-      # from GRML zshrc
-      zle-rmkx
-      ;;
-  esac
-}
+if (( ${+terminfo[smkx]} )) && (( ${+terminfo[rmkx]} )); then
+  function zle-line-finish {
+    case $TERM in
+      linux|dumb) ;;
+      *)
+        printf '\033[5 q'
+        # from GRML zshrc
+        zle-rmkx
+        ;;
+    esac
+  }
+else
+  function zle-line-finish {
+    case $TERM in
+      linux|dumb) ;;
+      *)
+        printf '\033[5 q'
+        ;;
+    esac
+  }
+fi
 
 function _my_git_prompt_info() {
   # largely based on Prezto's git-info function
