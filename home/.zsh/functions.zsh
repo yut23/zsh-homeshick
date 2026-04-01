@@ -260,16 +260,20 @@ EOF
   )
 fi
 
-if [[ ${HOME:A} != $HOME ]]; then
-  # $HOME is a symlink
-  function fix_pwd() {
-    # fix the working directory after a tmux restore (which always resolves symlinks)
-    if [[ ${PWD#${HOME:A}} != $PWD ]]; then
-      # replace $HOME:A with $HOME, then remove the old entry from the dirstack
-      cd -q ${HOME:A} $HOME && popd -q -1
+# takes directory symlinks to un-resolve as arguments (defaults to $HOME)
+function fix_pwd() {
+  if [[ $# -eq 0 ]]; then
+    set -- $HOME
+  fi
+  local symlinked_prefix
+  for symlinked_prefix; do
+    local resolved_prefix=${symlinked_prefix:A}
+    if [[ $resolved_prefix != $symlinked_prefix ]] && [[ ${PWD#${resolved_prefix}} != $PWD ]]; then
+      # replace $resolved_prefix with $symlinked_prefix
+      cd -q $resolved_prefix $symlinked_prefix >/dev/null && popd -q -1
     fi
-  }
-fi
+  done
+}
 
 if [[ -e ~/submit/run_backup.zsh ]]; then
   alias run_backup=$HOME/submit/run_backup.zsh

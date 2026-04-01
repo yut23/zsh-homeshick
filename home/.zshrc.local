@@ -77,9 +77,14 @@ source_config_files "keys.zsh"
 
 source_config_files "private.zsh"
 
+# TODO: https://stackoverflow.com/a/73082809
 if [[ ${HOME:A} != $HOME ]] && [[ -n "${TMUX+x}" ]]; then
-  # $HOME is a symlink: fix $PWD in case it was resolved by tmux
+  # $HOME is a symlink: fix $PWD in case it was resolved by tmux-resurrect
   fix_pwd
+fi
+if [[ -L ~/win ]] && [[ -n "${TMUX+x}" ]]; then
+  # Fix $PWD on WSL/MSYS if it was resolved by tmux-resurrect
+  fix_pwd ~/win
 fi
 
 # clean up after ourselves
