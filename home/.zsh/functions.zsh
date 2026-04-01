@@ -364,3 +364,40 @@ function stop-zinit-scheduler() {
     done
   done
 }
+
+# run in subshell to guard `cd -q $HOME`
+function find_hs_untracked() (
+  emulate -L zsh
+  setopt NULL_GLOB EXTENDED_GLOB
+  cd -q $HOME
+  local castle_dir castle tracked_dir d f
+  local -a tracked_dirs
+  for castle_dir in ~/.homesick/repos/*; do
+    castle=${castle_dir:t}
+    tracked_dirs=($castle_dir/home/.*(/) $castle_dir/home/.config/*(/) $castle_dir/home/.local/*/*(/))
+    for tracked_dir in "${(@o)tracked_dirs}"; do
+      d=${tracked_dir#$castle_dir/home/}
+      if [[ $d == .config ]] || [[ $d == .local ]]; then
+        continue
+      fi
+      for f in $d/**/*(.Don); do
+        if [[ $castle == tmux ]] && [[ $f == .ssh/* ]]; then
+          continue
+        fi
+        case $f in
+          .tmux/plugins/*) ;;
+          .tmux/resurrect/*) ;;
+          .tmux/update-env/*) ;;
+          .vim/autoload/plug.vim) ;;
+          .vim/plugged/*) ;;
+          .zinit/*) ;;
+          .zsh/cache/*) ;;
+          .zsh/history/*) ;;
+          *)
+            print -r "$castle: ~/$f"
+            ;;
+        esac
+      done
+    done
+  done
+)
