@@ -32,3 +32,5 @@ else
 fi
 unset __mamba_setup
 # <<< mamba initialize <<<
+
+path+=(/opt/cuda/bin)
