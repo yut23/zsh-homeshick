@@ -310,6 +310,7 @@ function make_relative() {
 
 # check for upstream updates in all git repos under a specified directory
 function check_git_updates() {
+  local REPORTTIME=-1
   local dir=${1:-$PWD}
   local -x VERBOSITY=WARNING
   for f in ${(D)${(f)"$(find "$dir" -name .git -type d)"}:a:h}; do
