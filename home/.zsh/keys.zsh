@@ -78,6 +78,9 @@ for i in {0..9}; do
 done
 bindkey "^[-" neg-argument
 
+# comment the current line with ctrl-slash
+bindkey "^_" vi-pound-insert
+
 # from OMZ fancy-ctrl-z plugin (https://github.com/robbyrussell/oh-my-zsh/tree/master/plugins/fancy-ctrl-z)
 fancy-ctrl-z () {
   if [[ $#BUFFER -eq 0 && $CONTEXT == start ]]; then
