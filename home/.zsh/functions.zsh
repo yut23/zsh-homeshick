@@ -402,3 +402,8 @@ function find_hs_untracked() (
     done
   done
 )
+
+# catch typos like `cd. .`
+function cd.() {
+  cd ".$1" "${@:2}"
+}
