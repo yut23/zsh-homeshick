@@ -127,7 +127,7 @@ if ! [[ $ZSH_XTRACE_RC -gt 0 ]] ; then
 fi
 
 # set theme stuff up now that we don't use OMZ
-fpath=($HOME/.zsh/themes $fpath)
+fpath[1,0]=("$HOME/.zsh/themes")
 autoload -U promptinit && promptinit
 autoload -U colors && colors
 prompt yut23
