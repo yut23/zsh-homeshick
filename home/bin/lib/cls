@@ -1,0 +1,48 @@
+#!/bin/bash
+set -euo pipefail
+# add a link to this script (~/bin/lib/cls) in /usr/local/bin to use it as root
+
+declare -a ls_args cat_args files
+declare -a ls_alias cat_alias
+ls_alias=(ls -hF --group-directories-first --color=auto)
+cat_alias=(cat)
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    -n|-v|--show-all|--number-nonblank|--show-ends|--number|--squeeze-blank|--show-tabs|--show-nonprinting)
+      cat_args+=("$1")
+      ;;
+    --)
+      shift  # remove --
+      break  # exit while loop
+      ;;
+    -?*)
+      ls_args+=("$1")
+      ;;
+    *)
+      files+=("$1")
+      ;;
+  esac
+  shift
+done
+# restore file parameters
+set -- "${files[@]}" "$@"
+
+if [[ $# -eq 0 ]]; then
+  "${ls_alias[@]}" "${ls_args[@]}"
+elif [[ $# -eq 1 ]]; then
+  if [[ -f $1 ]]; then
+    "${cat_alias[@]}" "${cat_args[@]}" -- "$1"
+  else
+    "${ls_alias[@]}" "${ls_args[@]}" -- "$1"
+  fi
+else
+  for entry in "$@"; do
+    sign=""
+    if [[ -d "$entry" ]]; then
+      sign="/"
+    fi
+    echo "==> $entry$sign <=="
+    "$0" "${ls_args[@]}" "${cat_args[@]}" -- "$entry"
+    echo
+  done
+fi

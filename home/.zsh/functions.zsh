@@ -9,6 +9,7 @@ function take() {
 # acts like cat on files, and like ls on directories
 function cls() {
   emulate -L zsh
+  local sign
   local -a ls_args cat_args files
   # toggling alias expansion on and off doesn't work inside a function, so parse any aliases beforehand
   local -a ls_alias cat_alias
@@ -45,7 +46,7 @@ function cls() {
     fi
   else
     for entry in "$@"; do
-      local sign=""
+      sign=""
       if [[ -d "$entry" ]]; then
         sign="/"
       fi
