@@ -2691,8 +2691,8 @@ else
 fi
 
 # use ip from iproute2 with color support
-if ip --color=auto addr >/dev/null 2>&1; then
-    alias ip='command ip --color=auto'
+if ip -color=auto addr >/dev/null 2>&1; then
+    alias ip='command ip -color=auto'
 fi
 
 if [[ -r /proc/mdstat ]]; then
