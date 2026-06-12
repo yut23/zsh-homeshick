@@ -375,6 +375,9 @@ function find_hs_untracked() (
   local -a tracked_dirs
   for castle_dir in ~/.homesick/repos/*; do
     castle=${castle_dir:t}
+    if [[ $castle == zedbox ]]; then
+      continue
+    fi
     tracked_dirs=($castle_dir/home/.*(/) $castle_dir/home/.config/*(/) $castle_dir/home/.local/*/*(/))
     for tracked_dir in "${(@o)tracked_dirs}"; do
       d=${tracked_dir#$castle_dir/home/}
