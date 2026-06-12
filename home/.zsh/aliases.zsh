@@ -168,3 +168,8 @@ fi
 alias z2nl='tr \\000 \\n'
 # and vice versa
 alias nl2z='tr \\n \\000'
+
+# fix "sudo: command: command not found" when running `sudo ip ...` (from GRML .zshrc)
+if (( $+aliases[ip] )) && [[ "$aliases[ip]" == command\ ip* ]]; then
+  alias ip="${aliases[ip]#command }"
+fi
