@@ -60,6 +60,19 @@ fi
 bindkey '^[[1;5A' up-history
 bindkey '^[[1;5B' down-history
 
+# bind ctrl-home/end to beginning and end of buffer
+# not sure why these aren't built-in
+beginning-of-buffer () {
+  CURSOR=0
+}
+end-of-buffer () {
+  CURSOR=$#BUFFER
+}
+zle -N beginning-of-buffer
+zle -N end-of-buffer
+bindkey '^[[1;5H' beginning-of-buffer
+bindkey '^[[1;5F' end-of-buffer
+
 # bind ctrl-backspace to delete previous word
 bindkey '^H' backward-kill-word
 # bind ctrl-delete to delete next word
