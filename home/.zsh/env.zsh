@@ -81,3 +81,6 @@ fi
 if [[ -e ~/.ssh/ssh_auth_sock ]]; then
   export SSH_AUTH_SOCK=~/.ssh/ssh_auth_sock
 fi
+
+# Enable generation of compile_commands.json by default in cmake
+export CMAKE_EXPORT_COMPILE_COMMANDS=ON
